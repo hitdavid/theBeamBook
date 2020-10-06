@@ -520,7 +520,7 @@ TIP: `Beam_asm` 是 `compiler` 应用程序中的一个模块，它是Erlang发�
 
 ----
 
-NOTE: 自OTP 20 以来，这个标签格式已经改变， `Extended - Float` 消失了。下面所有的标签值向下移动1: List 是 2#10111，fpreg 是 2#100111，alloc List 是 2#110111，literal 是 2#1010111。浮点值现在直接进入 BEAM 文件的文字区域 (literal area)。
+NOTE: 自OTP 20 以来，这个标签格式已经改变， `Extended - Float` 消失了。下面所有的标签值向下移动1: List 是 2#10111，fpreg 是 2#100111，alloc List 是 2#110111，literal 是 2#1010111。浮点值现在直接进入 BEAM 文件的字面值区域 (literal area)。
 
 它使用第一个字节的前3位来存储定义以下值类型的标记。如果这些位都是1 (特殊值7或  `beam_opcodes.hrl` 中的 ?tag_z)，那么会使用更多的位。
 
