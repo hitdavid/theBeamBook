@@ -992,10 +992,11 @@ Dmytro Lytovchenko
 Anthony Molinaro
 Alexandre Rodrigues
 Yoshihiro TANAKA
-Kim Shrier
+hitdavid
 Ken Causey
 Lukas Larsson
-hitdavid
+Kim Shrier
+David
 Trevor Brown
 Andrea Leopardi
 Anton N Ryabkov
@@ -5327,7 +5328,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <p>加载器的第一步是解析 beam 文件，基本上和我们在 <a href="#CH-beam_modules">Chapter 6</a> 中使用 Erlang 所做的工作相同，但是该程序是用 C 编写的。</p>
 </div>
 <div class="paragraph">
-<p>然后是 ops.tab 中的规则被应用于代码块 (译注：code chuck, 见 <a href="#CH-beam_modules">Chapter 6</a>) 中的指令，以将通用指令转换为一个或多个特定指令。</p>
+<p>然后是 ops.tab 中的规则被应用于代码块 (译注：code chuck, 见 <a href="#code_chunk">Section 6.2.4</a> ) 中的指令，以将通用指令转换为一个或多个特定指令。</p>
 </div>
 <div class="paragraph">
 <p>翻译表通过模式匹配工作。文件中的每一行都定义了一个或多个带参数的通用指令的模式，可选的一个箭头(译注："&#8658;" 符号)，后面跟着一个或多个要转换的指令。</p>
@@ -5336,7 +5337,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <p>ops tab 中的转换尝试处理编译器生成的指令模式，通过窥孔优化将它们优化为更少的特定指令。ops tab 转换尝试为选择的模式生成跳转表。</p>
 </div>
 <div class="paragraph">
-<p>ops.tab 文件并不是在运行时解析的，而是从 ops.tab 生成一个模式匹配程序，并存储在生成的一个 C 文件中的数组中。perl 脚本 beam_makeops (在 erts/emulator/utils 中) 在 beam_opcodes.h 和 beam_opcodes.c 文件中生成一组特定于目标的操作码和翻译程序(这些文件在给定的目标目录中，例如 erts/emulator/x86_64-unknown-linux-gnu/opt/smp/)。</p>
+<p>ops.tab 文件并不是在运行时解析的，而是从 ops.tab 生成一个模式匹配程序，并存储在生成的一个 C 文件中的数组中。perl 脚本 beam_makeops (在 erts/emulator/utils 中) 在 beam_opcodes.h 和 beam_opcodes.c 文件中生成一组特定于目标的操作码和翻译程序(这些文件在给定的目标目录中，例如  erts/emulator/x86_64-unknown-linux-gnu/opt/smp/)。</p>
 </div>
 <div class="paragraph">
 <p>同一个程序 (beam_makeops) 还为编译器后端 beam_opcodes.erl 生成 Erlang 代码。</p>
@@ -5361,7 +5362,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 </div>
 </div>
 <div class="paragraph">
-<p>这组合了从任何位置移动到 <code>x(0)</code> 的  <code>move</code> 指令和 return 指令，成为一个名为  <code>move_return</code> 的单指令。让我们把变换分开看看不同的部分做了什么。</p>
+<p>这组合了从任何位置移动到 <code>x(0)</code> 的 <code>move</code> 指令和 return 指令，成为一个名为 <code>move_return</code> 的单指令。让我们把变换分开看看不同的部分做了什么。</p>
 </div>
 <div class="dlist">
 <dl>
@@ -5728,7 +5729,7 @@ goto do_call;</code></pre>
 <p>指令组合是将两条或多条较小的指令合并成一条较大的指令。如果已知这些指令大部分时间都是相互跟随的，那么这可能会导致代码的速度大大加快。之所以能够加快速度，是因为不再需要在指令之间执行分派 ( dispatch，译注：参见 <a href="#SEC-Dispatch_directly_threaded_code">Section 5.2</a> )，而且 C 编译器在优化指令时可以获得更多信息。何时执行指令组合是一种权衡，必须考虑主仿真器循环增大的大小与执行指令时的增益之间的影响。</p>
 </div>
 <div class="paragraph">
-<p>指令专门化消除了对指令中的参数进行解码的需要。因此，用已经解码的参数生成的将不是一条 <code>move_sd</code>  ，而是 <code>move_xx</code>， <code>move_xy</code> 等指令。这减少了指令的解码成本，但这也是对仿真器代码大小的权衡考量。</p>
+<p>指令专门化消除了对指令中的参数进行解码的需要。因此，用已经解码的参数生成的将不是一条 <code>move_sd</code> ，而是 <code>move_xx</code>， <code>move_xy</code> 等指令。这减少了指令的解码成本，但这也是对仿真器代码大小的权衡考量。</p>
 </div>
 <div class="sect3">
 <h4 id="_select_val_优化"><a class="link" href="#_select_val_优化">9.3.1. select_val 优化</a></h4>
@@ -13793,7 +13794,7 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-06 22:35:59 +0800
+Last updated 2020-10-07 01:50:11 +0800
 </div>
 </div>
 <style>
