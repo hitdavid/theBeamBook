@@ -37,7 +37,7 @@ BEAM_FORMAT_NUMBER=0
 ----
 OPNUM: [-]NAME/ARITY
 ----
-OPNUM 和 ARITY 是整数，NAME 是一个以小写字母(a-z) 开头的标识符，而 ":"，"-" 和 "/" 是文字值 ( literals )。
+OPNUM 和 ARITY 是整数，NAME 是一个以小写字母(a-z) 开头的标识符，而 ":"，"-" 和 "/" 是字面值 ( literals )。
 
 例如:
 

@@ -385,9 +385,9 @@ LocalFunTableChunk = <<
 
 NOTE: 解析本地函数表的代码与解析导出和导入表的代码基本相同，实际上我们可以使用相同的函数来解析所有表中的条目。请参阅本章末尾的完整代码。
 
-==== 文字表块
+==== 字面值表块
 
-名为 `LitT` 的块是可选的，它以压缩形式包含来自模块源文件的所有文字值，这些文字值不是即时(immediate) 值。块的格式为：
+名为 `LitT` 的块是可选的，它以压缩形式包含来自模块源文件的所有字面值，这些字面值不是即时(immediate) 值。块的格式为：
 
 
 [source,erlang]
@@ -402,7 +402,7 @@ LiteralTableChunk = <<
 
 ----
 
-其中 `压缩文字` (`CompressedLiterals`) 必须有精确的 `非压缩大小` (`UncompressedSize`) 字节。表中的每个文字都用外部项式格式  (`erlang:term_to_binary`) 编码。 `CompressedLiterals` 的格式如下：
+其中 `压缩文字` (`CompressedLiterals`) 必须有精确的 `非压缩大小` (`UncompressedSize`) 字节。表中的每个字面值都用外部项式格式  (`erlang:term_to_binary`) 编码。 `CompressedLiterals` 的格式如下：
 
 ----
 CompressedLiterals = <<
@@ -551,7 +551,7 @@ Value | 0 1 | Tag
 Bytes-2 | 1 1 | Tag
 ----
 
-如果下面的值大于 8 字节，那么所有的位 3-4-5-6-7 将被设置为1，后面跟着一个嵌套的编码无符号文字( `beam_opcodes.hrl` 中的宏  `?tag_u`  ) 值为 (Bytes-9):8，接下来是数据字节：
+如果下面的值大于 8 字节，那么所有的位 3-4-5-6-7 将被设置为1，后面跟着一个嵌套的编码无符号字面值( `beam_opcodes.hrl` 中的宏  `?tag_u`  ) 值为 (Bytes-9):8，接下来是数据字节：
 
 [ditaa]
 ----
@@ -564,7 +564,7 @@ Bytes-2 | 1 1 | Tag
 
 当读取压缩项式格式时，根据 `Tag` 的值可能会对结果整数进行不同的解释。
 
-* 对于文字值，值是到文字表的索引。
+* 对于字面值，值是到字面值表的索引。
 * 对于原子，值为原子索引数 *减* 1。如果值为0，则表示 `NIL` (空列表)。
 * 标签 0 表示无效值。
 * 如果标记为字符，则值为无符号 unicode 码点。
