@@ -6,7 +6,7 @@
 
 由于原书未出版，目前翻译工作是义工，欢迎 star 同时接受捐赠，多少不限。您的资助是对我最好的鼓励。
 
-当前翻译版本预览：[Github IO page](https://hitdavid.github.io/theBeamBook/site/). （最新进展：翻译完成前 6 章）
+当前翻译版本预览：[Github IO page](https://hitdavid.github.io/theBeamBook/). （最新进展：翻译完成前 8 章）
 
 BitCoin Address: 12JdwAdCZugkrtiPwCGaT4qetbixvZM4Dg
 
@@ -121,24 +121,24 @@ Table of Contents
       -  [x] [6.2.13. 整合回顾](#_整合回顾)（原书未完成）
       -  [x] [6.2.14. 紧凑的项式编码](#SEC-BeamModulesCTE)
 
-  - 7. Generic BEAM Instructions (25p)
+  - [x] 7. 通用 BEAM 指令集
 
-    - [ ] [7.1. Instruction definitions](#_instruction_definitions)
-    - [ ] [7.2. BEAM code listings](#_beam_code_listings)
-    - [ ] [7.3. Calls](#_calls)
-    - [ ] [7.4. Stack (and Heap) Management](#_stack_and_heap_management)
-    - 7.5. Message Passing
-      - [ ] [7.5.1. A Minimal Receive Loop](#_a_minimal_receive_loop)
-      - [ ] [7.5.2. A Selective Receive Loop](#_a_selective_receive_loop)
-      - [ ] [7.5.3. A Receive Loop With a Timeout](#_a_receive_loop_with_a_timeout)
-      - [ ] [7.5.4. The Synchronous Call Trick (aka The Ref Trick)](#_the_synchronous_call_trick_aka_the_ref_trick)
+    - [x] [7.1. 指令定义](#_instruction_definitions)
+    - [x] [7.2. BEAM 代码清单](#_beam_code_listings)
+    - [x] [7.3. 调用 (call)](#_calls)
+    - [x] [7.4. 栈 (堆) 管理](#_stack_and_heap_management)
+    - [x] 7.5. 消息传递
+      - [x] [7.5.1. 最小接收循环](#_a_minimal_receive_loop)
+      - [x] [7.5.2. 选择性接收循环](#_a_selective_receive_loop)
+      - [x] [7.5.3. 带超时的接收循环](#_a_receive_loop_with_a_timeout)
+      - [x] [7.5.4. 同步调用的技巧 ( Ref Trick )](#_the_synchronous_call_trick_aka_the_ref_trick)
 
-  - 8. Different Types of Calls, Linking and Hot Code Loading (5p)
+  - [x] 8. 各种类型的调用，链接以及热代码加载（原书未完成）
 
-    - [ ] [8.1. Hot Code Loading](#_hot_code_loading)
-    - [ ] [8.2. Code Loading](#_code_loading)
+    - [x] [8.1. 热代码加载](#_hot_code_loading)
+    - [x] [8.2. 代码加载](#_code_loading)
 
-  - 9. The BEAM Loader
+  - [ ] 9. The BEAM Loader
 
     - [ ] [9.1. Transforming from Generic to Specific instructions](#_transforming_from_generic_to_specific_instructions)
     - 9.2. Understanding ops.tab
@@ -150,7 +150,7 @@ Table of Contents
 
   - [ ] [10. BEAM Internal Instructions](#CH-Internal_instructions)
 
-  - 11. Scheduling
+  - [ ] 11. Scheduling
 
     - [ ] [11.1. Concurrency, Parallelism, and Preemptive Multitasking](#_concurrency_parallelism_and_preemptive_multitasking)
     - [ ] [11.2. Preemptive Multitasking in ERTS Cooperating in C](#_preemptive_multitasking_in_erts_cooperating_in_c)
@@ -168,7 +168,7 @@ Table of Contents
       - [ ] [11.9.1. Task Stealing](#_task_stealing)
       - [ ] [11.9.2. Migration](#_migration)
 
-  - 12. The Memory Subsystem: Stacks, Heaps and Garbage Collection
+  - [ ] 12. The Memory Subsystem: Stacks, Heaps and Garbage Collection
 
     - [ ] [12.1. The memory subsystem](#_the_memory_subsystem)
     - 12.2. Different type of memory allocators
@@ -195,7 +195,7 @@ Table of Contents
 
   - [ ] [13. Advanced data structures (ETS, DETS, Mnesia)](#CH-DataStructures)
 
-  - 14. IO, Ports and Networking (10p)
+  - [ ] 14. IO, Ports and Networking (10p)
 
     - [ ] [14.1. Standard IO](#_standard_io)
     - 14.2. Ports
@@ -212,7 +212,7 @@ Table of Contents
 - II: 运行 ERTS
 
   - [ ] [18. 跟踪](#CH-Tracing)
-  - 19. 调试
+  - [ ] 19. 调试
     - [ ] [19.1. Preliminary Outline](#_preliminary_outline)
     - [ ] [19.2. Introduction](#_introduction)
     - [ ] [19.3. debugger](#_debugger)
@@ -221,7 +221,7 @@ Table of Contents
       - [ ] [19.5.1. Installing Redbug](#_installing_redbug)
       - [ ] [19.5.2. Using Redbug](#_using_redbug)
     - [ ] [19.6. Crash Dumps](#_crash_dumps)
-  - 20. 运维
+  - [ ] 20. 运维
     - [ ] [20.1. Connecting to the System](#_connecting_to_the_system)
     - 20.2. The Shell
       - [ ] [20.2.1. Configuring Your Shell](#_configuring_your_shell)
@@ -229,14 +229,14 @@ Table of Contents
       - [ ] [20.2.3. Breaking (out or in).](#_breaking_out_or_in)
   - [ ] [21. 调整运行时系统](#CH-Tweak)
 
-- Appendix A: 构造 Erlang 运行时系统
+- [ ] Appendix A: 构造 Erlang 运行时系统
 
   - A.1. First Time Build
     - [ ] [A.1.1. Prerequisites](#_prerequisites)
   - [ ] [A.2. Getting the source](#_getting_the_source)
   - [ ] [A.3. Building with Kerl](#_building_with_kerl)
 
-- Appendix B: BEAM 指令
+- [ ] Appendix B: BEAM 指令
 
   - B.1. Functions and Labels
     - [ ] [B.1.1. label Lbl](#_label_lbl)
