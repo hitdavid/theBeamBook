@@ -556,7 +556,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#CH-BEAM">5. Erlang 虚拟机: BEAM</a>
 <ul class="sectlevel2">
 <li><a href="#_工作内存_堆栈机并不是">5.1. 工作内存: 堆栈机？并不是！</a></li>
-<li><a href="#_分派dispatch直接线程代码">5.2. 分派(Dispatch)：直接线程代码</a></li>
+<li><a href="#SEC-Dispatch_directly_threaded_code">5.2. 分派(Dispatch)：直接线程代码</a></li>
 <li><a href="#_调度非抢占规约值计数">5.3. 调度：非抢占，规约值计数</a></li>
 <li><a href="#_内存管理垃圾收集">5.4. 内存管理：垃圾收集</a></li>
 <li><a href="#_beam_一个虚拟机">5.5. BEAM: 一个虚拟机</a></li>
@@ -575,7 +575,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_属性块">6.2.6. 属性块</a></li>
 <li><a href="#_编译信息块">6.2.7. 编译信息块</a></li>
 <li><a href="#_局部函数表块">6.2.8. 局部函数表块</a></li>
-<li><a href="#_文字表块">6.2.9. 文字表块</a></li>
+<li><a href="#_字面值表块">6.2.9. 字面值表块</a></li>
 <li><a href="#_抽象代码块">6.2.10. 抽象代码块</a></li>
 <li><a href="#_压缩和加密原书未完成">6.2.11. 压缩和加密（原书未完成）</a></li>
 <li><a href="#_函数跟踪块_已过时">6.2.12. 函数跟踪块 (已过时)</a></li>
@@ -619,7 +619,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_优化">9.3. 优化</a>
 <ul class="sectlevel3">
 <li><a href="#_select_val_优化">9.3.1. select_val 优化</a></li>
-<li><a href="#_文字预哈希">9.3.2. 文字预哈希</a></li>
+<li><a href="#_字面值预哈希">9.3.2. 字面值预哈希</a></li>
 </ul>
 </li>
 </ul>
@@ -992,9 +992,11 @@ Dmytro Lytovchenko
 Anthony Molinaro
 Alexandre Rodrigues
 Yoshihiro TANAKA
-Kim Shrier
-Lukas Larsson
+hitdavid
 Ken Causey
+Lukas Larsson
+Kim Shrier
+David
 Trevor Brown
 Andrea Leopardi
 Anton N Ryabkov
@@ -1004,28 +1006,27 @@ Michał Piotrowski
 Ramkumar Rajagopalan
 Yves Müller
 techgaun
-Jan Lehnardt
+Juan Facorro
 Cameron Price
-Buddhika Chathuranga
 Kyle Baker
-Benjamin Tan Wei Hao
+Buddhika Chathuranga
 Luke Imhoff
 fred
-hitdavid
+Alex Jiao
 Milton Inostroza
 PlatinumThinker
 yoshi
-Antonio Nikishaev
+Benjamin Tan Wei Hao
 Alex Fu
 Yago Riveiro
+Antonio Nikishaev
 Amir Moulavi
-Alex Jiao
-Davide Bettio
 Eric Yu
 Erick Dennis
-Chris Yunker
+Davide Bettio
 tomdos
-Juan Facorro</pre>
+Jan Lehnardt
+Chris Yunker</pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3727,7 +3728,7 @@ add</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_分派dispatch直接线程代码"><a class="link" href="#_分派dispatch直接线程代码">5.2. 分派(Dispatch)：直接线程代码</a></h3>
+<h3 id="SEC-Dispatch_directly_threaded_code"><a class="link" href="#SEC-Dispatch_directly_threaded_code">5.2. 分派(Dispatch)：直接线程代码</a></h3>
 <div class="paragraph">
 <p>BEAM 中的指令译码器是用一种被称为直接线程（ <em>directly threaded</em> ）代码的技术实现的。在这个上下文中，线程 <em>thread</em> 这个词与操作系统线程、并发性或并行性没有任何关系。它是通过虚拟机本身线程化的执行路径。</p>
 </div>
@@ -3981,7 +3982,7 @@ void stop() { running = 0; }</code></pre>
 <p>这段代码首先将函数调用  (<code>x0</code>)  的返回值保存在一个新的寄存器 (<code>x1</code>) 中。然后，它将调用者保存寄存器 (<code>y0</code>)  移动到第一个参数寄存器 (<code>x0</code>)。最后，它将 x1 中保存的值移动到调用者保存寄存器 (<code>y0</code>) ，以便在下一个函数调用时依旧存活。</p>
 </div>
 <div class="paragraph">
-<p>假设我们要在 BEAM 中实现三条指令+move_xx+, move_yx, 和 move_xy  ( 这些指令在 BEAM 中不存在，我们只是用它们来演示这个例子)：</p>
+<p>假设我们要在 BEAM 中实现三条指令 move_xx, move_yx, 和 move_xy  ( 这些指令在 BEAM 中不存在，我们只是用它们来演示这个例子)：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4597,9 +4598,9 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_文字表块"><a class="link" href="#_文字表块">6.2.9. 文字表块</a></h4>
+<h4 id="_字面值表块"><a class="link" href="#_字面值表块">6.2.9. 字面值表块</a></h4>
 <div class="paragraph">
-<p>名为 <code>LitT</code> 的块是可选的，它以压缩形式包含来自模块源文件的所有文字值，这些文字值不是即时(immediate) 值。块的格式为：</p>
+<p>名为 <code>LitT</code> 的块是可选的，它以压缩形式包含来自模块源文件的所有字面值，这些字面值不是即时(immediate) 值。块的格式为：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4613,7 +4614,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>其中 <code>压缩文字</code> (<code>CompressedLiterals</code>) 必须有精确的 <code>非压缩大小</code> (<code>UncompressedSize</code>) 字节。表中的每个文字都用外部项式格式  (<code>erlang:term_to_binary</code>) 编码。 <code>CompressedLiterals</code> 的格式如下：</p>
+<p>其中 <code>压缩文字</code> (<code>CompressedLiterals</code>) 必须有精确的 <code>非压缩大小</code> (<code>UncompressedSize</code>) 字节。表中的每个字面值都用外部项式格式  (<code>erlang:term_to_binary</code>) 编码。 <code>CompressedLiterals</code> 的格式如下：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4761,7 +4762,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>如果下面的值大于 8 字节，那么所有的位 3-4-5-6-7 将被设置为1，后面跟着一个嵌套的编码无符号文字( <code>beam_opcodes.hrl</code> 中的宏  <code>?tag_u</code>  ) 值为 (Bytes-9):8，接下来是数据字节：</p>
+<p>如果下面的值大于 8 字节，那么所有的位 3-4-5-6-7 将被设置为1，后面跟着一个嵌套的编码无符号字面值( <code>beam_opcodes.hrl</code> 中的宏  <code>?tag_u</code>  ) 值为 (Bytes-9):8，接下来是数据字节：</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -4776,7 +4777,7 @@ p-mod调用的技巧
 <div class="ulist">
 <ul>
 <li>
-<p>对于文字值，值是到文字表的索引。</p>
+<p>对于字面值，值是到字面值表的索引。</p>
 </li>
 <li>
 <p>对于原子，值为原子索引数 <strong>减</strong> 1。如果值为0，则表示 <code>NIL</code> (空列表)。</p>
@@ -4860,7 +4861,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>OPNUM 和 ARITY 是整数，NAME 是一个以小写字母(a-z) 开头的标识符，而 ":"，"-" 和 "/" 是文字值 ( literals )。</p>
+<p>OPNUM 和 ARITY 是整数，NAME 是一个以小写字母(a-z) 开头的标识符，而 ":"，"-" 和 "/" 是字面值 ( literals )。</p>
 </div>
 <div class="paragraph">
 <p>例如:</p>
@@ -5327,63 +5328,33 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <p>加载器的第一步是解析 beam 文件，基本上和我们在 <a href="#CH-beam_modules">Chapter 6</a> 中使用 Erlang 所做的工作相同，但是该程序是用 C 编写的。</p>
 </div>
 <div class="paragraph">
-<p>然后是 ops.tab 中的规则被应用于代码块 (译注：code chuck, 见 <a href="#CH-beam_modules">Chapter 6</a>) 中的指令，以将通用指令转换为一个或多个特定指令。</p>
+<p>然后是 ops.tab 中的规则被应用于代码块 (译注：code chuck, 见 <a href="#code_chunk">Section 6.2.4</a> ) 中的指令，以将通用指令转换为一个或多个特定指令。</p>
 </div>
 <div class="paragraph">
-<p>翻译表通过模式匹配工作。文件中的每一行都定义了一个或多个带参数的通用指令的模式，可选的一个箭头，后面跟着一个或多个要转换的指令。</p>
+<p>翻译表通过模式匹配工作。文件中的每一行都定义了一个或多个带参数的通用指令的模式，可选的一个箭头(译注："&#8658;" 符号)，后面跟着一个或多个要转换的指令。</p>
 </div>
 <div class="paragraph">
-<p>ops选项卡中的转换尝试处理编译器生成的指令模式，peephole将它们优化为更少的特定指令。ops选项卡转换尝试为选择的模式生成跳转表。</p>
+<p>ops tab 中的转换尝试处理编译器生成的指令模式，通过窥孔优化将它们优化为更少的特定指令。ops tab 转换尝试为选择的模式生成跳转表。</p>
 </div>
 <div class="paragraph">
-<p>文件操作。选项卡在运行时不解析，而是从ops生成一个模式匹配程序。选项卡并存储在生成的C文件中的数组中。perl脚本beam_makeops(在erts/emulator/utils中)在beam_opcodes.h和beam_opcodes.c文件中生成一组特定于目标的操作码和翻译程序(这些文件在给定的目标目录中结束，例如erts/emulator/x86_64-unknown-linux-gnu/opt/smp/)。</p>
+<p>ops.tab 文件并不是在运行时解析的，而是从 ops.tab 生成一个模式匹配程序，并存储在生成的一个 C 文件中的数组中。perl 脚本 beam_makeops (在 erts/emulator/utils 中) 在 beam_opcodes.h 和 beam_opcodes.c 文件中生成一组特定于目标的操作码和翻译程序(这些文件在给定的目标目录中，例如  erts/emulator/x86_64-unknown-linux-gnu/opt/smp/)。</p>
 </div>
 <div class="paragraph">
-<p>同一个程序(beam_makeops)还为编译器后端beam_opcodes.erl生成Erlang代码。</p>
-</div>
-<div class="paragraph">
-<p>The translation table works through pattern matching. Each line in the
-file defines a pattern of one or more generic instructions with
-arguments and optionally an arrow followed by one or more instructions
-to translate to.</p>
-</div>
-<div class="paragraph">
-<p>The transformations in ops tab tries to handle patterns of
-instructions generated by the compiler and peephole optimize them to
-fewer specific instructions. The ops tab transformations tries to
-generate jump tables for patterns of selects.</p>
-</div>
-<div class="paragraph">
-<p>The file ops.tab is not parsed at runtime, instead a pattern matching
-program is generated from ops.tab and stored in an array in a
-generated C file. The perl script beam_makeops (in
-erts/emulator/utils) generates a target specific set of opcodes and
-translation programs in the files beam_opcodes.h and
-beam_opcodes.c (these files end up in the given target directory
-e.g. erts/emulator/x86_64-unknown-linux-gnu/opt/smp/).</p>
-</div>
-<div class="paragraph">
-<p>The same program (beam_makeops) also generates the Erlang code for the
-compiler back end beam_opcodes.erl.</p>
+<p>同一个程序 (beam_makeops) 还为编译器后端 beam_opcodes.erl 生成 Erlang 代码。</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_理解_ops_tab"><a class="link" href="#_理解_ops_tab">9.2. 理解 ops.tab</a></h3>
 <div class="paragraph">
-<p>The transformations in
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/ops.tab"><code>ops.tab</code></a>
-are executed in the order that they are written in the file. So just like in
-Erlang pattern matching, the different rules are triggered from top to bottom.</p>
+<p><a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/ops.tab"><code>ops.tab</code></a> 中的变换按照它们写入文件的顺序执行。因此，就像在 Erlang 模式匹配中一样，不同规则的触发顺序是自上而下的。</p>
 </div>
 <div class="paragraph">
-<p>The types that <code>ops.tab</code> uses for arguments in instructions can be found in
-<a href="#AP-Instructions">Appendix B</a>.</p>
+<p>在 <code>ops.tab</code> 中的指令参数的类型可以在 <a href="#AP-Instructions">Appendix B</a> 中可以找到。</p>
 </div>
 <div class="sect3">
 <h4 id="_变换"><a class="link" href="#_变换">9.2.1. 变换</a></h4>
 <div class="paragraph">
-<p>Most of the rules in <code>ops.tab</code> are transformations between different
-instructions. A simple transformation looks like this:</p>
+<p><code>ops.tab</code> 中的大多数规则是不同指令之间的变换。一个简单的变换是这样的:</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -5391,9 +5362,7 @@ instructions. A simple transformation looks like this:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This combines a <code>move</code> from any location to <code>x(0)</code> and return into a single
-instruction called <code>move_return</code>. Let&#8217;s break the tranformation apart to
-see what the different parts do.</p>
+<p>这组合了从任何位置移动到 <code>x(0)</code> 的 <code>move</code> 指令和 return 指令，成为一个名为 <code>move_return</code> 的单指令。让我们把变换分开看看不同的部分做了什么。</p>
 </div>
 <div class="dlist">
 <dl>
@@ -5754,29 +5723,18 @@ goto do_call;</code></pre>
 <div class="sect2">
 <h3 id="_优化"><a class="link" href="#_优化">9.3. 优化</a></h3>
 <div class="paragraph">
-<p>The loader performs many peephole optimizations when loading the code. The most important
-ones are instruction combining and instruction specialization.</p>
+<p>加载器在加载代码时执行许多窥孔优化。其中最重要的是指令组合和指令专门化。</p>
 </div>
 <div class="paragraph">
-<p>Instruction combining is the joining of two or more smaller instructions into one larger
-instruction. This can lead to a large speed up of the code if the instructions are known
-to follow each other most of the time. The speed up is achieved because there is no longer
-any need to do a dispatch inbetween the instructions, and also the C compiler gets more
-information to work with when it is optimizing that instruction. When to do instruction
-combining is a trade-off where one has to consider the impact the increased size of the
-main emulator loop has vs the gain when the instruction is executed.</p>
+<p>指令组合是将两条或多条较小的指令合并成一条较大的指令。如果已知这些指令大部分时间都是相互跟随的，那么这可能会导致代码的速度大大加快。之所以能够加快速度，是因为不再需要在指令之间执行分派 ( dispatch，译注：参见 <a href="#SEC-Dispatch_directly_threaded_code">Section 5.2</a> )，而且 C 编译器在优化指令时可以获得更多信息。何时执行指令组合是一种权衡，必须考虑主仿真器循环增大的大小与执行指令时的增益之间的影响。</p>
 </div>
 <div class="paragraph">
-<p>Instruction specialization removes the need to decode the arguments in an instruction.
-So instead of having one <code>move_sd</code> instruction, <code>move_xx</code>, <code>move_xy</code> etc are generated
-with the arguments already decoded. This reduces the decode cost of the instructions,
-but again it is a tradeoff vs emulator code size.</p>
+<p>指令专门化消除了对指令中的参数进行解码的需要。因此，用已经解码的参数生成的将不是一条 <code>move_sd</code> ，而是 <code>move_xx</code>， <code>move_xy</code> 等指令。这减少了指令的解码成本，但这也是对仿真器代码大小的权衡考量。</p>
 </div>
 <div class="sect3">
 <h4 id="_select_val_优化"><a class="link" href="#_select_val_优化">9.3.1. select_val 优化</a></h4>
 <div class="paragraph">
-<p>The <code>select_val</code> instruction is emitted by the compiler to do control flow handling
-of many functions or case clauses. For instance:</p>
+<p>编译器生成 <code>select_val</code> 指令来对许多函数或 case 子句进行控制流处理。例如：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5786,7 +5744,7 @@ of many functions or case clauses. For instance:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>compiles to:</p>
+<p>编译为：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5838,15 +5796,12 @@ used when a small amount of atoms or integers are to be selected from.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_文字预哈希"><a class="link" href="#_文字预哈希">9.3.2. 文字预哈希</a></h4>
+<h4 id="_字面值预哈希"><a class="link" href="#_字面值预哈希">9.3.2. 字面值预哈希</a></h4>
 <div class="paragraph">
-<p>When a literal is loaded and used as an argument to any of the bifs or instructions
-that need a hashed value of the literal, instead of hashing the literal value
-every time, the hash is created by the loader and used by the instructions.</p>
+<p>当加载一个字面值并将其用作任何需要字面值 hash 值的 bifs 或指令的参数时，该 hash 值由加载器创建并由指令使用，而不是每次都对字面值进行 hash。</p>
 </div>
 <div class="paragraph">
-<p>Examples of code using this technique is maps instructions and also the process
-dictionary bifs.</p>
+<p>使用这种技术的代码示例有 maps 指令和进程字典 (PD) bifs。</p>
 </div>
 </div>
 </div>
@@ -10400,6 +10355,1198 @@ out the allocated stack slots with <code>NIL</code>.</p>
 <th class="tableblock halign-left valign-top">Documentation</th>
 </tr>
 </thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">allocate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">12</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>allocate</strong> <em>StackNeed</em>, <em>Live</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allocate space for StackNeed words on the stack. If a GC is needed       during allocation there are Live number of live X registers.       Also save the continuation pointer (CP) on the stack.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">allocate_heap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">13</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>allocate_heap</strong> <em>StackNeed</em>, <em>HeapNeed</em>, <em>Live</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allocate space for StackNeed words on the stack and ensure there is       space for HeapNeed words on the heap. If a GC is needed       save Live number of X registers.       Also save the continuation pointer (CP) on the stack.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">allocate_heap_zero</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">15</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>allocate_heap_zero</strong> <em>StackNeed</em>, <em>HeapNeed</em>, <em>Live</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allocate space for StackNeed words on the stack and HeapNeed words       on the heap. If a GC is needed       during allocation there are Live number of live X registers.       Clear the new stack words. (By writing NIL.)       Also save the continuation pointer (CP) on the stack.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">allocate_zero</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">14</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>allocate_zero</strong> <em>StackNeed</em>, <em>Live</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Allocate space for StackNeed words on the stack. If a GC is needed       during allocation there are Live number of live X registers.       Clear the new stack words. (By writing NIL.)       Also save the continuation pointer (CP) on the stack.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">apply</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">112</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">apply_last</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">113</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">badmatch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">72</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bif0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">9</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bif0</strong> <em>Bif</em>, <em>Reg</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the bif Bif and store the result in Reg.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bif1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">10</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bif1</strong> <em>Lbl</em>, <em>Bif</em>, <em>Arg</em>, <em>Reg</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the bif Bif with the argument Arg, and store the result in Reg.       On failure jump to Lbl.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bif2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">11</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bif2</strong> <em>Lbl</em>, <em>Bif</em>, <em>Arg1</em>, <em>Arg2</em>, <em>Reg</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the bif Bif with the arguments Arg1 and Arg2,       and store the result in Reg.       On failure jump to Lbl.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_add</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">111</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_append</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">134</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_bits_to_bytes</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(110)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_bits_to_bytes2</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(127)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_context_to_binary</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">130</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_final</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(88)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_final2</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(126)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_get_binary</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(82)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_binary2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">119</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_get_float</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(81)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_float2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">118</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_get_integer</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(80)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_integer2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">117</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_position</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">167</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bs_get_position</strong> <em>Ctx</em>, <em>Dst</em>, <em>Live</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets Dst to the current position of Ctx</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_tail</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">165</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bs_get_tail</strong> <em>Ctx</em>, <em>Dst</em>, <em>Live</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets Dst to the tail of Ctx at the current position</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_utf16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">140</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_utf32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">142</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_get_utf8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">138</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_init</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(87)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_init2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">109</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_init_bits</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">137</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_init_writable</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">133</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_match_string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">132</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_need_buf</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(93)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_private_append</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">135</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_put_binary</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">90</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_put_float</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">91</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_put_integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">89</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_put_string</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">92</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_put_utf16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">147</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_put_utf32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">148</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_put_utf8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">145</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_restore</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(86)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_restore2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">123</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_save</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(85)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_save2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">122</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_set_position</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">168</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bs_set_positon</strong> <em>Ctx</em>, <em>Pos</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets the current position of Ctx to Pos</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_skip_bits</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(83)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_skip_bits2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">120</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_skip_utf16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">141</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_skip_utf32</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">143</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_skip_utf8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">139</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_start_match</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(79)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_start_match2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">116</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_start_match3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">166</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bs_start_match3</strong> <em>Fail</em>, <em>Bin</em>, <em>Live</em>, <em>Dst</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Starts a binary match sequence</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_start_match4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">170</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bs_start_match4</strong> <em>Fail</em>, <em>Bin</em>, <em>Live</em>, <em>Dst</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As bs_start_match3, but the fail label can be 'no_fail' when we know        it will never fail at runtime, or 'resume' when we know the input is        a match context.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_test_tail</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(84)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_test_tail2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">121</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_test_unit</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">131</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_utf16_size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">146</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bs_utf8_size</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">144</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">build_stacktrace</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">160</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>build_stacktrace</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Given the raw stacktrace in x(0), build a cooked stacktrace suitable        for human consumption. Store it in x(0). Destroys all other registers.        Do a garbage collection if necessary to allocate space on the heap        for the result.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>call</strong> <em>Arity</em>, <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the function at Label.       Save the next instruction as the return address in the CP register.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call_ext</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>call_ext</strong> <em>Arity</em>, <em>Destination</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the function of arity Arity pointed to by Destination.       Save the next instruction as the return address in the CP register.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call_ext_last</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">8</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>call_ext_last</strong> <em>Arity</em>, <em>Destination</em>, <em>Deallocate</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deallocate and do a tail call to function of arity Arity       pointed to by Destination.       Do not update the CP register.       Deallocate Deallocate words from the stack before the call.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call_ext_only</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">78</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>call_ext_only</strong> <em>Arity</em>, <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Do a tail recursive call to the function at Label.       Do not update the CP register.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call_fun</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">75</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>call_fun</strong> <em>Arity</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call a fun of arity Arity. Assume arguments in       registers x(0) to x(Arity-1) and that the fun is in x(Arity).       Save the next instruction as the return address in the CP register.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call_last</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>call_last</strong> <em>Arity</em>, <em>Label</em>, <em>Deallocate</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Deallocate and do a tail recursive call to the function at Label.       Do not update the CP register.       Before the call deallocate Deallocate words of stack.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">call_only</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>call_only</strong> <em>Arity</em>, <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Do a tail recursive call to the function at Label.       Do not update the CP register.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">case_end</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">74</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">catch</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">62</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">catch_end</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">63</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deallocate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">18</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>deallocate</strong> <em>N</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Restore the continuation pointer (CP) from the stack and deallocate        N+1 words from the stack (the + 1 is for the CP).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fadd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">98</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fcheckerror</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">95</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fclearerror</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">94</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fconv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">97</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fdiv</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">101</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fmove</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">96</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fmul</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">100</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fnegate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">102</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">fsub</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">99</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">func_info</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>func_info</strong> <em>M</em>, <em>F</em>, <em>A</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Define a function M:F/A</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gc_bif1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">124</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>gc_bif1</strong> <em>Lbl</em>, <em>Live</em>, <em>Bif</em>, <em>Arg</em>, <em>Reg</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the bif Bif with the argument Arg, and store the result in Reg.       On failure jump to Lbl.       Do a garbage collection if necessary to allocate space on the heap       for the result (saving Live number of X registers).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gc_bif2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">6</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">125</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>gc_bif2</strong> <em>Lbl</em>, <em>Live</em>, <em>Bif</em>, <em>Arg1</em>, <em>Arg2</em>, <em>Reg</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the bif Bif with the arguments Arg1 and Arg2,       and store the result in Reg.       On failure jump to Lbl.       Do a garbage collection if necessary to allocate space on the heap       for the result (saving Live number of X registers).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">gc_bif3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">7</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">152</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>gc_bif3</strong> <em>Lbl</em>, <em>Live</em>, <em>Bif</em>, <em>Arg1</em>, <em>Arg2</em>, <em>Arg3</em>, <em>Reg</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Call the bif Bif with the arguments Arg1, Arg2 and Arg3,       and store the result in Reg.       On failure jump to Lbl.       Do a garbage collection if necessary to allocate space on the heap       for the result (saving Live number of X registers).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get_hd</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">162</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>get_hd</strong> <em>Source</em>, <em>Head</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get the head (or car) part of a list (a cons cell) from Source and        put it into the register Head.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get_list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">65</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>get_list</strong> <em>Source</em>, <em>Head</em>, <em>Tail</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get the head and tail (or car and cdr) parts of a list        (a cons cell) from Source and put them into the registers        Head and Tail.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get_map_elements</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">158</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get_tl</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">163</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>get_tl</strong> <em>Source</em>, <em>Tail</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get the tail (or cdr) part of a list (a cons cell) from Source and        put it into the register Tail.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">get_tuple_element</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">66</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>get_tuple_element</strong> <em>Source</em>, <em>Element</em>, <em>Destination</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Get element number Element from the tuple in Source and put        it in the destination register Destination.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">has_map_fields</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">157</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">if_end</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">73</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">init</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">17</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>init</strong> <em>N</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Clear the Nth stack word. (By writing NIL.)</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_band</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(33)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_bnot</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(38)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_bor</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(34)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_bsl</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(36)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_bsr</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(37)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_bxor</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(35)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">int_code_end</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_div</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(31)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">int_rem</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(32)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_atom</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">48</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_atom</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not an atom.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_binary</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">53</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_binary</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a binary.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_bitstr</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">129</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_bitstr</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a bit string.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_boolean</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">114</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_boolean</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a Boolean.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">is_constant</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(54)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_eq</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">41</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_eq</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arg2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare two terms and jump to Lbl if Arg1 is not (numerically) equal to Arg2.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_eq_exact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">43</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_eq_exact</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arg2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare two terms and jump to Lbl if Arg1 is not exactly equal to Arg2.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_float</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">46</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_float</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a float.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_function</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">77</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_function</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a       function (i.e. fun or closure).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_function2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">115</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_function2</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arity</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a       function of arity Arity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_ge</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">40</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_ge</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arg2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare two terms and jump to Lbl if Arg1 is less than Arg2.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_integer</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">45</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_integer</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not an integer.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">55</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_list</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a cons or nil.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_lt</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">39</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_lt</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arg2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare two terms and jump to Lbl if Arg1 is not less than Arg2.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_map</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">156</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_ne</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">42</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_ne</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arg2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare two terms and jump to Lbl if Arg1 is (numerically) equal to Arg2.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_ne_exact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">44</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_ne_exact</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arg2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Compare two terms and jump to Lbl if Arg1 is exactly equal to Arg2.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_nil</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">52</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_nil</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not nil.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_nonempty_list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">56</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_nonempty_list</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a cons.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_number</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">47</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_number</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a number.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_pid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">49</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_pid</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a pid.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_port</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">51</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_port</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a port.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_reference</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">50</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_reference</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a reference.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_tagged_tuple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">159</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_tagged_tuple</strong> <em>Lbl</em>, <em>Reg</em>, <em>N</em>, <em>Atom</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Reg and jumps to Lbl if it is not a tuple.       Test the arity of Reg and jumps to Lbl if it is not N.       Test the first element of the tuple and jumps to Lbl if it is not Atom.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">is_tuple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">57</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>is_tuple</strong> <em>Lbl</em>, <em>Arg1</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the type of Arg1 and jump to Lbl if it is not a tuple.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">jump</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">61</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>jump</strong> <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jump to Label.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">label</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>label</strong> <em>Lbl</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Specify a module local label.       Label gives this code address a name (Lbl) and marks the start of       a basic block.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">line</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">153</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">loop_rec</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">23</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>loop_rec</strong> <em>Label</em>, <em>Source</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Loop over the message queue, if it is empty jump to Label.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">loop_rec_end</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">24</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>loop_rec_end</strong> <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Advance the save pointer to the next message and jump back to Label.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">m_div</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(30)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">m_minus</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(28)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">m_plus</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(27)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">m_times</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(29)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">make_fun</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(76)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">make_fun2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">103</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">move</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">64</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>move</strong> <em>Source</em>, <em>Destination</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Move the source Source (a literal or a register) to       the destination register Destination.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">on_load</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">149</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">put</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">71</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">put_list</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">69</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">put_literal</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(128)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">put_map_assoc</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">154</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">put_map_exact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">5</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">155</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">put_string</span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">(68)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>DEPRECATED</strong></p></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">put_tuple</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">70</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">put_tuple2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">164</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>put_tuple2</strong> <em>Destination</em>, <em>Elements</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Build a tuple with the elements in the list Elements and put it        put into register Destination.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">raise</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">108</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">raw_raise</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">161</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>raw_raise</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This instruction works like the erlang:raise/3 BIF, except that the        stacktrace in x(2) must be a raw stacktrace.        x(0) is the class of the exception (error, exit, or throw),        x(1) is the exception term, and x(2) is the raw stackframe.        If x(0) is not a valid class, the instruction will not throw an        exception, but store the atom 'badarg' in x(0) and execute the        next instruction.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recv_mark</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">150</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>recv_mark</strong> <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Save the end of the message queue and the address of        the label Label so that a recv_set instruction can start        scanning the inbox from this position.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">recv_set</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">151</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>recv_set</strong> <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check that the saved mark points to Label and set the       save pointer in the message queue to the last position       of the message queue saved by the recv_mark instruction.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">remove_message</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">21</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>remove_message</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unlink the current message from the message queue. Remove any timeout.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">return</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">19</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>return</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Return to the address in the continuation pointer (CP).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">select_tuple_arity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">60</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>select_tuple_arity</strong> <em>Tuple</em>, <em>FailLabel</em>, <em>Destinations</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check the arity of the tuple Tuple and jump to the corresponding       destination label, if no arity matches, jump to FailLabel.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">select_val</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">59</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>select_val</strong> <em>Arg</em>, <em>FailLabel</em>, <em>Destinations</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Jump to the destination label corresponding to Arg       in the Destinations list, if no arity matches, jump to FailLabel.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">send</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">20</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>send</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Send argument in x(1) as a message to the destination process in x(0).        The message in x(1) ends up as the result of the send in x(0).</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">set_tuple_element</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">67</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>set_tuple_element</strong> <em>NewElement</em>, <em>Tuple</em>, <em>Position</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Update the element at position Position of the tuple Tuple        with the new element NewElement.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">swap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">169</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>swap</strong> <em>Register1</em>, <em>Register2</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Swaps the contents of two registers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">test_arity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">3</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">58</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>test_arity</strong> <em>Lbl</em>, <em>Arg1</em>, <em>Arity</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Test the arity of (the tuple in) Arg1 and jump  to Lbl if it is not equal to Arity.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">test_heap</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">16</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>test_heap</strong> <em>HeapNeed</em>, <em>Live</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Ensure there is space for HeapNeed words on the heap. If a GC is needed       save Live number of X registers.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">22</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>timeout</strong></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reset the save point of the mailbox and clear the timeout flag.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">trim</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">136</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>trim</strong> <em>N</em>, <em>Remaining</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Reduce the stack usage by N words,       keeping the CP on the top of the stack.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">try</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">104</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">try_case</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">106</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">try_case_end</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">107</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">try_end</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">105</p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">wait</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">25</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>wait</strong> <em>Label</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Suspend the processes and set the entry point to the beginning of the        receive loop at Label.</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">wait_timeout</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">2</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">26</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><strong>wait_timeout</strong> <em>Lable</em>, <em>Time</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sets up a timeout of Time milliseconds and saves the address of the        following instruction as the entry point if the timeout triggers.</p></td>
+</tr>
+</tbody>
 </table>
 </div>
 <div class="sect2">
@@ -12647,7 +13794,7 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-06 20:48:28 +0800
+Last updated 2020-10-07 01:54:38 +0800
 </div>
 </div>
 <style>
