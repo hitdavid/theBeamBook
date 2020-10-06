@@ -1,5 +1,5 @@
 [[CH-Debugging]]
-== Debugging
+== 调试
 
 [WARNING]
 This chapter is still a stub and it's being heavily worked

@@ -4,102 +4,47 @@ Preface
 
 
 
-This book is not about how to write correct and
-beautiful code, I am assuming that you already know how to do
-that. This book isn’t really about profiling and performance tuning
-either. Although, there is a chapter in this book on tracing and
-profiling which can help you find bottlenecks and unnecessary usage of
-resources. There also is a chapter on performance tuning.
+本书并不是关于如何正确并且优雅的书写代码的，因为我假设你已经了解如何做到那些了。尽管本书有关于跟踪诊断，以便帮助你找到程序瓶颈和不必要的资源使用，以及性能调优的章节，但是，本书也不是真正的关于诊断和性能调优的书。
 
-These two chapters are the last chapters in the book, and the whole
-book is building up to those chapters, but the real goal with this
-book is to give you all the information, all the gory details, that
-you need in order to really understand the performance of your Erlang
-application.
+
+
+这两章是全书的最后部分，整本书都在为这些章节做准备。但是本书的真正目标是把所有的信息和细节展示出来，以便你真正的理解你的Erlang应用的性能表现。
+
+
 
 [[who_is_this_book_for]]
-About this book
+
+关于本书
+
 ~~~~~~~~~~~~~~~
 
+任何人期望：调整 Erlang 安装，了解如何调试 VM 崩溃，改进 Erlang 应用性能，深入理解 Erlang 如何工作，学习如何构建你自己的运行时环境
 
-For anyone who: Want to tune an Erlang installation. Want to know how
-to debug VM crashes. Want to improve performance of Erlang
-applications. Want to understand how Erlang really works. Want to
-learn how to build your own runtime environment.
+如果你想要调试VM，扩展 VM，调整性能，请跳到最后一章，但是想要真正理解那一章，你需要阅读这本书。
 
-If you want to debug the VM If you want to extend the VM If you want
-to do performance tweaking--jump to the last chapter … but to really
-understand that chapter you need to read the book.
+=== 阅读方法
 
-=== How to read this book
+Erlang RunTime System (ERTS) 是一个有许多组件相互依赖的复杂系统。他使用了非常易于移植的方法编码，以便能够在从电脑棒到上TB内存的多核计算机上运行。为了能够为你的应用优化性能，你就不能只了解你的应用本身，同时需要深刻理解ERTS。
 
-The Erlang RunTime System (ERTS) is a complex system with many
-interdependent components. It is written in a very portable way so
-that it can run on anything from a gum-stick computer to the largest
-multicore system with terabytes of memory. In order to be able to
-optimize the performance of such a system for your application, you
-need to not only know your application, but you also need to have a
-thorough understanding of ERTS itself.
+有了 ERTS 如何运行的知识，你就能够理解你的应用在 ERTS 之上运行的行为模式，也可以修补你应用的性能问题。在本书的第二部分，我们将深入介绍如何成功的运行，监控和扩展你的 ERTS 应用。
 
-With this knowledge of how ERTS works you will be able to understand
-how your application behaves when running on ERTS, and you will also
-be able to find and fix problems with the performance of your application.
-In the second part of this book we will go through how you successfully
-run, monitor and scale your ERTS application.
-
-
-You don’t need to be an Erlang programmer to read this book, but you
-will need some basic understanding of what Erlang is. This following
-section will give you some Erlang background.
-
+本书的读者不必是一位 Erlang 程序员，但需要对 Erlang 是什么有基本了解，接下来这段内容将给你一些关于 Erlang 的背景信息。
 
 === Erlang
 
-In this section we will look at some basic Erlang concepts that
-are vital to understanding the rest of the book.
+本节中，我们将一起了解一些基础的 Erlang 概念，这对理解本书至关重要。
 
-Erlang has been called, especially by one of Erlang's creators Joe
-Armstrong, a concurrency oriented language. Concurrency is definitely
-at the heart of Erlang, and to be able to understand how an Erlang
-system works you need to understand the concurrency model of Erlang.
+Erlang 被以它的发明人 Joe Armstrong 为代表的人称为一门面向并发的语言。并发在 Erlang 语言中处于核心地位，为了能够理解 Erlang 系统如何工作，你需要理解 Erlang 的并发模型。
 
-First of all we need to make a distinction between _concurrency_ and
-_parallelism_. In this book _concurrency_ is the concept of having
-two or more processes that *can* execute independently of each other,
-this can be done by first executing one process then the other or by
-interleaving the execution, or by executing the processes in
-parallel. With _parallel_ executions we mean that the processes
-actually execute at the exact same time by using several physical
-execution units. Parallelism can be achieved on different levels.
-Through multiple execution units in the execution pipeline in one core,
-in several cores on one CPU, by several CPUs in one machine or through
-several machines.
+首先，我们需要区分 _“并发”_ 和 _“并行”_。本书中，_“并发”_ 的概念是指2个或者更多的进程 *能* 相互独立的执行，这可以是先执行一个进程然后和其余进程交织执行，或者它们并行执行。提到 _“并行”_ 执行时，我们是指多个进程在同一时刻使用多个物理执行单元执行。“并行”可能在不同层面上实现，例如通过单核的执行流水线的多个执行单元，通过CPU的多核芯，通过单一计算机的多个CPU，或者通过多个计算机实现。
 
-Erlang uses processes to achieve concurrency. Conceptually Erlang
-processes are similar to most OS processes, they execute in parallel
-and can communicate through signals. In practice there is a huge
-difference in that Erlang processes are much more lightweight than
-most OS processes. Many other concurrent programming languages call
-their equivalent to Erlang processes _agents_.
+Erlang 通过进程实现并发。从概念上讲，Erlang 的进程与大多数的操作系统进程类似，它们并行执行并且通过信号通信。但是实践上来说，Erlang 进程比绝大多数的操作系统进程都轻量，这是一个巨大的差异。在一些并发编程语言中，与 Erlang 进程对等的概念是 _agents_ 。
 
-Erlang achieves concurrency by interleaving the execution of processes
-on the Erlang virtual machine, the BEAM. On a multi-core processor the
-BEAM can also achieve parallelism by running one scheduler per core and
-executing one Erlang process per scheduler. The designer of an Erlang
-system can achieve further parallelism by distributing the system on
-several computers.
+Erlang 通过在 Erlang 虚拟机（BEAM）中交织的执行进程来达到并发的目的。在多核处理器上，BEAM 也可以通过运行在每个核心上运行一个调度器，在每个调度器上运行一个 Erlang 进程来实现并行，Erlang 系统的设计人员可以将系统分布在不同计算机上来达成更进一步的并行。
 
-A typical Erlang system (a server or service built in Erlang) consists
-of a number of Erlang _applications_, corresponding to a directory on disk.
-Each application is made up of several Erlang _modules_ corresponding to
-files in the directory. Each module contains a number of _functions_ and
-each function is made up of _expressions_.
+一个典型的 Erlang 系统（在 Erlang 中内置服务器或者服务）包含一定数量 Erlang 应用（_application_），对应于磁盘上的一个目录。每一个应用由若干 Erlang 模块（_module_）组成，模块对应于这个目录中的一些文件。每个模块包含若干函数（_function_），每个函数由若干表达式（_expression_）组成。
 
-Since Erlang is a functional language it has no statements,
-only expressions. Erlang expressions can be combined into an Erlang
-function. A function takes a number of arguments and returns a
-value. In xref:erlang_code_examples[] we can see some examples of
-Erlang expressions and functions.
+Erlang 是一个函数式语言，它没有语句，只有表达式。Erlang 表达式能被组合成 Erlang 函数。函数接受若干参数并且返回一个值。在 xref:erlang_code_examples[] 中，我们可以看到若干 Erlang 表达式和函数。
 
 [[erlang_code_examples]]
 .Erlang Code Examples
@@ -119,31 +64,22 @@ max(X, Y) ->
   end.
 ----
 
-Erlang has a number of _built in functions_ (or _BIFs_) which are
-implemented by the VM. This is either for efficiency reasons, like the
-implementation of +lists:append+ (which could be implemented in
-Erlang). It could also be to provide some low level functionality
-which would be hard or impossible to implement in Erlang itself, like
-+list_to_atom+.
+Erlang VM 实现了许多 Erlang 内建函数 (_built in functions_ 或 _BIFs_)，这样做有效率方面的原因，例如 +lists:append+ 的实现（它也可以在 Erlang 实现），同时也有在实现一些底层功能时， Erlang 本身较难实现的原因，例如 +list_to_atom+。
 
-Since Erlang/OTP R13B03 you can also provide your own functions
-implemented in C by using the _Native Implemented Functions_ (_NIF_)
-interface.
+从 Erlang/OTP R13B03 版本开始，你也可以使用 C 语言和 _Native Implemented Functions_ (_NIF_) 接口来实现自己的函数实现。
 
-=== Acknowledgments
+=== 致谢
 
-First of all I want to thank the whole OTP team at Ericsson both for maintaining Erlang
-and the Erlang runtime system, and also for patiently answering all my questions.
-In particular I want to thank Kenneth Lundin, Björn Gustavsson, Lukas Larsson, Rickard Green
-and Raimo Niskanen.
+首先我要感谢 Ericsson OTP Team，感谢他们维护 Erlang 和 Erlang 运行时，并且耐心的回复我的提问。特别感谢Kenneth Lundin, Björn Gustavsson, Lukas Larsson, Rickard Green 和 Raimo Niskanen。
 
-I would also like to thank Yoshihiro Tanaka, Roberto Aloi and Dmytro Lytovchenko for
-major contributions to the book, and HappiHacking and TubiTV for sponsoring work on
-the book.
- 
-Finally, a big thank you to everyone who has contributed with edits and fixes:
+同时感谢本书的主要贡献者 Yoshihiro Tanaka, Roberto Aloi 和 Dmytro Lytovchenko，感谢 HappiHacking 和 TubiTV 对本书的赞助。
+
+最后，感谢每一位编辑和修正本书的贡献者。
 
 include::contributors.txt[]
 
 
+
+
+~~~~~~~~~~~~~~~
 

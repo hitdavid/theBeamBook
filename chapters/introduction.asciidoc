@@ -1,108 +1,46 @@
 [[introduction]]
 
-== Introducing the Erlang Runtime System
+== Erlang 运行时系统介绍
 
-The Erlang RunTime System (ERTS) ((("Erlang RunTime System",
-see="ERTS")))(((ERTS))) is a complex system with many interdependent
-components. It is written in a very portable way so that it can run on
-anything from a gum stick computer to the largest multicore system
-with terabytes of memory. In order to be able to optimize the
-performance of such a system for your application, you need to not
-only know your application, but you also need to have a thorough
-understanding of ERTS itself.
+Erlang 运行时系统（ERTS） ((("Erlang RunTime System", see="ERTS")))(((ERTS))) 是一个有许多组件相互依赖的复杂系统。他使用了非常易于移植的方法编码，以便能够在从电脑棒到上TB内存的多核计算机上运行。为了能够为你的应用优化性能，你就不能只了解你的应用本身，同时需要深刻理解ERTS。
 
-=== ERTS and the Erlang Runtime System
 
-There is a difference between any Erlang Runtime System ((("Erlang
-Runtime System"))) and a specific implementation of an Erlang Runtime
-System. "Erlang/OTP" by Ericsson is the de facto standard
-implementation of Erlang and the Erlang Runtime System. In this book I
-will refer to this implementation as _ERTS_ or spelled out _Erlang
-RunTime System_ with a capital T. (See xref:ERTS[] for a definition of
-OTP).
 
-There is no official definition of what an Erlang Runtime System is,
-or what an Erlang Virtual Machine is. You could sort of imagine what
-such an ideal Platonic system would look like by taking ERTS and
-removing all the implementation specific details. This is
-unfortunately a circular definition, since you need to know the
-general definition to be able to identify an implementation specific
-detail. In the Erlang world we are usually too pragmatic to worry about
-this.
+=== ERTS 和 Erlang 运行时系统
 
-We will try to use the term _Erlang Runtime System_ to refer to the
-general idea of any Erlang Runtime System as opposed to the specific
-implementation by Ericsson which we call the Erlang RunTime System
-or usually just ERTS.
+任何 Erlang 运行时系统 ((("Erlang Runtime System"))) 和 Erlang 运行时的特定实现系统有一点区别。由爱立信开发维护的 Erlang/OTP 是 Erlang 和 Erlang 运行时系统事实上的标准实现。在本书中，我将参考这个实现为 _ERTS_，将 _Erlang RunTime System_ 中 T 字母大写 (See xref:ERTS[] for a definition of OTP)。
 
-*Note* This book is mostly a book about ERTS in particular and only to
-a small extent about any general Erlang Runtime System. If you assume
-that we talk about the Ericsson implementation unless it is clearly
-stated that we are talking about a general principle you will probably
-be right.
+Erlang 运行时系统或者 Erlang 虚拟机并没有一个官方定义。你可以想象这样一个理想的柏拉图式系统看起来就像是ERTS，并且移除了所有特定实现细节。不幸的是，这是一个循环定义，因为你需要了解通用定义以便能够鉴别一个特定实现细节。在Erlang 的世界里，我们通常比较务实而不去担心这些。
 
-=== How to read this book
+我们将尝试使用术语 _Erlang Runtime System_ 来指代 Erlang 运行时系统的一般的想法。反之，由 Ericsson 开发维护的特定实现被我们称为 Erlang 运行时系统或简称 ERTS.
 
-In xref:P-Running[] of this book we will look at how to tune the
-runtime system for your application and how to profile and debug
-your application and the runtime system. In order to really know
-how to tune the system you also need to know the system. In
-xref:P-ERTS[] of this book you will get a deep understanding of
-how the runtime system works.
+*Note*  本书主要关于 ERTS，很小部分与通用 _Erlang Runtime System_ 相关。你可以假设我们一直在基于 Ericsson 的实现讨论问题，除非我们明确声明我们在讨论通用原则。
 
-The following chapters of xref:P-ERTS[] will go over each
-component of the system by itself.
-You should be able to read any one of these
-chapters without having a full understanding of how the other
-components are implemented, but you will need a basic understanding of
-what each component is. The rest of this introductory chapter should
-give you enough basic understanding and vocabulary to be able to jump
-between the rest of the chapters in part one in any order you like.
+=== 如何阅读本书
 
-However, if you have the time,
-read the book in
-order the first time. Words that are specific to Erlang and ERTS or
-used in a specific way in this book are usually explained at their
-first occurrence. Then, when you know the vocabulary, you can come
-back and use Part I as a reference whenever you have a problem with a
-particular component.
+在本书的 xref:P-Running[] 部分，我们将关注如何为你的应用调整运行时系统，以及分析和调试你的应用和运行时系统。为了真正了解如何如何调整系统，你也需要了解系统。在本书的 xref:P-ERTS[] 部分，你讲深入理解运行时系统的工作原理。
+
+
+在接下来 xref:P-ERTS[] 的章节中，我们将深入系统的各个组件。即使你并没有对全部组件有全面的理解，只要基本清楚每个组件是什么，也能够顺利阅读这些章节。剩余的介绍章节将向你介绍足够的基础信息和词汇术语，是你能够随意在这些章节之间切换阅读。
+
+如果你有充裕时间，建议首次阅读按照顺序进行。有关 Erlang 和 ERTS 的词汇术语都在它们首次出现时解释。这样就可以在对某个特定组件有疑问时，使用 Part I 作为参考性的后续反复阅读。
 
 [[ERTS]]
 === ERTS
 
-In this there is a basic overview of the main components of
-ERTS (((ERTS))) and some vocabulary needed to understand the more
-detailed descriptions of each component in the following chapters.
+此处我们将对 ERTS 的主要组件以及一些词汇有一个概览，并在后续章节做更细节的描述。
 
-==== The Erlang Node (ERTS)
+==== Erlang 节点 (ERTS)
 
-When you start an Elixir or Erlang application or system, what you
-really start is an Erlang node(((node))). The node runs the Erlang
-RunTime System and the virtual machine BEAM.  (or possibly another
-implementation of Erlang (see xref:Other_Erlang_Implementations[])).
+当你启动一个 Elixir / Erlang 应用或者系统，实际上你启动的是一个 Erlang 节点(((node)))。这个节点运行了 ERTS 以及虚拟机 BEAM（或者也可能是其他的 Erlang 实现(参见 xref:Other_Erlang_Implementations[])）
 
-Your application code will run in an Erlang node, and all the layers
-of the node will affect the performance of your application. We will
-look at the stack of layers that makes up a node. This will help you
-understand your options for running your system in different
-environments.
+你的应用代码在 Erlang 节点上运行，节点的各层也同时对你的应用性能表现产生影响。我们来看一下组成节点的层次栈。这将帮你理解将你的系统运行在不同环境的选项。
 
-In OO terminology one could say that an Erlang node is an object of
-the Erlang Runtime System class. The equivalent in the Java world is a
-JVM instance.
+使用OO的术语，可以说一个 Erlang 节点就是一个 Erlang 运行时系统类对象。在 Java 世界，等价的概念是 JVM 实例。
 
-All execution of Elixir/Erlang code is done within a node. An Erlang node
-runs in one OS process, and you can have several Erlang nodes
-running on one machine.
+所有的 Elixir / Erlang 代码执行都在节点中完成。每个 Erlang 节点运行在一个操作系统进程中，在同一台计算机中可以同时运行多个 Erlang 节点。
 
-
-To be completely correct according to the Erlang OTP documentation a
-node is actually an executing runtime system that has been given a
-name. That is, if you start Elixir without giving a name through one
-of the command line switches `--name NAME@HOST` or `--sname NAME` (or
-`-name` and `-sname` for an Erlang runtime.)  you will have a runtime
-but not a node. In such a system the function `Node.alive?` 
-(or in Erlang `is_alive()`) returns false.
+根据 Erlang OTP 文档，一个节点实际上是一个命名的执行运行时系统。这样说来，如果你启动了 Elixir，但并没有通过命令行的以下开关来指定节点名字 `--name NAME@HOST` 或 `--sname NAME` (在 Erlang 运行时中是 `-name` 和 `-sname` )，你会启动一个运行时，但是不能叫节点。此时，函数 `Node.alive?`  (在 Erlang 中为 `is_alive()`) 返回 false。
 
 ----
 $ iex
@@ -115,11 +53,7 @@ false
 iex(2)>
 ----
 
-The runtime system itself is not that strict in its use
-of the terminology. You can ask for the name of the node even
-if you didn't give it a name. In Elixir you use the function
-`Node.list` with the argument `:this`, and in Erlang you
-call `nodes(this).`:
+_运行时系统_ 这个术语的使用并不严格。即使你并没有命名一个节点，也可以取得它的名字。在 Elixir 中，使用`Node.list` 参数 `:this`, 在 Erlang 中调用 `nodes(this).`即可:
 
 ----
 iex(2)> Node.list :this
@@ -127,16 +61,11 @@ iex(2)> Node.list :this
 iex(3)>
 ----
 
-In this book we will use the term node for any running instance
-of the runtime whether it is given a name or not.
+本书中，我们将使用术语 _节点_ 来指代任何运行中的运行时实例，而不论它是否被命名。
 
-==== Layers in the Execution Environment
+==== 执行环境中的分层
 
-Your program (application) will run in one or more nodes, and the
-performance of your program will depend not only on your application
-code but also on all the layers below your code in the _ERTS
-stack_. In xref:the_erts_stack[] you can see the ERTS Stack
-illustrated with two Erlang nodes running on one machine.
+你的程序（应用）是在一个或者多个节点上运行的，它的性能不只取决于你的应用程序代码，同时取决于在 ERTS 栈 （_ERTS stack_）中，你应用以下的各层。图 xref:the_erts_stack[] 中，你可以看到同一台计算机运行2个 Erlang 节点时的 ERTS 栈。
 
 [[the_erts_stack]]
 .ERTS Stack
@@ -162,7 +91,7 @@ illustrated with two Erlang nodes running on one machine.
 
 ----
 
-If you are using Elixir there is yet another layer to the stack.
+如果你用 Elixir，栈中还会有其他的层次。
 
 [[the_elixir_stack]]
 .Elixir Stack
@@ -189,84 +118,29 @@ If you are using Elixir there is yet another layer to the stack.
 
 ----
 
+我们来观察栈中各层，看你如何为应用程序调优各层。
 
-Let's look at each layer of the stack and see how you can tune them
-to your application's need.
+栈的最底部是程序运行依赖的硬件。改善你应用程序运行性能的最简单的方法是使用更好的硬件。如果因为经济、物理条件约束或者处于对环境问题的担忧等原因阻碍你升级硬件，你可能需要开始探索栈中的更高层次。
 
-At the bottom of the stack there is the hardware you are running
-on. The easiest way to improve the performance of your app is probably
-to run it on better hardware. You might need to start exploring higher
-levels of the stack if economical or physical constraints or
-environmental concerns won't let you upgrade your hardware.
+选择硬件的2个最主要考量是：它是否是多核系统，它是32位系统还是64位系统。计算机是否多核以及它是32/64位系统决定了你能够使用何种 ERTS 版本。
 
-The two most important choices for your hardware
-is whether it is multicore and whether it is 32-bit or 64-bit. You
-need different builds of ERTS depending on whether you want to use
-multicore or not and whether you want to use 32-bit or 64-bit.
+向上第二层是操作系统层。ERTS 能够在大多数的 Windows 和 包含 Linux, VxWorks, FreeBSD, Solaris, 以及 Mac OS X 的 POSIX “兼容” 系统上运行。如今，大部分的 ERTS 开发工作都是在 Linux 和 OS X 上完成的，所以你可以在这些平台上 ERTS 会有最佳的性能表现。Ericsson 一直以来在许多内部项目中使用 Solaris 平台，多年以来 ERTS 在 Solaris 上一直被调优。视你的使用场景，你也可能在 Solaris 上获得最佳性能。操作系统的选型往往被性能需求之外的因素约束。如果你在构建一个嵌入式应用，你可能需要选择 Raspbian （译注：树莓派系统）或者 VxWork，如果你在构建一些面向终端用户或者客户端的应用，你可能必须使用 Windows。ERTS 的 Windows 版本目前从性能和维护等方面来看，可能并不是最佳的选择，因为它不是最高优先级工作。如果你想使用一个64位版本的 ERTS ，你必须同时选择64位硬件和64位操作系统。本书并不会涉及到很多特定操作系统相关的问题，绝大多数例子假设你是在 Linux 系统上运行。
 
-The second layer in the stack is the OS level. ERTS runs on most
-versions of Windows and most POSIX "compliant" operating systems,
-including Linux, VxWorks, FreeBSD, Solaris, and Mac OS X. Today most of
-the development of ERTS is done on Linux and OS X, and you can expect
-the best performance on these platforms. However, Ericsson has been
-using Solaris internally in many projects and ERTS has been tuned for
-Solaris for many years.  Depending on your use case you might actually
-get the best performance on a Solaris system. The OS choice is usually
-not based on performance requirements, but is restricted by other
-factors. If you are building an embedded application you might be
-restricted to Raspbian or VxWork, and if you for some reason are
-building an end user or client application you might have to use
-Windows. The Windows port of ERTS has so far not had the highest
-priority and might not be the best choice from a performance or
-maintenance perspective. If you want to use a 64-bit ERTS you of
-course need to have both a 64-bit machine and a 64-bit OS. We will not
-cover many OS specific questions in this book, and most examples will
-be assuming that you run on Linux.
+向上第三层是 Erlang 运行时系统，或者说是 ERTS 层。本层和向上第四层 -- Erlang 虚拟机（BEAM）是本书的主要内容。
 
-The third layer in the stack is the Erlang Runtime System. In our case
-this will be ERTS. This and the fourth layer, the Erlang Virtual Machine
-(BEAM), is what this book is all about.
+向上第五层 OTP(((OTP))) 提供了 Erlang 标准库支持。OTP的原始含义是 “开放电信平台”（_Open Telecom Platform_）,它包含了若干位构造类似电信交换等鲁棒的应用而提供构建模块的库（例如  `supervisor`, `gen_server` and `gen_tcp`）早期，这些随 ERTS 发布的其他标准库和 OTP 的含义是混杂的。现如今，大多数人将 OTP 和 Erlang 连用为 "Erlang/OTP" 指代 ERTS 以及由 Ericsson 发布的所有 Erlang 库。了解这些标准库并且清楚何时、如何使用它们可以极大地提高应用程序的性能。本书将不涉及任何关于标准库和OTP的细节，涉及这些方面书籍有很多。
 
-The fifth layer, OTP(((OTP))), supplies the Erlang standard libraries. OTP
-originally stood for "Open Telecom Platform" and was a number of
-Erlang libraries supplying building blocks (such as `supervisor`,
-`gen_server` and `gen_tcp`) for building robust applications (such as
-telephony exchanges).  Early on, the libraries and the meaning of OTP
-got intermingled with all the other standard libraries shipped with
-ERTS. Nowadays most people use OTP together with Erlang in
-"Erlang/OTP" as the name for ERTS and all Erlang libraries shipped by
-Ericsson. Knowing these standard libraries and how and when to use
-them can greatly improve the performance of your application. This
-book will not go into any details of the standard libraries and
-OTP, there are many other books that cover these aspects.
+如果你运行 Elixir 程序，第6层提供了 Elixir 环境和 Elixir 库。
 
-If you are running an Elixir program the sixth layer provides
-the Elixir environment and the Elixir libraries.
+最后，向上数第7层是你的应用程序以及其中使用的第三方库。应用层可以使用底层提供的所有功能。除了升级硬件，这也是你最容易实现应用性能优化的地方。在 xref:CH-Tracing[] 中介绍了一些诊断优化应用程序的提示和工具。在 xref:CH-Debugging[] 一章中，我们将了解如何找到应用崩溃的原因以及如何查找应用 bug。
 
-Finally, the seventh layer (APP) is your application, and
-any third party libraries you use. The application can use all
-the functionality provided by the underlying layers. Apart from
-upgrading your hardware this is probably the place where you most
-easily can improve your application's performance. In
-xref:CH-Tracing[] there are some hints and some tools that can
-help you profile and optimize your application. In
-xref:CH-Debugging[] we will look at how to find the cause
-of crashing applications and how to find bugs in your application.
-
-For information on how to build and run an Erlang node
-see xref:AP-BuildingERTS[], and read the rest of the book to
-learn all about the components of an Erlang node.
-
-==== Distribution
+有关如何构建运行 Erlang 节点的信息，请参见 xref:AP-BuildingERTS[] ，然后通过本书其余部分学习 Erlang 节点的组件知识。
 
 
-One of the key insights by the Erlang language designers was that in
-order to build a system that works 24/7 you need to be able to handle
-hardware failure. Therefore you need to distribute your system over at
-least two physical machines. You do this by starting a node on
-each machine and then you can connect the nodes to each other so
-that processes can communicate with each other across the nodes
-just as if they were running in the same node.
+
+==== 分布式
+
+Erlang 语言设计者的一个关键洞见是：为了构造一个可以 24小时 * 7天 工作的系统，你需要能够处理硬件失败。所以你需要至少将你的系统部署在2台以上的物理机器上。在每台机器上启动 Erlang 节点后，节点之间互相连接，跨节点的进程可以相互通信，就好像它们运行在同一个节点一样。
 
 [[a_distributed_application]]
 .Distributed Applications
@@ -296,157 +170,87 @@ just as if they were running in the same node.
 
 ----
 
+==== Erlang 编译器
 
-==== The Erlang Compiler
+Erlang 编译器负责将 Erlang 源代码从 .erl 文件编译为 BEAM 虚拟机代码。编译器本身就是使用 Erlang 编写的，它将自身编译为 BEAM 码，通常在运行的 Erlang 节点可用。为了引导运行时系统，包含编译器在内的数个预先编译好的 BEAM 文件都被放置在 bootstrap 目录。
 
-The Erlang Compiler is responsible for compiling Erlang source code,
-from .erl files into virtual machine code for BEAM (the virtual
-machine). The compiler itself is written in Erlang and compiled by
-itself to BEAM code and usually available in a running Erlang node.
-To bootstrap the runtime system there are a number of precompiled
-BEAM files, including the compiler, in the bootstrap directory.
+有关编译器的更多信息可以参考 xref:CH-Compiler[]。
 
-For more information about the compiler see xref:CH-Compiler[].
+==== Erlang 虚拟机: BEAM
 
-
-==== The Erlang Virtual Machine: BEAM
-
-BEAM(((BEAM))) is the Erlang virtual machine used for executing Erlang code,
-just like the JVM is used for executing Java code. BEAM runs in an
-Erlang Node.
+类似 JVM 是用来执行Java 代码的虚拟机一样，BEAM(((BEAM))) 是用来执行 Erlang 代码的虚拟机。BEAM 运行在 Erlang 节点上。
 
 ****
-*BEAM:* The name BEAM originally stood for Bogdan's Erlang Abstract
- Machine, but nowadays most people refer to it as Björn’s
-Erlang Abstract Machine, after the current maintainer.
- 
+*BEAM:* BEAM这个名称最初代表  Bogdan's Erlang Abstract Machine，现在大多数人用它来指代 Björn’s Erlang Abstract Machine，Björn 是 Erlang 的现行维护者。
+
 ****
 
-Just as ERTS is an implementation of a more general concept of a Erlang
-Runtime System so is BEAM an implementation of a more general Erlang Virtual
-Machine (EVM)(((Erlang Virtual Machine)))(((EVM, see="Erlang Virtual Machine"))).
-There is no definition of what constitutes an EVM but BEAM actually has two
-levels of instructions _Generic Instructions_ and _Specific Instructions_.
-The generic instruction set could be seen as a blueprint for an EVM.
+就像 ERTS 是 Erlang 运行时系统的更通用概念实现一样， BEAM 是 Erlang 虚拟机(EVM)(((Erlang Virtual Machine)))(((EVM, see="Erlang Virtual Machine"))) 的一个通用实现。虽然没有对 EVM 组成结构的定义，但是 BEAM 的指令实际上分2层，分别是通用指令和特定指令。通用指令集可以看作是 EVM 的蓝图。
 
-For a full description of BEAM see xref:CH-BEAM[], xref:CH-beam_modules[]
-and xref:CH-Instructions[].
+对 BEAM 的全部描述可以参考 xref:CH-BEAM[], xref:CH-beam_modules[] 以及 xref:CH-Instructions[].
 
-==== Processes
+==== 进程
 
-An Erlang process basically works like an OS process. Each process has
-its own memory (a mailbox, a heap and a stack) and a process control
-block (PCB) with information about the process.
+一个 Erlang 进程基本上与操作系统进程一样工作。每个进程拥有它自己的内存（mailbox, heap 和 stack）和带有进程信息的进程控制块（_process control block_ ,  PCB）
 
-All Erlang code execution is done within the context of a process. One
-Erlang node can have many processes, which can communicate through
-message passing and signals. Erlang processes can also communicate with
-processes on other Erlang nodes as long as the nodes are connected.
+所有的 Erlang 代码执行均在进程上下文中完成。一个 Erlang 节点可以拥有分多进程，这些进程可以通过消息传递或信号通信，如果多个节点是连接的，Erlang 进程也可以与其他节点上的进程通信。
 
-To learn more about processes and the PCB see xref:CH-Processes[].
+想了解更多关于进程和 PCB 的知识，请参考 xref:CH-Processes[].
 
+==== 调度器
 
-==== Scheduling
+调度器负责选择某个 Erlang 进程执行。通常来讲，调度器有2个队列，1个是 _ready to run_ 的进程队列  _ready queue_ ，另一个是等待接受消息的进程队列 _waiting queue_ 。一个 _waiting queue_ 中的进程如果收到了消息，或者接收超时，将被移动到  _ready queue_ 。
 
-The Scheduler is responsible for choosing the Erlang process to execute.
-Basically the scheduler keeps two queues, a _ready queue_ of processes
-ready to run, and a _waiting queue_ of processes waiting to receive a
-message. When a process in the waiting queue receives a message or gets
-a time out it is moved to the ready queue.
+调度器从  _ready queue_ 中拿到第一个进程，并将它放到 BEAM 中执行一个_时间片_( _time slice_)。当时间片耗尽，BEAM会剥夺这个进程的执行，并把它放到  _ready queue_ 的队尾。如果在时间片用尽前，这个进程被 receive 阻塞，他就会被放到  _waiting queue_ 中。
 
-The scheduler picks the first process from the ready queue and hands it
-to BEAM for execution of one _time slice_. BEAM preempts the running
-process when the time slice is used up and adds the process to the
-end of the ready queue. If the process is blocked in a receive before
-the time slice is used up, it gets added to the waiting queue instead.
+Erlang 天生支持并发，这意味着从概念上讲，每一个进程与其他的进程同时执行，但是事实上，只有1个进程在虚拟机中运行。在多核系统中，Erlang 运行多个调度器，通常每核心一个，每个调度器独有自己的队列。这样 Erlang 获得了真正的并行能力。为了利用多核能力， ERTS 必须使用_SMP_(((SMP))) 被构建 (参见 xref:AP-BuildingERTS[])。 SMP 意即_Symmetric MultiProcessing_，它意味着进程在多核中任意一个核心上运行的能力。
 
-Erlang is concurrent by nature, that is, each process is conceptually
-running at the same time as all other processes, but in reality there
-is just one process running in the VM. On a multicore machine Erlang
-actually runs more than one scheduler, usually one per physical core,
-each having their own queues. This way Erlang achieves true
-parallelism. To utilize more than one core ERTS has to be built (see
-xref:AP-BuildingERTS[]) in _SMP_(((SMP))) mode. SMP stands for
-_Symmetric MultiProcessing_, that is, the ability to execute a
-processes on any one of multiple CPUs.
+现实世界中，进程优先级等问题会使问题变得更复杂，等待队列使用时间轮实现。所有关于调度器的细节会在 xref:CH-Scheduling[]中描述。
 
-In reality the picture is more complicated with priorities among
-processes and the waiting queue is implemented through a timing wheel.
-All this and more is described in detail in xref:CH-Scheduling[].
+==== Erlang 标签方案
 
-==== The Erlang Tag Scheme
+Erlang 是一个动态类型语言，运行时系统需要跟踪所有的数据对象的类型，这是通过标签方案（tagging scheme）完成的。每一个数据对象或指向数据对象的指针同时也会有一个带有其对象数据类型的标签。
 
-Erlang is a dynamically typed language, and the runtime system needs a
-way to keep track of the type of each data object. This is done with a
-tagging scheme. Each data object or pointer to a data object also has
-a tag with information about the data type of the object.
+一般来说，指针的一些位（bits）会被为标签预留，通过查找对象的标签的位模式（bit pattern），仿真器就可以确定他的数据类型。
 
-Basically some bits of a pointer are reserved for the tag, and the
-emulator can then determine the type of the object by looking at the
-bit pattern of the tag.
+这些标签在模式匹配、类型检测、原始操作（primitive operations）和垃圾收集是被使用。
 
-These tags are used for pattern matching and for type test and for
-primitive operations as well as by the garbage collector.
+xref:CH-TypeSystem[] 中完整的描述了标签方案。
 
-The complete tagging scheme is described in xref:CH-TypeSystem[].
+==== 内存处理
 
-==== Memory Handling
+Erlang 使用了自动内存管理方案，使得程序员不必担忧内存的分配和回收。每个进程都有可以按需扩容和缩容的堆和栈。
 
-Erlang uses automatic memory management and the programmer does not
-have to worry about memory allocation and deallocation. Each process
-has a heap and a stack which both can grow, and shrink, as needed.
+当一个进程出现堆空间不足时，虚拟机会首先尝试通过垃圾回收的方法回收并分配内存。垃圾收集器接下来会找到该进程的栈和堆，并将其中的活动数据复制到一个新的堆中，这样就扔掉了所有死数据。如果做完这些堆空间还是不够用，一个新的更大的堆会被分配出来，活动数据也会被移动到新的堆中。
 
-When a process runs out of heap space, the VM will first try to
-reclaim free heap space through garbage collection. The garbage collector
-will then go through the process stack and heap and copy live data
-to a new heap while throwing away all the data that is dead. If there
-still isn't enough heap space, a new larger heap will be allocated and
-the live data is moved there.
+关于当前的代际复制垃圾收集器的细节，包含被引用计数的 binary 处理，可以在 xref:CH-Memory[] 章节中找到。
 
-The details of the current generational copying garbage collector, including
-the handling of reference counted binaries can be found in xref:CH-Memory[].
+在使用 *HiPE* (High Performance *Erlang* ，译者注：类似 JIT ) 兼容本地代码的系统中，每个进程事实上有2个栈，1个 BEAM栈，1个本地代码栈，细节见 xref:CH-Native[] 。
 
-In a system which uses HiPE compiled native code, each process actually has
-two stacks, a BEAM stack and a native stack, the details can be found in
-xref:CH-Native[].
+==== 解释器和命令行接口
 
-==== The Interpreter and the Command Line Interface
+当你使用 +erl+ 启动 Erlang 节点，可以得到一个命令行提示符。这就是 _Erlang read eval print loop_ (REPL) 或者叫做 _command line
+interface_ (CLI) 或简称 _Erlang shell_.
 
-When you start an Erlang node with +erl+ you get a command prompt.
-This is the _Erlang read eval print loop_ (REPL) or the _command line
-interface_ (CLI) or simply the _Erlang shell_.
-
-You can actually type in Erlang code and execute it directly from the
-shell. In this case the code is not compiled to BEAM code and executed by
-the BEAM, instead the code is parsed and interpreted by the Erlang
-interpreter. In general the interpreted code behaves exactly as compiled
-code, but there are a few subtle differences, these differences and all
-other aspects of the shell are explained in xref:CH-Ops[].
+你可以在 Erlang 节点中输入并且在 shell 中直接执行。这种情况，代码不会被编译为 BEAM 码并被 BEAM执行，而是被 Erlang 解释器解析和解释执行。通常，解释后的代码与编译后的代码表现一致，但也存在一些差异，差异和其他方面的问题将在 xref:CH-Ops[] 介绍。
 
 [[Other_Erlang_Implementations]]
-=== Other Erlang Implementations
 
-This book is mainly concerned with the "standard" Erlang
-implementation by Ericsson/OTP called ERTS, but there are a few other
-implementations available and in this section we will look at some of
-them briefly.
+=== 其他的 Erlang 实现
+
+本书主要关注 Ericsson/OTP 实现的“标准” Erlang，即 ERTS。也有一些可用的其他 Erlang 实现，我们将在本节简要提及。
 
 ==== Erlang on Xen
 
-Erlang on Xen (link:http://erlangonxen.org[]) is an Erlang implementation
-running directly on server hardware with no OS layer in between, only
-a thin Xen client.
+Erlang on Xen (链接: http://erlangonxen.org[]，译注，网页已经没人维护) 是一个直接在服务器硬件上运行，中间没有操作系统层而只有一个 Xen 客户端薄层的 Erlang 实现。
 
-Ling, the virtual machine of Erlang on Xen is almost 100% binary compatible
-with BEAM. In xref:the_eox_stack you can see how the Erlang on Xen implementation
-of the Erlang Solution Stack differs from the ERTS Stack. The thing to note here
-is that there is no operating system in the Erlang on Xen stack.
+这个运行在 Xen 上的虚拟机叫做 Ling，他同 BEAM 几乎100%二进制兼容。在 xref:the_eox_stack 中可以看到 Erlang 的 Xen 实现栈与 ERTS 的区别。需要注意的是，Xen 栈上的 Erlang 下没有操作系统。
 
-Since Ling implements the generic instruction set of BEAM, it can reuse
-the BEAM compiler from the OTP layer to compile Erlang to Ling.
+Ling 实现了 BEAM 通用指令集，他可以重用 OTP 层的 BEAM 编译器来将 Erlang 编译成 Ling 代码。
 
 [[erlang_on_xen]]
 .Erlang On Xen
+
 [ditaa]
 ----
   Node1     Node2       Node2     Node3
@@ -470,15 +274,9 @@ the BEAM compiler from the OTP layer to compile Erlang to Ling.
 
 ==== Erjang
 
-Erjang (link:http://www.erjang.org[]) is an Erlang implementation which runs
-on the JVM. It loads +.beam+ files and recompiles the code to Java +.class+
-files. Erjang is almost 100% binary compatible with (generic) BEAM.
+Erjang (链接: http://www.erjang.org[]，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载+.beam+ 文件后，将其重编译为 Java +.class+ 文件。他与 BEAM 几乎 100% 二进制兼容。
 
-In xref:the_erjang_stack you can see how the Erjang implementation
-of the Erlang Solution Stack differs from the ERTS Stack. The thing
-to note here is that JVM has replaced BEAM as the virtual machine
-and that Erjang provides the services of ERTS by implementing them
-in Java on top of the VM.
+图 xref:the_erjang_stack 中可以看到 Erlang 的 Erjang 实现栈与 ERTS 的区别。需要注意的是，这个方案中 JVM 替代了 BEAM 作为虚拟机，Erjang 在虚拟机上使用 Java 实现 ERTS 提供的服务。
 
 [[erlang_on_jvm]]
 .Erlang on the JVM
@@ -503,12 +301,8 @@ in Java on top of the VM.
 
 ----
 
-Now that you have a basic understanding of all the major pieces of
-ERTS, and the necessary vocabulary you can dive into the details of
-each component. If you are eager to understand a certain component,
-you can jump directly to that chapter. Or if you are really eager to
-find a solution to a specific problem you could jump to the right
-chapter in xref:P-Running[], and try the different methods to tune,
-tweak, or debug your system.
+现在，你应该对 ERTS 的各主要部分有了基本的了解，也了解了继续深入各组件所必须的词汇术语。如果你渴望了解某一个具体的组件，现在就可以跳到对应章节阅读了。或者你需要找一个特定问题的解决方案，你可以跳到  xref:P-Running[] 章节，尝试使用各种方法来调优、调试你的系统。
+
+
 
 

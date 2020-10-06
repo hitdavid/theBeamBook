@@ -1,25 +1,36 @@
 [[CH-beam_modules]]
 
-== Modules and The BEAM File Format (16p)
+== 模块和 BEAM 文件格式
 
 [[modules]]
 
-=== Modules
+=== 模块
 
-.%% TODO
-NOTE: What is a module. How is code loaded. How does hot code loading work. How does the purging work. How does the code server work. How does dynamic code loading work, the code search path. Handling code in a distributed system. (Overlap with chapter 10, have to see what goes where.) Parameterized modules. How p-mods are implemented. The trick with p-mod calls. Here follows an excerpt from the current draft:
+NOTE: TODO
+什么是模块
+如何加载代码
+热代码加载是如何工作的
+净化(purging)是如何工作的
+代码服务器(code server) 是如何工作的
+动态代码加载如何工作，代码搜索路径
+在分布式系统中处理代码。(与第10章重叠，要看什么去哪里。)
+参数化模块
+p-mod是如何实现的
+p-mod调用的技巧
+
+以下是本手稿的一段摘录:
 
 [[BEAM_files]]
 
-=== The BEAM File Format
+=== BEAM 文件格式
 
-The definite source of information about the beam file format is obviously the source code of beam_lib.erl (see link:$$https://github.com/erlang/otp/blob/maint/lib/stdlib/src/beam_lib.erl$$[]). There is actually also a more readable but slightly dated description of the format written by the main developer and maintainer of Beam (see link:$$http://www.erlang.se/~bjorn/beam_file_format.html$$[]).
+关于 beam 文件格式的确切信息来源显然是 beam_lib.erl  (参见 link:$$https://github.com/erlang/otp/blob/maint/lib/stdlib/src/beam_lib.erl$$[])。实际上，还有一份由Beam的主要开发人员和维护人员编写的关于该格式的描述(参见 link:$$http://www.erlang.se/~bjorn/beam_file_format.html$$[])，可读性更好，但有些过时。
 
-The beam file format is based on the interchange file format (EA IFF)#, with two small changes. We will get to those shortly. An IFF file starts with a header followed by a number of “chunks”. There are a number of standard chunk types in the IFF specification dealing mainly with images and music. But the IFF standard also lets you specify your own named chunks, and this is what BEAM does.
+BEAM 文件格式基于交换文件格式 (interchange file format, EA IFF)#，有两个小的变化。我们将这些不久。IFF文件以文件头开始，后面跟着许多“块”。在IFF规范中有许多主要处理图像和音乐的标准块类型。但是IFF标准也允许您指定自己的命名块，而这正是 BEAM 所做的。
 
-NOTE: Beam files differ from standard IFF files, in that each chunk is aligned on 4-byte boundary (i.e. 32 bit word) instead of on a 2-byte boundary as in the IFF standard. To indicate that this is not a standard IFF file the IFF header is tagged with “FOR1” instead of “FOR”. The IFF specification suggests this tag for future extensions.
+注意:Beam文件与标准IFF文件不同，因为每个块是在4字节边界 (即32位字)  上对齐的，而不是在IFF标准中在2字节边界上对齐的。为了表明这不是一个标准的 IFF 文件，IFF 头被标记为 “FOR1” 而不是 “FOR”。IFF 规范建议将此标记用于未来的扩展。
 
-Beam uses form type “BEAM”. A beam file header has the following layout:
+Beam 使用的 form type 值为：“Beam”。一个 Beam 文件头有以下布局:
 
 [source,erlang]
 ----
@@ -31,9 +42,9 @@ BEAMHeader = <<
 
 ----
 
-After the header multiple chunks can be found. Size of each chunk is aligned to the multiple of 4 and each chunk has its own header (below).
+在文件头之后可以找到多个块。每个块的大小与4字节的倍数对齐，并且(每个块)都有自己的块头部 (见下面描述)。
 
-NOTE: The alignment is important for some platforms, where unaligned memory byte access would create a hardware exception (named SIGBUS in Linux). This can turn out to be a performance hit or the exception could crash the VM.
+注意:对齐对于某些平台很重要，在这些平台中，对于未对齐的内存字节访问将产生一个硬件异常(在Linux中称为SIGBUS)。这可能导致性能下降，或者异常可能导致VM崩溃。
 
 [source,erlang]
 ----
@@ -42,11 +53,12 @@ BEAMChunk = <<
   ChunkSize:32/big,
   ChunkData:ChunkSize/unit:8,   // data format is defined by ChunkName
   Padding4:0..3/unit:8
+
 >>
 
 ----
 
-This file format prepends all areas with the size of the following area making it easy to parse the file directly while reading it from disk. To illustrate the structure and content of beam files, we will write a small program that extract all the chunks from a beam file. To make this program as simple and readable as possible we will not parse the file while reading, instead we load the whole file in memory as a binary, and then parse each chunk. The first step is to get a list of all chunks:
+该文件格式在所有区域前加上这个区域的大小，使得在从磁盘读取文件时可以很容易地直接解析文件。为了说明beam文件的结构和内容，我们将编写一个程序，它能从一个 beam 文件中提取所有数据块。为了使这个程序尽可能简单和可读，我们不会在读取时解析文件，而是将整个文件作为二进制文件加载到内存中，然后解析每个块。第一步是得到所有块的列表：
 
 ++++
 <!-- While this is reasonably simple code, is it going to be obvious to readers what's going on here? It may require a bit of explanation as to how this code works. - bmacdonald -->
@@ -59,7 +71,7 @@ include::../code/beam_modules_chapter/src/beamfile1.erl[]
 ----
 
 
-A sample run might look like: 
+一次样例运行结果可能是这样的：
 
 ----
 > beamfile:read("beamfile.beam").
@@ -81,13 +93,13 @@ A sample run might look like:
 
 ----
 
-Here we can see the chunk names that beam uses.
+其中，我们可以看到 beam 使用的块名称。
 
 [[atom_table_chunk]]
 
-==== Atom table chunk
+==== 原子表块
 
-Either the chunk named `Atom` or the chunk named `AtU8` is mandatory. It contains all atoms referred to by the module. For source files with `latin1` encoding, the chunk named `Atom` is used. For `utf8` encoded modules, the chunk is named `AtU8`. The format of the atom chunk is:
+名为 `Atom` 或 `AtU8` 的数据块都是强制必须包含的。它包含了模块提到的所有原子。对于 `latin1` 编码的源文件，使用名为 `Atom` 的块。对于 `utf8` 编码的模块，块被命名为 `AtU8` 。atom 块的格式为：
 
 [source,erlang]
 ----
@@ -101,12 +113,12 @@ AtomChunk = <<
 
 ----
 
-The format of the AtU8 chunk is the same as above, except that the name of the chunk is `AtU8`.
+AtU8块只有名称不同(为 `AtU8` )，其他同 atom 块。
 
 
-NOTE: Module name is always stored as the first atom in the table (atom index 0).
+NOTE: 模块名称永远存储在原子表的第一个位置 (atom index 0)。
 
-Let us add a decoder for the atom chunk to our Beam file reader:
+让我们为原子块添加一个解码器到我们的 BEAM 文件读取器:
 
 [source,erlang]
 ----
@@ -115,11 +127,11 @@ include::../code/beam_modules_chapter/src/beamfile2.erl[]
 
 [[export_table_chunk]]
 
-==== Export table chunk
+==== 导出表块
 
-The chunk named `ExpT` (for EXPort Table) is mandatory and contains information about which functions are exported.
+名为 `ExpT` (EXPort Table) 的块是强制必须包含的，它包含关于该模块要导出哪些函数的信息。
 
-The format of the export chunk is:
+导出块的格式为：
 
 [source,erlang]
 ----
@@ -136,9 +148,9 @@ ExportChunk = <<
 
 ----
 
-`FunctionName` is the index in the atom table.
+`FunctionName` 是原子表中的索引。
 
-We can extend our parse_chunk function by adding the following clause after the atom handling clause: 
+我们可以通过在原子处理子句之后添加以下子句来扩展 parse_chunk 函数：
 
 [source,erlang]
 ----
@@ -162,11 +174,11 @@ parse_exports(<<>>) -> [].
 
 [[import_table_chunk]]
 
-==== Import table chunk
+==== 导入表块
 
-The chunk named `ImpT` (for IMPort Table) is mandatory and contains information about which functions are imported.
+名为 `ImpT` (IMPort Table) 的块是强制必须包含的，它包含关于模块要导入哪些函数的信息。
 
-The format of the chunk is: 
+数据块的格式为：
 
 [source,erlang]
 ----
@@ -183,15 +195,15 @@ ImportChunk = <<
 
 ----
 
-Here `ModuleName` and `FunctionName` are indexes in the atom table.
+这里的 `ModuleName` 和 `FunctionName` 是原子表中的索引。
 
-NOTE: The code for parsing the import table is similar to that which parses the export table, but not exactly: both are triplets of 32-bit integers, just their meaning is different. See the full code at the end of the chapter.
+NOTE: 解析导入表的代码与解析导出表的代码类似，但并不完全相同：两者都是 32 位整数的三元组，只是它们的含义不同。请参阅本章末尾的完整代码。
 
 [[code_chunk]]
 
-==== Code Chunk
+==== 代码块
 
-The chunk named `Code` contains the beam code for the module and is mandatory. The format of the chunk is:
+名为 `Code` 的块是强制必须包含的，它包含了 beam 代码。块的格式如下：
 
 [source,erlang]
 ----
@@ -209,16 +221,15 @@ ImportChunk = <<
 
 ----
 
+字段 `SubSize` 存储代码开始前的字数量。这使得在代码块中添加新的信息字段而不破坏旧的加载器成为可能。
 
-The field `SubSize` stores the number of words before the code starts. This makes it possible to add new information fields in the code chunk without breaking older loaders.
+`InstructionSet` 字段指示文件使用哪个版本的指令集。如果任何指令以不兼容的方式更改，版本号就会增加。
 
-The `InstructionSet` field indicates which version of the instruction set the file uses. The version number is increased if any instruction is changed in an incompatible way.
+`OpcodeMax` 字段表示代码中使用的所有操作码的最大数量。即使新指令被添加到系统中，只要文件中使用的指令在加载器知道的范围内，旧的加载器仍然可以加载新文件。
 
-The `OpcodeMax` field indicates the highest number of any opcode used in the code. New instructions can be added to the system in a way such that older loaders still can load a newer file as long as the instructions used in the file are within the range the loader knows about.
+字段 `LabelCount` 包含标签的数量，以便加载器可以通过一次调用就将标签表按照正确的大小预分配好。字段 `FunctionCount` 包含函数的数量，这样函数表也可以有效地预分配空间。
 
-The field `LabelCount` contains the number of labels so that a loader can preallocate a label table of the right size in one call. The field `FunctionCount` contains the number of functions so that the functions table could also be preallocated efficiently.
-
-The `Code` field contains instructions, chained together, where each instruction has the following format:
+`Code` 字段包含连接在一起的指令，其中每个指令有以下格式：
 
 [source,erlang]
 ----
@@ -228,11 +239,11 @@ Instruction = <<
 >>
 ----
 
-Here `Arity` is hardcoded in the table, which is generated from ops.tab by genop script when the emulator is built from source.
+这里， `Arity` 硬编码在表格中，当模拟器从源码构造 beam 码时，表格是由 genop 脚本的 ops.tab 生成的。(译注：此处如果不能够理解，可以参考 xref:CH-Beam_loader[])
 
-The encoding produced by `beam_asm:encode` is explained below in the  <<SEC-BeamModulesCTE,Compact Term Encoding>> section.
+由 `beam_asm:encode` 产生的编码在下面的 <<SEC-BeamModulesCTE，紧凑的项式编码>> 节中进行了解释。
 
-We can parse out the code chunk by adding the following code to our program:
+我们可以通过在程序中添加以下代码来解析代码块：
 
 [source,erlang]
 ----
@@ -265,14 +276,13 @@ parse_code_info(<<Instructionset:32/integer,
 
 
 
-We will learn how to decode the beam instructions in a later chapter, aptly named “BEAM Instructions”.
+我们将在后面的章节中( xref:beam_instructions[] )学习如何解码 beam 指令。
 
+==== 字符串表块
 
-==== String table chunk
+名为 `StrT` 的块是强制的，它包含模块中的所有常量字符串，并作为一个长字符串。如果模块中没有字符串字面量，块应该仍然存在，但为空且大小为0。
 
-The chunk named `StrT` is mandatory and contains all constant string literals in the module as one long string. If there are no string literals the chunks should still be present but empty and of size 0.
-
-The format of the chunk is:
+数据块的格式为：
 
 [source,erlang]
 ----
@@ -285,19 +295,18 @@ StringChunk = <<
 
 ----
 
-The string chunk can be parsed easily by just turning the string of bytes into a binary:
+字符串块可以很容易地解析，只需将字符串字节转换为二进制 (binary)：
 
 ----
 parse_chunks([{"StrT", _Size, <<Strings/binary>>} | Rest], Acc) -> 
     parse_chunks(Rest,[{strings,binary_to_list(Strings)}|Acc]); 
 ----
 
+==== 属性块
 
-==== Attributes Chunk
+名为 `Attr` 的数据块是可选的，但一些 OTP 工具希望属性块存在。发布处理程序期望 "vsn" 属性存在。您可以通过: beam_lib:version(Filename) 从文件中获得 version 属性，该函数假设存在一个属性块，其中包含一个 "vsn" 属性。
 
-The chunk named `Attr` is optional, but some OTP tools expect the attributes to be present. The release handler expects the "vsn" attribute to be present. You can get the version attribute from a file with: beam_lib:version(Filename), this function assumes that there is an attribute chunk with a "vsn" attribute present.
-
-The format of the chunk is:
+属性块的格式为:
 
 
 [source,erlang]
@@ -312,7 +321,7 @@ AttributesChunk = <<
 ----
 
 
-We can parse the attribute chunk like this:
+我们可以使用如下方法解析属性块：
 
 
 [source,erlang]
@@ -323,12 +332,11 @@ parse_chunks([{"Attr", Size, Chunk} | Rest], Acc) ->
     parse_chunks(Rest,[{attributes,Attribs}|Acc]);
 ----
 
+==== 编译信息块
 
-==== Compilation Information Chunk
+名为 `CInf` 的数据块是可选的，但一些 OTP 工具希望编译信息块存在。
 
-The chunk named `CInf` is optional, but some OTP tools expect the information to be present.
-
-The format of the chunk is:
+编译信息块的格式为：
 
 
 [source,erlang]
@@ -342,7 +350,7 @@ CompilationInfoChunk = <<
 
 ----
 
-We can parse the compilation information chunk like this:
+我们可以像这样解析编译信息块：
 
 
 [source,erlang]
@@ -353,12 +361,11 @@ parse_chunks([{"CInf", Size, Chunk} | Rest], Acc) ->
     parse_chunks(Rest,[{compile_info,CInfo}|Acc]);
 ----
 
+==== 局部函数表块
 
-==== Local Function Table Chunk
+名为 `LocT` 的块是可选的，用于交叉引用工具。
 
-The chunk named `LocT` is optional and intended for cross reference tools.
-
-The format is the same as that of the export table:
+局部函数表块的格式与导出表相同：
 
 
 [source,erlang]
@@ -376,12 +383,11 @@ LocalFunTableChunk = <<
 
 ----
 
-NOTE: The code for parsing the local function table is basically the same as that for parsing the export and the import table, and we can actually use the same function to parse entries in all tables. See the full code at the end of the chapter.
+NOTE: 解析本地函数表的代码与解析导出和导入表的代码基本相同，实际上我们可以使用相同的函数来解析所有表中的条目。请参阅本章末尾的完整代码。
 
+==== 文字表块
 
-==== Literal Table Chunk
-
-The chunk named `LitT` is optional and contains all literal values from the module source in compressed form, which are not immediate values. The format of the chunk is:
+名为 `LitT` 的块是可选的，它以压缩形式包含来自模块源文件的所有文字值，这些文字值不是即时(immediate) 值。块的格式为：
 
 
 [source,erlang]
@@ -396,18 +402,19 @@ LiteralTableChunk = <<
 
 ----
 
-Where the `CompressedLiterals` must have exactly `UncompressedSize` bytes. Each literal in the table is encoded with the External Term Format (`erlang:term_to_binary`). The format of `CompressedLiterals` is the following:
+其中 `压缩文字` (`CompressedLiterals`) 必须有精确的 `非压缩大小` (`UncompressedSize`) 字节。表中的每个文字都用外部项式格式  (`erlang:term_to_binary`) 编码。 `CompressedLiterals` 的格式如下：
 
 ----
 CompressedLiterals = <<
   Count:32/big,
   [ <<Size:32/big, Literal:binary>>  || repeat Count ]
+
 >>
 ----
 
-The whole table is compressed with `zlib:compress/1` (deflate algorithm), and can be uncompressed with `zlib:uncompress/1` (inflate algorithm).
+整个表用 `zlib:compress/1` 压缩，也可以用 `zlib:uncompress/1` 解压缩。
 
-We can parse the chunk like this:
+我们可以这样解析块：
 
 [source,erlang]
 ----
@@ -434,10 +441,9 @@ parse_literals(<<>>) -> [].
 
 
 
+==== 抽象代码块
 
-==== Abstract Code Chunk
-
-The chunk named `Abst` is optional and may contain the code in abstract form. If you give the flag `debug_info` to the compiler it will store the abstract syntax tree for the module in this chunk. OTP tools like the debugger and Xref need the abstract form. The format of the chunk is:
+名为 `Abst` 的块是可选的，可以以抽象形式包含代码。如果将 `debug_info` 标记给编译器，它将在此块中存储模块的抽象语法树。像 debugger 和 Xref 这样的 OTP 工具需要抽象代码块。数据块的格式为：
 
 [source,erlang]
 ----
@@ -450,7 +456,7 @@ AbstractCodeChunk = <<
 
 ----
 
-We can parse the chunk like this
+我们可以这样解析块：
 
 [source,erlang]
 ----
@@ -468,33 +474,32 @@ parse_chunks([{"Abst", _ChunkSize, <<AbstractCode/binary>>} | Rest], Acc) ->
 
 
 
+==== 压缩和加密（原书未完成）
 
-==== Compression and Encryption
-
-TODO
-
+未完成
 
 
 
-==== Function Trace Chunk (Obsolete)
+==== 函数跟踪块 (已过时)
 
-This chunk type is now obsolete.
+函数跟踪块(Function Trace chuck) 类型目前已经过时了。
 
 
-==== Bringing it all Together
+==== 整合回顾（原书未完成）
 
-TODO
+未完成
+
 
 
 [[SEC-BeamModulesCTE]]
 
-==== Compact Term Encoding
+==== 紧凑的项式编码
 
-Let's look at the algorithm, used by `beam_asm:encode`. BEAM files use a special encoding to store simple terms in BEAM file in a space-efficient way. It is different from memory term layout, used by the VM.
+让我们看看 `beam_asm:encode` 时使用的算法。BEAM 文件以一种节省空间的方式使用一种特殊编码在 BEAM 文件中存储简单的项式。它不同于 VM 所使用的内存项式布局。
 
-TIP: `Beam_asm` is a module in the `compiler` application, part of the Erlang distribution, it is used to assemble binary content of beam modules.
+TIP: `Beam_asm` 是 `compiler` 应用程序中的一个模块，它是Erlang发行版的一部分，用于组装 beam 模块的二进制内容。
 
-The reason behind this complicated design is to try and fit as much type and value data into the first byte as possible to make the code section more compact. After decoding, all encoded values become full size machine words or terms.
+这种复杂设计背后的原因是：试图在第一个字节中放入尽可能多的类型和值数据，以使代码段更紧凑。解码后,所有编码值成为全尺寸机器字或项式。
 
 [ditaa]
 ----
@@ -515,11 +520,11 @@ The reason behind this complicated design is to try and fit as much type and val
 
 ----
 
-NOTE: Since OTP 20 this tag format has been changed and the `Extended - Float` is gone. All following tag values are shifted down by 1: List is 2#10111, fpreg is 2#100111, alloc list is 2#110111 and literal is 2#1010111. Floating point values now go straight to literal area of the BEAM file.
+NOTE: 自OTP 20 以来，这个标签格式已经改变， `Extended - Float` 消失了。下面所有的标签值向下移动1: List 是 2#10111，fpreg 是 2#100111，alloc List 是 2#110111，literal 是 2#1010111。浮点值现在直接进入 BEAM 文件的文字区域 (literal area)。
 
-It uses the first 3 bits of a first byte to store the tag which defines the type of the following value. If the bits were all 1 (special value 7 or ?tag_z from `beam_opcodes.hrl`), then a few more bits are used.
+它使用第一个字节的前3位来存储定义以下值类型的标记。如果这些位都是1 (特殊值7或  `beam_opcodes.hrl` 中的 ?tag_z)，那么会使用更多的位。
 
-For values under 16, the value is placed entirely into bits 4-5-6-7 having bit 3 set to 0:
+对于16以下的值，将值完全置于4-5-6-7位中，并将位3设为0：
 
 [ditaa]
 ----
@@ -528,7 +533,7 @@ For values under 16, the value is placed entirely into bits 4-5-6-7 having bit 3
 Value   | 0 | Tag
 ----
 
-For values under 2048 (16#800) bit 3 is set to 1, marks that 1 continuation byte will be used and 3 most significant bits of the value will extend into this byte’s bits 5-6-7:
+对于 2048 (16#800) 以下的值，3 位被设置为 1，表示将使用 1 个延续字节，并且值的 3 个最有效 (significant) 位将扩展到这个字节的 5-6-7 位:
 
 [ditaa]
 ----
@@ -537,7 +542,7 @@ For values under 2048 (16#800) bit 3 is set to 1, marks that 1 continuation byte
 Value | 0 1 | Tag
 ----
 
-Larger and negative values are first converted to bytes. Then if the value takes 2..8 bytes, bits 3-4 will be set to 1, and bits 5-6-7 will contain the (Bytes-2) size for the value, which follows:
+较大的值和负值首先被转换为字节。如果值需要 2 到 8 个字节，3-4 位将被设置为 1，5-6-7 位将包含值的 (bytes -2) 大小，如下：
 
 [ditaa]
 ----
@@ -546,25 +551,23 @@ Larger and negative values are first converted to bytes. Then if the value takes
 Bytes-2 | 1 1 | Tag
 ----
 
-If the following value is greater than 8 bytes, then all bits 3-4-5-6-7 will be set to 1, followed by a nested encoded unsigned literal (macro `?tag_u` in `beam_opcodes.hrl`) value of (Bytes-9):8, and then the data:
+如果下面的值大于 8 字节，那么所有的位 3-4-5-6-7 将被设置为1，后面跟着一个嵌套的编码无符号文字( `beam_opcodes.hrl` 中的宏  `?tag_u`  ) 值为 (Bytes-9):8，接下来是数据字节：
 
 [ditaa]
 ----
-7 6 5 4 3 | 2 1 0  ||  Followed by a          ||
-----------+------  ||  nested encoded literal || Data . . .
-1 1 1 1 1 | Tag    ||  (Size-9)               ||
+7 6 5 4 3 | 2 1 0  ||	 Followed by a 		||
+----------+------  ||	nested encoded literal	||  Data . . .
+1 1 1 1 1 | Tag    ||	(Size - 9)		||
 ----
 
-===== Tag Types
+===== 标签类型
 
-When reading compact term format, the resulting integer may be interpreted differently based on what is the value of `Tag`.
+当读取压缩项式格式时，根据 `Tag` 的值可能会对结果整数进行不同的解释。
 
-* For literals the value is index into the literal table.
-* For atoms, the value is atom index MINUS one. If the value is 0, it means `NIL` (empty list) instead.
-* For labels 0 means invalid value.
-* If tag is character, the value is unsigned unicode codepoint.
-* Tag Extended List contains pairs of terms. Read `Size`, create tuple of `Size` and then read `Size/2` pairs into it. Each pair is `Value` and `Label`. `Value` is a term to compare against and `Label` is where to jump on match. This is used in `select_val` instruction.
+* 对于文字值，值是到文字表的索引。
+* 对于原子，值为原子索引数 *减* 1。如果值为0，则表示 `NIL` (空列表)。
+* 标签 0 表示无效值。
+* 如果标记为字符，则值为无符号 unicode 码点。
+* 标签扩展列表包含项式对。读取 `Size`，创建  `Size`  的元组，然后能读取到  `Size/2`  个项式对。每一对分别是 `Value` and `Label` 。其中 `Value` 是用来进行比较的项式， `Label` 是用来进行匹配的。这在 `select_val` 指令中使用。
 
-
-
-Refer to `beam_asm:encode/2` in the compiler application for details about how this is encoded. Tag values are presented in this section, but also can be found in `compiler/src/beam_opcodes.hrl`.
+请参考编译器应用程序中的 `beam_asm:encode/2` ，以了解更多关于如何进行编码的细节。标签值在本节中给出，但也可以在  `compiler/src/beam_opcodes.hrl` 中找到。

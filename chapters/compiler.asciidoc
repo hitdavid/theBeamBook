@@ -1,63 +1,42 @@
 [[CH-Compiler]]
-== The Compiler
+== 编译器
 
-This book will not cover the programming language Erlang, but since
-the goal of the ERTS is to run Erlang code you will need to know how
-to compile Erlang code. In this chapter we will cover the compiler
-options needed to generate readable beam code and how to add debug
-information to the generated beam file. At the end of the chapter
-there is also a section on the Elixir compiler.
+虽然本书不是一本设计 Erlang 编程语言的书，但是，ERTS 的目标是运行 Erlang 代码，所以你需要了解如何编译 Erlang 代码。本章将涉及到用来生成可读的 BEAM 码的编译器选项，以及如何位生成的 beam 文件增加调试信息。本章的最后，也有一节关于 Elixir 编译器的内容。
 
-For those readers interested in compiling their own favorite language
-to ERTS this chapter will also contain detailed information about the
-different intermediate formats in the compiler and how to plug your
-compiler into the beam compiler backend. I will also present parse
-transforms and give examples of how to use them to tweak the Erlang
-language.
+那些对于将他们喜爱的语言编译为 ERTS 代码的读者，可以关注本章包含的关于编译器中的中间格式区别的详情，以及如何在 beam 编译器后台挂载你的编译器的信息。
 
-=== Compiling Erlang
+我会展示解析转换，并通过样例来说明如何通过它们来调整 Erlang 语言。
 
-Erlang is compiled from source code modules in +.erl+ files
-to fat binary +.beam+ files.
+=== 编译 Erlang
 
-The compiler can be run from the OS shell with the +erlc+ command:
+Erlang 被从 +.erl+ 格式文件的模块源代码，编译成二进制 +.beam+ 文件
+
+编译器可以从操作系统终端，通过 +erlc+ 启动：
 
 [source,bash]
 ----
 > erlc foo.erl
 ----
 
-Alternatively the compiler can be invoked from the Erlang shell with
-the default shell command +c+ or by calling +compile:file/{1,2}+
+编译器也可以在 Erlang 终端中，使用 +c+ 或者调用  +compile:file/{1,2}+ 来调用。
 
 [source,erlang]
 ----
 1> c(foo).
 ----
 
-or
+或者
 
 [source,erlang]
 ----
 1> compile:file(foo).
 ----
 
-The optional second argument to +compile:file+ is a list of compiler
-options. A full list of the options can be found in the documentation
-of the compile module: see link:http://www.erlang.org/doc/man/compile.html[].
++compile:file+ 的第二个可选参数接受编译器选项 list。全部的可选参数清单可以在编译器模块的文档中找到，参见 link:http://www.erlang.org/doc/man/compile.html[] 。
 
-Normally the compiler will compile Erlang source code from a +.erl+
-file and write the resulting binary beam code to a +.beam+ file. You
-can also get the resulting binary back as an Erlang term
-by giving the option +binary+ to the compiler. This
-option has then been overloaded to mean return any intermediate format
-as a term instead of writing to a file. If you for example want the
-compiler to return Core Erlang code you can give the options +[core,
- binary]+.
+通常，编译器会将 Erlang 源代码从 +.erl+ 格式文件，编译并写入到二进制 +.beam+ 文件中。你也可以通过使用编译器的 +binary+ 选项，将编译二进制结果作为Erlang 项式（Erlang term）直接输出。这个选项被重载以用来使用数据来返回中间格式结果，而不是将其写入文件。如果你期望编译器返回Core Erlang 代码，可以使用 +[core, binary]+ 选项。
 
-
-The compiler is made up of a number of passes as illustrated in 
-xref:fig_compiler_passes[].
+编译器的执行，包含由如图 xref:fig_compiler_passes[] 中所示的若干“遍”（pass）。
 
 [[fig_compiler_passes]]
 .Compiler Passes
@@ -165,26 +144,17 @@ xref:fig_compiler_passes[].
                                                +---------------+
                                                        |
                                                        v
-
+    
                                                     (.beam)
 ----
 
-If you want to see a complete and up to date list of compiler passes
-you can run the function +compile:options/0+ in an Erlang shell.
-The definitive source for information about the compiler is of course
-the source:
-  link:https://github.com/erlang/otp/blob/maint/lib/compiler/src/compile.erl[compile.erl]
+如果你想看到完整且最新的编译器的“遍”清单，可以在 Erlang 终端中运行 +compile:options/0+。当然，有关浏览器的最终信息来源来自于 link:https://github.com/erlang/otp/blob/maint/lib/compiler/src/compile.erl[compile.erl] 
 
+=== 产生中间结果输出
 
+阅读由编译器产生的代码对于试图理解虚拟机如何工作有很大帮助。幸运的是，编译器可以输出每遍后产生的中间代码，以及最终的 beam 码。
 
-=== Generating Intermediate Output
-
-Looking at the code produced by the compiler is a great help in trying
-to understand how the virtual machine works. Fortunately, the compiler
-can show us the intermediate code after each compiler pass and the
-final beam code.
-
-Let us try out our newfound knowledge to look at the generated code.
+我们来尝试一下这些新知识，并且观察一下生成的代码。
 
 
 [source,erlang]
@@ -202,20 +172,19 @@ Let us try out our newfound knowledge to look at the generated code.
  'S' - Generate .S file
 ----
 
-Let us try with a small example program "world.erl":
+我们来尝试一个小例子程序 "world.erl"：
 [source,erlang]
 ----
 include::../code/compiler_chapter/src/world.erl[]
 ----
 
-And the include file "world.hrl"
+以及包含文件： "world.hrl"
 [source,erlang]
 ----
 include::../code/compiler_chapter/src/world.hrl[]
 ----
 
-If you now compile this with the 'P' option to get the parsed file you
-get a file "world.P":
+如果此时使用 'P' 选项编译以得到解析后的文件，你会得到一个 "world.P" 文件。
 
 [source,erlang]
 ----
@@ -224,17 +193,14 @@ get a file "world.P":
 ok
 ----
 
-In the resulting +.P+ file you can see a pretty printed version of
-the code after the preprocessor (and parse transformation) has been
-applied:
+在结果输出的 +.P+ 文件中，你可以看到应用预处理器（解析转换）处理后的美化格式版本的代码：
 
 [source,erlang]
 ----
 include::../code/compiler_chapter/src/world.P[]
 ----
 
-To see how the code looks after all source code transformations are
-done, you can compile the code with the +'E'+-flag.
+要查看所有的源代码转换执行完毕后代码的样子，可以使用 +'E'+ 选项。
 
 [source,erlang]
 ----
@@ -243,20 +209,14 @@ done, you can compile the code with the +'E'+-flag.
 ok
 ----
 
-This gives us an +.E+ file, in this case all compiler directives have
-been removed and the built in functions +module_info/{1,2}+ have been
-added to the source:
+这将输出一个 +.E+ 文件，其中所有的编译器指令都被移除，并且内建函数 +module_info/{1,2}+ 也被加入到源代码中。
 
 [source,erlang]
 ----
 include::../code/compiler_chapter/src/world.E[]
 ----
 
-We will make use of the 'P' and 'E' options when we look at parse
-transforms in xref:SEC-parse_transform[], but first we will take a
-look at an "assembler" view of generated BEAM code. By giving the
-option +'S'+ to the compiler you get a +.S+ file with Erlang terms
-for each BEAM instruction in the code.
+我们将在观察 xref:SEC-parse_transform[] 解析转换时，使用 'P' 和 'E' 选项，但首先我们先来看看汇编器生成的 BEAM 码。使用编译器选项 +'S'+ 可以得到一个内容为源代码对应的每条 BEAM 指令的 Erlang 项式的 +.S+ 文件。
 
 [source,erlang]
 ----
@@ -265,65 +225,34 @@ for each BEAM instruction in the code.
 ok
 ----
 
-The file +world.S+ should look like this:
++world.S+ 文件看起来是这样的：
 
 [source,erlang]
 ----
 include::../code/compiler_chapter/src/world.S[]
 ----
 
-Since this is a file with dot ("_._") separated Erlang terms, you can 
-read the file back into the Erlang shell with:
+因为这是一个由点 ("_._"，译者注：点是每行的结尾) 分隔的 Erlang 项式组成的文件，你可以使用如下命令将这个文件读入 Erlang 终端：
+
 ----
 {ok, BEAM_Code} = file:consult("world.S").
 ----
 
-The assembler code mostly follows the layout of the original source
-code.
+汇编码大部分按照原始的源代码格式布局。首条指令定义了代码模块的名称。注释中提到的版本(+%% version = 0+) 是 beam 操作码格式的版本(由 beam_opcodes 给出的 +beam_opcodes:format_number/0+)
+接下来是一个导出清单以及编译器属性（本例中没有），这和 Erlang 源码模块中的差不多。
+第一条像是 beam 指令的是 +{labels, 7}+ ，它告诉虚拟机代码中共有7个标签（label），使得对代码的一遍处理即可为所有的标签分配空间。
+接下来是每个函数的实际代码。第一条指令给出了函数名称，标签数表示的参数个数和入口点。
+你可以使用 +'S'+ 选项来尽最大努力使你理解 BEAM 如何工作，我们也将在后续章节这么做。当你开发自己的编程语言，通过Core  Erlang 编译为 BEAM 码时，能看到生成的代码也是非常有价值的。
 
-The first instruction defines the module name of the code. The version
-mentioned in the comment (+%% version = 0+) is the version of the beam
-opcode format (as given by +beam_opcodes:format_number/0+).
+=== 编译器的遍（Pass）
 
-Then comes a list of exports and any compiler attributes (none in this
-example) much like in any Erlang source module.
+接下来几节，我们将深入到图 xref:fig_compiler_passes[] 中所示的编译器的各遍。对于面向 BEAM 的编程语言设计者，这些内容将向你展示使用 宏（macros），解析转换（parse
+transforms），Core Erlang，BEAM 码等不同方法你可以做什么，以及它们之间是如何相互依赖的。
+在调优 Erlang 代码时，通过查看优化前后的生成代码，来了解何种优化在何时，以何种方式起作用是非常有效的。
 
-The first real beam-like instruction is +{labels, 7}+ which tells the
-VM the number of labels in the code to make it possible to allocate 
-room for all labels in one pass over the code.
+==== 编译器 Pass: Erlang 预处理器 (epp)
 
-After that there is the actual code for each function. The first
-instruction gives us the function name, the arity and the entry point
-as a label number.
-
-You can use the +'S'+ option with great effect to help you understand
-how the BEAM works, and we will use it like that in later chapters. It
-is also invaluable if you develop your own language that you compile 
-to the BEAM through Core Erlang, to see the generated code.
-
-=== Compiler Passes
-
-In the following sections we will go through most of the compiler
-passes shown in xref:fig_compiler_passes[]. For a language designer
-targeting the BEAM this is interesting since it will show you what you
-can accomplish with the different approaches: macros, parse
-transforms, core erlang, and BEAM code, and how they depend on each
-other.
-
-When tuning Erlang code, it is good to know what optimizations are
-applied when, and how you can look at generated code before and
-after optimizations.
-
-
-==== Compiler Pass: The Erlang Preprocessor (epp)
-
-The compilation starts with a combined tokenizer (or scanner) and
-preprocessor. That is, the preprosessor drives the tokenizer.
-This means that macros are expanded as tokens, so
-it is not a pure string replacement (as for example m4 or cpp).
-You can not use Erlang macros to define your own syntax, a macro
-will expand as a separate token from its surrounding characters.
-You can not concatenate a macro and a character to a token:
+编译过程起始于一个组合的分词器（或者扫描器）和预处理器。预处理器驱动分词器运行。这意味着宏被以符号的方式展开，而不纯粹是字符串替换（不像是 m4 或 cpp）。你不能够使用 Erlang 宏来定义自己的语法，宏像一个与周围字符独立的符号一样被展开。所以你也不能将一个宏与（它前后连续的）字符连接为新的符号：
 
 [source,erlang]
 ----
@@ -341,91 +270,48 @@ and not
 t(A,B) -> A ++ B.
 ----
 
-On the other hand since macro expansion is done on the token
-level, you do not need to have a valid Erlang term in the
-right hand side of the macro, as long as you use it in a way
-that gives you a valid term. E.g.:
+另一方面，由于宏展开实在符号级别完成的，宏的右值（rhs）也不必是一个合法的 Erlang 项式，例如：
 
 ----
 -define(p,o, o]).
  t() -> [f,?p.
 ----
 
-There are few real usages for this other than to win the
-obfuscated Erlang code contest. The main point to remember is that 
-you can not really use the Erlang preprocessor to define a language 
-with a syntax that differs from Erlang. Fortunately there are
-other ways to do this, as you shall see later.
-
-
-
+这除了能帮你赢得 Erlang 混乱代码大赛之外，没什么真实用处。记住这个知识的主要用途是，你不能使用 Erlang 预处理器来定义一个与 Erlang 句法不同的编程语言。幸运的是，你可以用其他手段定义新语言，我们将在后文看到这些内容。
 
 [[SEC-parse_transform]]
-==== Compiler Pass: Parse Transformations
+==== 编译器 Pass: 解析转换（Parse Transformations)
 
-The easiest way to tweak the Erlang language is through Parse
-Transformations (or parse transforms). Parse Transformations come
-with all sorts of warnings, like this note in the OTP documentation:
+调整Erlang语言最简单的方法是通过解析转换(Parse Transformations 或 parse transforms)。解析转换带有各种各样的警告，比如OTP文档中的注释:
 
 WARNING: Programmers are strongly advised not to engage in parse
 transformations and no support is offered for problems encountered.
 
-When you use a parse transform you are basically writing an extra pass
-in the compiler and that can if you are not careful lead to very
-unexpected results. But to use a parse transform you have to declare
-the usage in the module using it, and it will be local to that module,
-so as far as compiler tweaks goes this one is quite safe.
+当你使用了解析转换，你基本上在写一个额外的编译器“pass”，如果不小心的话，可能会导致意外的结果。你需要在使用解析转换的模块声明对它的使用，这对模块来说是本地的，这样对编译器的调整也比较安全。在我看来，应用解析转换最大的问题在于你自己发明的句法，这可能对别人阅读代码造成许多困难。至少在你的解析转换与广受欢迎的 QLC 等齐名前都如此。
 
-The biggest problem with parse transforms as I see it is that you
-are inventing your own syntax, and it will make it more difficult
-for anyone else reading your code. At least until your parse transform
-has become as popular and widely used as e.g. QLC.
+好吧，所以你知道你不应该使用它，但如果你必须使用，你得知道它是什么。解析转换是在抽象语法树(AST)(参见 link:http://www.erlang.org/doc/apps/erts/absform.html[])上运行的函数。编译器依次做预处理，符号化和解析，然后它会用 AST 调用解析转换函数，并期望返回新的AST。
 
-OK, so you know you shouldn't use it, but if you have to, here is what
-you need to know. A parse transforms is a function that works on the
-abstract syntax tree (AST) (see
-link:http://www.erlang.org/doc/apps/erts/absform.html[] ). The compiler
-does preprocessing, tokenization and parsing and then it will call the
-parse transform function with the AST and expects to get back a
-new AST.
 
-This means that you can't change the Erlang syntax fundamentally, but
-you can change the semantics. Lets say for example that you for some
-reason would like to write json code directly in your Erlang code,
-then you are in luck since the tokens of json and of Erlang are
-basically the same. Also, since the Erlang compiler does most of
-its sanity checks in the linter pass which follows the parse transform
-pass, you can allow an AST which does not represent valid Erlang.
 
-To write a parse transform you need to write an Erlang module (lets
-call it _p_) which exports the function +parse_transform/2+. This
-function is called by the compiler during the parse transform pass if
-the module being compiled (lets call it _m_) contains the compiler
-option +{parse_transform, p}+. The arguments to the function is the
-AST of the module m and the compiler options given to the call to the
-compiler.
+这意味着您不能从根本上改变 Erlang 句法，但是您可以更改语义。举个例子，假如你想在 Erlang 代码中直接写json代码，你也很幸运，因为 json 和 Erlang 的标记是基本上是一样的。另外，由于 Erlang 编译器在解析转换后的 linter pass 才会做大部分的完整性检查工作，所以，可以允许一个不代表有效Erlang的 AST。
+
+要编写解析转换，您需要编写一个Erlang模块(让我们称它为_p_)，它导出函数+parse_transform/2+。如果这个模块(我们称其为_m_)的编译过程包含 + {parse_transform p} + 编译器选项，这个函数就会在解析转换 pass 期间被编译器调用。函数的参数是模块 m 的 AST 和调用的编译器时的编译器选项。
 
 [NOTE]
 ====
-Note that you will not get any compiler options given in the file, this
-is a bit of a nuisance since you can't give options to the parse transform
-from the code.
 
-The compiler does not expand compiler options until the _expand_ pass
-which occurs after the parse transform pass.
+
+注意，您不能从文件中给出的任何编译器选项。因为你不能够从代码来给出（编译器）选项，还真有点麻烦。
+
+编译器直到发生在解析转换后的 _expand_ pass才会展开编译器选项。
+
 ====
 
-The documentation of the abstract format is somewhat dense and it is
-quite hard to get a grip on the abstract format by reading the
-documentation. I encourage you to use the _syntax_tools_ and
-especially +erl_syntax_lib+ for any serious work on the AST.
+抽象格式的文档确实有些密集，我们很难通过阅读来掌握抽象格式文档。我鼓励您使用句法工具（_syntax_tools_），特别是 +erl_syntax_lib+ 用于处理AST上的任何重要工作。
 
-Here we will develop a simple parse transform just to get an
-understanding of the AST. Therefore we will work directly on the AST
-and use the old reliable +io:format+ approach instead of syntax_tools.
+在这里，为帮助我们理解，我们将开发一个简单的解析转换例子来理解AST。我们将直接在 AST 上工作，使用老的可靠的 +io:format+ 方法来代替句法工具（syntax_tools）。
 
-First we create an example of what we would like to be able to compile
-json_test.erl:
+首先，我们创建一个可以编译 json_test.erl 的例子：
 
 [source,erlang]
 ----
@@ -446,7 +332,7 @@ test(V) ->
       }}>>.
 ----
 
-Then we create a minimal parse transform module +json_parser.erl+:
+然后，我们创建一个最小化的解析转换模块 +json_parser.erl+ ：
 
 [source,erlang]
 ----
@@ -458,8 +344,7 @@ parse_transform(AST, _Options) ->
   AST.
 ----
 
-This identity parse transform returns an unchanged AST but it also prints
-it out so that you can see what an AST looks like.
+这个有代表性的解析转换返回了未经改变的 AST，同时将其打印出来，这样你可以观察 AST 到底是什么样子的。
 
 ----
 > c(json_parser).
@@ -497,12 +382,9 @@ it out so that you can see what an AST looks like.
 error
 ----
 
-The compilation of +json_test+ fails since the module contains invalid
-Erlang syntax, but you get to see what the AST looks like. Now we can
-just write some functions to traverse the AST and rewrite the json
-code into Erlang code.footnote:[The translation here is done in
-accordance with link:http://www.erlang.org/eeps/eep-0018.html[EEP 18] 
-(Erlang Enhancement Proposal 18: "JSON bifs")]
+
+
+因为模块包含无效的 Erlang 语法，故编译+json_test+失败，但是你可以看到AST是什么样子的。现在我们可以编写一些函数来遍历 AST 并将 json 代码回写到 Erlang 代码中。footnote:[此处的翻译是在根据 link:http://www.erlang.org/eeps/eep-0018.html[EEP 18] (Erlang增强建议18:"JSON bifs")进行的]
 
 [source,erlang]
 ----
@@ -589,7 +471,7 @@ str_to_bin(String, Line) ->
     }.
 ----
 
-And now we can compile +json_test+ without errors:
+现在，我们可以无错的将 +json_test+ 编译通过了：
 
 [source,erlang]
 ----
@@ -607,57 +489,31 @@ And now we can compile +json_test+ without errors:
    {<<"frame rate">>,42}]}]
 ----
 
-The AST generated by +parse_transform/2+ must correspond to valid
-Erlang code unless you apply several parse transforms, which is
-possible. The validity of the code is checked by the following
-compiler pass.
+由 +parse_transform/2+ 产生的 AST 必须是合法的 Erlang 代码，除非是你做多个解析转换。（译注：指多次解析转换的中间结果AST），代码的合法性检查是在下边的编译 pass 进行的。
 
-==== Compiler Pass: Linter
+==== 编译器 Pass: Linter
 
-The linter (+erl_lint.erl+) generates warnings for syntactically
-correct but otherwise bad code, like "export_all flag enabled".
+Linter 为句法正确但是不好的代码生成警告，类似"export_all flag enabled"
 
+==== 编译器 Pass: 保存抽象语法树（AST）
 
-==== Compiler Pass: Save AST
+为了启用对某模块的调试，您可以“调试编译”该模块，即将选项 +debug_info+ 传递给编译器。抽象语法树将被“Save AST”保存，直到编译结束时，它将被写入.beam文件。
 
-In order to enable debugging of a module, you can "debug compile" the
-module, that is to pass the option +debug_info+ to the compiler. The
-abstract syntax tree will then be saved by the "Save AST" until the
-end of the compilation, where it will be written to the .beam file.
+重要的是，要注意代码是在任意优化被应用前保存的，所以如果编译器的优化 pass 有 bug，你将在调试器中运行代码时得到不同的行为。如果你正在实现你自己的编译器这可能会把你搞糊涂。
 
-It is important to note that the code is saved before any
-optimisations are applied, so if there is a bug in an optimisation
-pass in the compiler and you run code in the debugger you will get a
-diffferent behavior. If you are implementing your own compiler
-optimisations this can trick you up badly.
+==== 编译器 Pass: Expand
 
-==== Compiler Pass: Expand
+在扩展（Expand）阶段，诸如 record 等源 erlang 结构将被扩展为底层的 erlang 结构。编译器选项 "+-compile(...)+" 也会被 _扩展_ 为元数据。
 
-In the expand phase source erlang constructs, such as records, are
-expanded to lower level erlang constructs. Compiler options,
-"+-compile(...)+", are also _expanded_ to meta data.
+==== 编译器 Pass: Core Erlang
 
-==== Compiler Pass: Core Erlang
+Core Erlang 是一种适用于编译器优化的严格函数式语言。通过减少表示同一操作的方法的数量，使代码转换更容易。其中一种方法是通过引入 let 和 letrec 表达式来使作用域更明确。
 
-Core Erlang is a strict functional language suitable for compiler
-optimizations. It makes code transformations easier by reducing the
-number of ways to express the same operation. One way it does this is
-by introducing _let_ and _letrec_ expressions to make scoping more
-explicit.
+核心Erlang是一种适用于编译器优化的严格函数式语言。通过减少表示同一操作的方法的数量，使代码转换更容易。其中一种方法是通过引入 _let_ 和 _letrec_ 表达式来使作用域更明确。
 
-Core Erlang is the best target for a language you want to run in
-ERTS. It changes very seldom and it contains all aspects of Erlang in
-a clean way. If you target the beam instruction set directly you will
-have to deal with much more details, and that instruction set usually
-changes slightly between each major release of ERTS. If you on the other
-hand target Erlang directly you will be more restricted in what you
-can describe, and you will also have to deal with more details, since
- Core Erlang is a cleaner language.
+对于希望在 ERTS 中运行的语言来说，Core Erlang 是最好的目标。它很少更改，并且以一种干净的方式包含了 Erlang 的所有方面。如果您直接针对beam指令集，您将不得不处理更多的细节，并且该指令集通常在每个主要的ERTS版本之间略有变化。另一方面，如果您直接以Erlang为目标，那么您可以描述的内容将受到更大的限制，而且您还必须处理更多的细节，因为 Core Erlang 是一种更干净的语言。
 
-To compile an Erlang file to core you can give the option "to_core",
-note though that this writes the Erlang core program to a file with
-the ".core" extension. To compile an Erlang core program from a ".core"
-file you can give the option "from_core" to the compiler.
+你可以使用 “to_core” 选项来将 Erlang 文件编译为 core erlang，但请注意，这将把 Core Erlang 程序写入带有 “.core" 扩展名的文件。你可以通过编译器选项 "from_core" 来编译来自带有 “.core" 扩展名的 core erlang 文件。
 
 ----
 1> c(world, to_core).
@@ -667,76 +523,48 @@ ok
 {ok,world}
 ----
 
-Note that the +.core+ files are text files written in the human
-readable core format. To get the core program as an Erlang term
-you can add the +binary+ option to the compilation.
+注意 +.core+ 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加+binary+选项。
 
-==== Compiler Pass: Kernel Erlang
-Kernel Erlang is a flat version of Core Erlang with a few differences.
-For example, each variable is unique and the scope is a whole function.
-Pattern matching is compiled to more primitive operations.
+==== 编译器 Pass: Kernel Erlang
 
+Kernel Erlang 是 Core Erlang 的一个扁平版本，它们有一些不同之处。例如，每个变量在一个完整的函数作用域中都是唯一的。模式匹配被编译成更原始的操作。
 
-==== Compiler Pass: BEAM Code
-The last step of a normal compilation is the external beam code
-format. Some low level optimizations such as dead code elimination and
-peep hole optimisations are done on this level.
+==== 编译器 Pass: BEAM 码
 
-The BEAM code is described in detail in
-xref:CH-Instructions[] and xref:AP-Instructions[]
+正常编译的最后一步是外部 beam 码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。
 
-==== Compiler Pass: Native Code
-If you add the flag +native+ to the compilation, and you have a HiPE
-enabled runtime system, then the compiler will generate native code
-for your module and store the native code along with the beam code
-in the +.beam.+ file.
+BEAM 码在 xref:CH-Instructions[] 和 xref:AP-Instructions[] 中有详细描述。
 
-=== Other Compiler Tools
+==== 编译器 Pass: 本地（Native）码
 
-There are a number of tools available to help you work with code
-generation and code manipulation. These tools are written in Erlang
-and not really part of the runtime system but they are very nice to
-know about if you are implementing another language on top of the
-BEAM.
+如果您在编译中添加了 +native+ 标志，并且您有一个启用了 HiPE (High Performance *Erlang* ，译者注：类似 JIT )  的运行时系统，那么编译器将为您的模块生成本机代码，并将本地代码与 beam 代码一起存储在 +.beam+ 文件中。
 
-In this section we will cover three of the most useful code tools:
-the lexer -- Leex, the parser generator -- Yecc, and a general set
-of functions to manipulate abstract forms -- Syntax Tools.
+=== 其他编译器工具
+
+有许多工具可以帮助您处理代码生成和代码操作。这些工具是用 Erlang 编写的，但并不是运行时系统的一部分，但是如果你想在 BEAM 之上实现另一种语言，了解它们是非常好的。
+
+在本节中，我们将介绍三个最有用的代码工具: 词法分析器 (Leex)、解析器生成器(Yecc)，和一组用于操作（语言）抽象形式的通用函数(Syntax Tools)。
 
 ==== Leex
 
-Leex is the Erlang lexer generator.
-The lexer generator takes a description of a DFA from a definitions
-file +xrl+ and produces an Erlang
-program that matches tokens described by the DFA.
+Leex是Erlang 词法分析器生成器。词法分析器生成器从定义文件 +xrl+ 获取 DFA （译注，DFA 是 Deterministic Finite Automaton 的简称，形式语言术语，译为 _确定有限自动机_）的描述，并生成一个与 DFA 描述的符号相匹配 Erlang 程序。
 
-The details of how to write a DFA definition for a tokenizer
-is beyond the scope of this book. For a thorough explanation
-I recommend the "Dragon book" (Compiler ... by Aho, Sethi and Ullman).
-Other good resources are the man and info entry for "flex" the lexer program
-that inspired leex, and the leex documentation itself.
-If you have info and flex installed you can read the full manual by typing:
+关于如何为分词器编写 DFA 定义的细节已经超出了本书的范围。要得到详细的解释，我推荐 “龙书”。（是指 Aho, Sethi 和 Ullman合著的 《Compiler》)。其他好的资源包括激发了 leex 灵感的  “flex” 程序的手册，以及 leex 文档本身。如果你已经安装了 flex，你可以通过输入以下命令来阅读完整的手册：
 
 ----
 > info flex
 ----
 
-The online Erlang documentation also has the leex manual
-(see link:http://erlang.org/doc/man/yecc.html[yecc.html]).
+在线 Erlang 文档也有 leex 手册 (参见 link:http://erlang.org/doc/man/yecc.html[yecc.html])。
 
-We can use the lexer generator to create an Erlang program which
-recognizes JSON tokens. By looking at the JSON definition
-http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf
-we can see that there are only a handful of tokens that we need to handle.
+我们可以使用词法分析器生成器创建一个识别 JSON 符号的 Erlang 程序。通过查看JSON定义 link:http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf  我们可以看到，我们只需要处理少量的令牌。
 
 [source,erlang]
 ----
 include::../code/compiler_chapter/src/json_tokens.xrl[]
 ----
 
-By using the Leex compiler we can compile this DFA to Erlang code,
-and by giving the option dfa_graph we also produce a dot-file
-which can be viewed with e.g. Graphviz.
+通过使用 Leex 编译器，我们可以将这个 DFA 编译为 Erlang 代码，并且通过提供 dfa_graph 选项，我们还可以生成一个 dot-file，可以用 Graphviz 查看。
 
 [source,erlang]
 ----
@@ -745,7 +573,7 @@ which can be viewed with e.g. Graphviz.
 2>
 ----
 
-You can view the DFA graph using for example dotty.
+你可以通过 dotty 来查看 DFA 图。
 
 [source, sh]
 ----
@@ -754,15 +582,13 @@ You can view the DFA graph using for example dotty.
 
 image::../code/compiler_chapter/json_tokens.png[]
 
-We can try our tokenizer on an example json file (test.json).
+我们可以在示例 json 文件 (test.json) 上尝试分词器。
 
 ----
 include::../code/compiler_chapter/src/test.json[]
 ----
 
-First we need to compile our tokenizer, then we read the file
-and convert it to a string. Finally we can use
-the string/1 function that leex generates to tokenize the test file.
+首先，我们需要编译分词器，然后读取文件并将其转换为字符串。最后，我们可以使用 leex 生成的 string/1 函数来将测试文件分词。
 
 [source, erlang]
 ----
@@ -775,32 +601,23 @@ ok
 5>
 ----
 
-The shell function f/1 tells the shell to forget a variable
-binding. This is useful if you want to try a command that binds a
-variable multiple times, for example as you are writing the lexer and
-want to try it out after each rewrite. We will look at the shell
-commands in detail in the later chapter.
+shell 函数 f/1 告诉终端忘记变量绑定。如果您想尝试多次绑定变量的命令，例如在编写 lexer 并希望在每次重写后尝试它的场景下，这是很有用的。有关 shell 命令的细节将在后面的章节中介绍。
 
-Armed with a tokenizer for JSON we can now write a json parser
-using the parser generator Yecc.
+有了 JSON 的分词器，我们现在可以使用解析器生成器 Yecc 来编写一个 JSON 解析器了。
 
 
 ==== Yecc
 
-Yecc is a parser generator for Erlang. The name comes from Yacc
-(Yet another compiler compiler) the canonical parser generator for C.
+Yecc 是 Erlang 的解析器生成器。该名称来自Yacc (Yet another compiler compiler)，它是 C 的经典的解析器生成器。
 
-Now that we have a lexer for JSON terms we can write a parser using
-yecc.
+现在我们有了一个用于 JSON 项式的词法分析器，我们就可以使用 yecc 编写一个解析器。
 
 [source,erlang]
 ----
 include::../code/compiler_chapter/src/yecc_json_parser.yrl[]
 ----
 
-Then we can use yecc to generate an Erlang program that implements
-the parser, and call the parse/1 function provided with the tokens
-generated by the tokenizer as an argument.
+然后，我们可以使用 yecc 生成一个实现解析器的 Erlang 程序，并调用 parse/1 函数，该函数使用由分词器生成的记号作为参数。
 
 [source, erlang]
 ----
@@ -818,30 +635,19 @@ generated by the tokenizer as an argument.
        "no" => 1.0}}
 ----
 
-The tools Leex and Yecc are nice when you want to compile your own
-complete language to the Erlang virtual machine.
-By combining them with Syntax tools and specifically Merl you can
-manipulate the Erlang Abstract Syntax tree, either to generate
-Erlang code or to change the behaviour of Erlang code.
+当您希望将自己的完整语言编译到 Erlang 虚拟机时，Leex 和 Yecc 工具非常适合。通过将它们与语法工具 (特别是 Merl ) 结合使用，您可以操作 Erlang 抽象语法树，以生成 Erlang 代码或更改 Erlang 代码的行为。
 
-=== Syntax Tools and Merl
+=== 语法工具和 Merl
 
-Syntax Tools is a set of libraries for manipulating the
-internal representation of Erlang's Abstract Syntax Trees (ASTs).
+语法工具是一组库，用于操作 Erlang 抽象语法树 (AST) 的内部表示。
 
-The syntax tools applications also includes the tool Merl since Erlang 18.0.
-With Merl you can very easily manipulate the syntax tree and write
-parse stransforms in Erlang code.
+语法工具应用程序还包括自 Erlang 18.0 以来的工具 Merl。你可以使用 Merl 来非常容易地操作语法树，并用 Erlang 代码编写解析转换。
 
-You can find the documentation for Syntax Tools on the
-Erlang.org site: link:http://erlang.org/doc/apps/syntax_tools/chapter.html[http://erlang.org/doc/apps/syntax_tools/chapter.html].
+您可以在 Erlang.org 站点上找到语法工具的文档 link:http://erlang.org/doc/apps/syntax_tools/chapter.html[http://erlang.org/doc/apps/syntax_tools/chapter.html]。
 
-=== Compiling Elixir
+=== 编译 Elixir
 
-Another approach to writing your own language on top of the Beam is to use
-the meta programming tools in Elixir. Elixir compiles to Beam code through
-the Erlang abstraxt syntax tree.
+在 Beam 上编写自己的编程语言的另一种方法，是使用 Elixir 中的元编程工具。Elixir 通过 Erlang 抽象语法树编译 Beam 代码。
 
-With Elixir's defmacro you can define your own Domain Specific Language,
-directly in Elixir.
+使用 Elixir 的 defmacro，您可以直接在 Elixir 中定义您自己的领域特定语言（DSL）。
 

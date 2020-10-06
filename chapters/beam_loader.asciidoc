@@ -1,28 +1,32 @@
 [[CH-Beam_loader]]
-== The BEAM Loader
+== BEAM 加载器
 
 // Translation to internal format.
 //   Rewrites
 //
 // Linking and Exports
 
-=== Transforming from Generic to Specific instructions
+=== 从通用指令变换为特定指令
 
-The BEAM loader does not just take the external beam format and writes
-it to memory. It also does a number of transformations on the code
-and translates from the external (generic) format to the internal
-(specific) format.
+BEAM 加载器不只是获取外部 BEAM 格式并将其写入内存。它还对代码进行许多变换，并将外部 (通用) 格式转换为内部 (特定) 格式。
 
-The code for the loader can be found in +beam_load.c+ (in
-+erts/emulator/beam+) but most of the logic for the translations are in
-the file +ops.tab+ (in the same directory).
+加载器的代码可以在 +beam_load.c+ (在 +erts/emulator/beam+ ) 中找到，但是大多数翻译逻辑都在文件 +ops.tab+ (在 +erts/emulator/beam/emu+ ) 中。
 
-The first step of the loader is to parse beam file, basically the same
-work as we did in Erlang in xref:CH-beam_modules[] but written in C.
+加载器的第一步是解析 beam 文件，基本上和我们在 xref:CH-beam_modules[] 中使用 Erlang 所做的工作相同，但是该程序是用 C 编写的。
 
-Then the rules in ops.tab are applied to instructions in the code
-chunk to translate the generic instruction to one or more specific
-instructions.
+然后是 ops.tab 中的规则被应用于代码块 (译注：code chuck, 见 xref:CH-beam_modules[]) 中的指令，以将通用指令转换为一个或多个特定指令。
+
+翻译表通过模式匹配工作。文件中的每一行都定义了一个或多个带参数的通用指令的模式，可选的一个箭头，后面跟着一个或多个要转换的指令。
+
+ops选项卡中的转换尝试处理编译器生成的指令模式，peephole将它们优化为更少的特定指令。ops选项卡转换尝试为选择的模式生成跳转表。
+
+文件操作。选项卡在运行时不解析，而是从ops生成一个模式匹配程序。选项卡并存储在生成的C文件中的数组中。perl脚本beam_makeops(在erts/emulator/utils中)在beam_opcodes.h和beam_opcodes.c文件中生成一组特定于目标的操作码和翻译程序(这些文件在给定的目标目录中结束，例如erts/emulator/x86_64-unknown-linux-gnu/opt/smp/)。
+
+同一个程序(beam_makeops)还为编译器后端beam_opcodes.erl生成Erlang代码。
+
+
+
+
 
 The translation table works through pattern matching. Each line in the
 file defines a pattern of one or more generic instructions with
@@ -45,7 +49,7 @@ e.g. +erts/emulator/x86_64-unknown-linux-gnu/opt/smp/+).
 The same program (beam_makeops) also generates the Erlang code for the
 compiler back end +beam_opcodes.erl+.
 
-=== Understanding ops.tab
+=== 理解 ops.tab
 
 The transformations in
 https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/ops.tab[`ops.tab`]
@@ -55,7 +59,7 @@ Erlang pattern matching, the different rules are triggered from top to bottom.
 The types that `ops.tab` uses for arguments in instructions can be found in
 xref:AP-Instructions[].
 
-==== Transformations
+==== 变换
 
 Most of the rules in `ops.tab` are transformations between different
 instructions. A simple transformation looks like this:
@@ -123,7 +127,7 @@ gen_jump_tab(S, Fail, Size, Rest):: calls the
 https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_load.c#L3692[gen_jump_tab]
 C function in `beam_load.c` that takes care of generating the appropriate instruction.
 
-==== Specific instruction
+==== 特定指令
 
 When all transformations are done, we have to decide how the specifc instruction should
 look like. Let's continue to look at `move_return`:
@@ -283,7 +287,7 @@ MoveCall(xb(Arg(0)), StoreSimpleDest);
 MoveCall(xb(Arg(0)));
 goto do_call;
 
-=== Optimizations
+=== 优化
 
 The loader performs many peephole optimizations when loading the code. The most important
 ones are instruction combining and instruction specialization.
@@ -301,7 +305,7 @@ So instead of having one `move_sd` instruction, `move_xx`, `move_xy` etc are gen
 with the arguments already decoded. This reduces the decode cost of the instructions,
 but again it is a tradeoff vs emulator code size.
 
-==== select_val optimizations
+==== select_val 优化
 
 The `select_val` instruction is emitted by the compiler to do control flow handling
 of many functions or case clauses. For instance:
@@ -346,7 +350,7 @@ used when a small amount of atoms or integers are to be selected from.
 
 select_val_bins:: Do a binary search of the sorted atoms or integers.
 
-==== pre-hashing of literals
+==== 文字预哈希
 
 When a literal is loaded and used as an argument to any of the bifs or instructions
 that need a hashed value of the literal, instead of hashing the literal value

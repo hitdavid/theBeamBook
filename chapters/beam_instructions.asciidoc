@@ -1,96 +1,59 @@
-
 [[CH-Instructions]]
-== Generic BEAM Instructions (25p)
+== 通用 BEAM 指令集
 
-Beam has two different instructions sets, an internal instructions
-set, called _specific_, and an external instruction set, called
-_generic_.
+Beam 有两种不同的指令集，一种是内部指令集，称为 _specific_ 特殊指令集，另一种是外部指令集，称为 _generic_ 通用指令集。
 
-The generic instruction set is what could be called the official
-instruction set, this is the set of instructions used by both the
-compiler and the Beam interpreter. If there was an official Erlang
-Virtual Machine specification it would specify this
-instruction set. If you want to write your own compiler to the Beam,
-this is the instruction set you should target. If you want to write
-your own EVM this is the instruction set you should handle.
+通用指令集可以被称为官方指令集，这也是编译器和 Beam 解释器都使用的指令集。如果有一个官方的 Erlang 虚拟机规范，它会指定这个指令集为官方指令集。如果你想编写自己的运行在 Beam 的程序编译器，这是你应该生成的目标指令集。如果您想编写自己的 EVM，这是您应该处理的指令集。
 
-The external instruction set is quite stable, but it does change
-between Erlang versions, especially between major versions.
+外部指令集非常稳定，但是在 Erlang 版本之间，特别是在主要版本之间，它也会发生变化。
 
-This is the instruction set which we will cover in this chapter.
+这是我们将在本章中介绍的指令集。
 
-The other instruction set, the specific, is an optimized instruction
-set used by the Beam to implement the external instruction set. To
-give you an understanding of how the Beam works we will cover this
-instruction set in xref:CH-Internal_instructions[]. The internal
-instruction set can change without warning between minor version or
-even in patch releases. Basing any tool on the internal instruction
-set is risky.
+另一个指令集 (specific) 是 Beam 用来实现外部指令集的优化指令集。为了让你理解 Beam 是如何工作的，我们将在 xref:CH-Internal_instructions[] 中介绍这个指令集。内部指令集可以在次要版本之间甚至在补丁版本之间更改而不发出警告。任何基于内部指令集的工具都是有风险的。
 
-In this chapter I will go through the general syntax for the
-instructions and some instruction groups in detail, a complete list of
-instructions with short descriptions can be found in
-xref:AP-Instructions[].
+在这一章中，我将详细介绍这些指令的一般语法和一些指令组，xref:AP-Instructions[] 中有一个完整的带有简短描述的指令列表。
 
-=== Instruction definitions
+=== 指令定义
 
-The names and opcodes of the generic instructions are defined
-in +lib/compiler/src/genop.tab+.
+通用指令的名称和操作码在 +lib/compiler/src/genop.tab+ 中被定义。
 
-The file contains a version number for the Beam instruction format, which
-also is written to +.beam+ files. This number has so far never changed
-and is still at version 0. If the external format would be changed in a
-non backwards compatible way this number would be changed.
+该文件包含 Beam 指令格式的版本号，该版本号也被写入 +.beam+ 文件中。这个数字到目前为止没有改变，仍然是版本0。如果外部格式将以非向后兼容的方式更改，则此数字将更改。
 
-The file genop.tab is used as input by +beam_makeops+ which is a perl script
-which generate code from the ops tabs. The generator is used both to generate
-Erlang code for the compiler (beam_opcodes.hrl and beam_opcodes.erl) and to
-generate C code for the emulator ( TODO: Filenames).
++beam_makeops+ 是一个从 ops tabs 生成代码的 perl 脚本，它使用 genop.tab 作为输入。生成器在为编译器生成 Erlang 代码 (beam_opcodes.hrl 和 beam_opcodes.erl)的同时，也为仿真器生成C代码(TODO: 是什么？？)。
 
-Any line in the file starting with "#" is a comment and ignored by
-+beam_makeops+. The file can contain definitions, which turns into a
-binding in the perl script, of the form:
+文件中任何以 "#" 开头的行都是注释，会被 +beam_makeops+ 忽略。该文件可以包含以下形式的定义，这些定义在perl脚本中转换为绑定：
 
  NAME=EXPR
 
-Like, e.g.:
+例如：
 
 ----
 BEAM_FORMAT_NUMBER=0
 ----
-The Beam format number is the same as the +instructionset+ field in
-the external beam format. It is only bumped when a backwards
-incompatible change to the instruction set is made.
+“Beam 格式编号”与”外部 Beam 格式“中的 +instructionset+ 字段相同。只有在对指令集进行向后不兼容的更改时才会发生改变。
 
-The main content of the file are the opcode definitions of the form:
+文件的主要内容是如下形式的操作码定义：
 
 ----
 OPNUM: [-]NAME/ARITY
 ----
-Where OPNUM and ARITY are integers, NAME is an identifier starting
-with a lowercase letter (a-z), and _:_, _-_, and _/_ are literals.
+OPNUM 和 ARITY 是整数，NAME 是一个以小写字母(a-z) 开头的标识符，而 ":"，"-" 和 "/" 是文字值 ( literals )。
 
-For example:
+例如:
 
 ----
 1: label/1
 ----
 
-The minus sign (-) indicates a deprecated function. A deprecated
-function keeps its opcode in order for the loader to be sort of
-backwards compatible (it will recognize deprecated instructions and
-refuse to load the code).
+负号 (-) 表示已经弃用而不建议使用的函数。已弃用的函数保留其操作码，以便加载器能够向后兼容 (它将识别已弃用的指令并拒绝加载代码)。
 
-In the rest of this Chapter we will go through some BEAM instructions
-in detail. For a full list with brief descriptions see:
-xref:AP-Instructions[].
+在本章的其余部分，我们将详细介绍一些 BEAM 指令。完整的列表和简要描述见：xref:AP-Instructions[] 。
 
-=== BEAM code listings
-As we saw in xref:CH-Compiler[] we can give the option 'S' to the
-Erlang compiler to get a +.S+ file with the BEAM code for the module
-in a human and machine readable format (actually as Erlang terms).
+=== BEAM 代码清单
 
-Given the file beamexample1.erl:
+正如我们在 xref:CH-Compiler[] 中看到的那样，我们可以向 Erlang 编译器提供选项 'S'，以人为和机器可读的格式(实际上是以 Erlang 项式的形式) 获取带有模块 BEAM 代码的 +.S+ 文件。
+
+给定文件 beamexample1.erl：
 
 [source,erlang]
 ----
@@ -101,8 +64,7 @@ Given the file beamexample1.erl:
 id(I) when is_integer(I) -> I.
 ----
 
-When compiled with +erlc -S beamexample.erl+ we get the following
-beamexmaple.S file:
+当用 erlc -S beamexample 编译时。我们得到了下面的 beamexmaple.S 文件:
 
 [source,erlang]
 ----
@@ -145,106 +107,51 @@ beamexmaple.S file:
     {call_ext_only,2,{extfunc,erlang,get_module_info,2}}.
 ----
 
-In addition to the actual beam code for the integer identity
-function we also get some meta instructions.
+实际的 beam 代码中，除了 id/1 函数，我们也得到一些元指令。
 
-The first line +{module, beamexample1}. %% version = 0+ tells
-us the module name "beamexample1" and the version number for
-the instruction set "0".
+第一行 +{module, beamexample1}. %% version = 0+ 告诉我们模块名称是"beamexample1"，指令集的版本号为 "0"。
 
-Then we get a list of exported functions "id/1, module_info/0,
-module_info/1". As we can see the compiler has added two auto
-generated functions to the code. These two functions are just
-dispatchers to the generic module info BIFs (erlang:module_info/1 and
-erlang:module_info/2) with the name of the module added as the first
-argument.
+然后我们得到一个导出函数的列表 "id/1, module_info/0, module_info/1"。我们可以看到，编译器向代码中添加了两个自动生成的函数。这两个函数只是通用模块信息 BIF ( erlang:module_info/1 和 erlang:module_info/2)的分派器，其中添加了模块的名称作为第一个参数。
 
-The line {attributes, []} list all defined compiler attributes, none in
-our case.
+行 {attributes, []} 列出了所有已定义的编译器属性，在我们的例子中没有。
 
-Then we get to know that there are less than 7 labels in the module,
-+{labels, 7}+, which makes it easy to do code loading in one pass.
+然后我们知道在模块中只有不到 7 个标签，+{labels, 7}+ 这一行使得一次加载代码变得很容易。
 
-The last type of meta instruction is the +function+ instruction on
-the format +{function, Name, Arity, StartLabel}+. As we can see with
-the +id+ function the start label is actually the second label in the
-code of the function.
+最后一种元指令是格式为 +{function, Name, Arity, StartLabel}+ 的 +function+ 指令。正如我们在 +id/1+ 函数中看到的，开始标签实际上是函数代码中的第二个标签。
 
-The instruction +{label, N}+ is not really an instruction, it does not
-take up any space in memory when loaded. It is just to give a local
-name (or number) to a position in the code. Each label potentially
-marks the beginning of a basic block since it is a potential
-destination of a jump.
++{label, N}+ ”指令“ 实际上不是一条指令，它在加载时不会占用内存中的任何空间。它只是为代码中的位置提供一个本地名称(或数字)。每个 label 都标记块的开始，因为每个 label 都可能是跳转的潜在目标。
 
-The first two instructions following the first label (+{label,1}+)
-are actually error generating code which adds the line number and
-module, function and arity information and throws an exception.
-That are the instructions +line+ and +func_info+.
+第一个标签 ( +{label,1}+ )之后的前两个指令实际上是为报错生成的代码，它添加行号、模块、函数和参数目信息，并抛出异常。即 +line+ 和 +func_info+ 指令。
 
-The meat of the function is after +{label,2}+, the instruction
-+{test,is_integer,{f,1},[{x,0}]}+. The test instruction tests if its
-arguments (in the list at the end, that is variable {x,0} in this
-case) fulfills the test, in this case is an integer (is_integer).
-If the test succeeds the next instruction (+return+) is executed.
-Otherwise the functions fails to label 1 (+{f,1}+), that is,
-execution continues at label one where a function clause exception
-is thrown.
+在 +{label,2}+ 之后，指令 +{test,is_integer,{f,1},[{x,0}]}+ 才是函数的”肉“。test 指令测试它的参数 (在末尾的列表中，在本例中是变量{x,0}) 是否满足测试，在本例中是一个整数测试 (is_integer)。如果测试成功，则执行下一条指令 ( +return+ )。否则，函数将失败，并跳转到 label 1 (+{f,1}+)，也就是说，在 label 1 处继续执行，此时会抛出函数子句异常。
 
-The other two functions in the file are auto generated. If we look at
-the second function the instruction +{move,{x,0},{x,1}}+ moves the
-argument in register x0 to the second argument register x1. Then the
-instruction +{move,{atom,beamexample1},{x,0}}+ moves the module name
-atom to the first argument register x0. Finally a tail call is made to
-+erlang:get_module_info/2+ 
-(+{call_ext_only,2,{extfunc,erlang,get_module_info,2}}+). As we will
-see in the next section there are several different call instructions.
+文件中的其他两个函数是自动生成的。如果我们查看第二个函数，则指令 +{move,{x,0},{x,1}}+ 将寄存器 x0 中的参数移动到第二个参数寄存器 x1 中。然后指令 +{move,{atom,beamexample1},{x,0}}+ 将模块名 atom 移动到第一个参数寄存器 x0。最后对 +erlang:get_module_info/2+  进行一个尾部调用 (+{call_ext_only,2,{extfunc,erlang,get_module_info,2}}+)。正如我们将在下一节中看到的，有几种不同的调用指令。
 
-=== Calls
+=== 调用 (call)
 
-As we have seen in xref:CH-Calls[] there are several different types
-of calls in Erlang. To distinguish between local and remote calls
-in the instruction set, remote calls have +_ext+ in their instruction
-names. Local calls just have a label in the code of the module, while
-remote calls takes a destination of the form +{extfunc, Module, Function,
-Arity}+.
+正如我们在 xref:CH-Calls[] 中看到的，Erlang 中有几种不同类型的调用。为了区分指令集中的本地调用和远程调用，远程调用的指令名中有 +_ext+。本地调用只有模块代码中的一个标签，而远程调用的目标形式为 +{extfunc, Module, Function, Arity}+。
 
-To distinguish between ordinary (stack building) calls and
-tail-recursive calls, the latter have either +_only+ or +_last+ in
-their name. The variant with +_last+ will also deallocate as many
-stack slot as given by the last argument.
+为了区分普通(堆栈构建)调用和尾部递归调用，后者的名称中有 +_only+ 或者 +_last+ 。带 +_last+ 的变体还将尽可能多的释放由最后一个参数给出的堆栈槽。
 
-There is also a +call_fun Arity+ instruction that calls the closure
-stored in register {x, Arity}. The arguments are stored in x0 to {x,
-Arity-1}.
+还有一个 +call_fun Arity+ 指令，它调用寄存器  {x, Arity} 中存储的闭包。参数存储在 x0 到 {x, array -1} 中。
 
-For a full listing of all types of call instructions see
-xref:AP-Instructions[].
+所有类型的调用指令的完整清单见 xref:AP-Instructions[]。
 
-=== Stack (and Heap) Management
+=== 栈 (堆) 管理
 
-The stack and the heap of an Erlang process on Beam share the same memory
-area see xref:CH-Processes[] and xref:CH-Memory[] for a full discussion.
-The stack grows toward lower addresses and the heap toward higher addresses.
-Beam will do a garbage collection if more space than what is available is
-needed on either the stack or the heap.
+在 Beam 上的 Erlang 进程的栈和堆共享相同的内存区域，请参阅 xref:CH-Processes[] 和 xref:CH-Memory[] 以获得完整的讨论。堆栈向低地址增长，堆向高地址增长。如果新的空间需求超出堆栈当前可提供的空间，Beam 将执行垃圾收集。
 
 **************************
 
-*A leaf function*:: A leaf function is a function which doesn't call
-                    any other function.
+叶函数 ( *A leaf function* ):: 叶函数是一个不调用任何其他函数的函数。
 
-*A non leaf function*:: A non leaf function is a function which may call
-                        another function.
+非叶函数 ( *A non leaf function* ):: 一个非叶函数是一个可以调用另一个函数的函数。
 
 **************************
 
+在进入非叶子函数时，CP指针 ( _continuation pointer_ ) 被保存在栈上，在退出时，它被从堆栈读回。这是由 +allocate+ 和 +deallocate+ 指令完成的，它们用于为当前指令设置和拆除栈帧。
 
-On entry to a non leaf function the _continuation pointer_ (CP) is saved on
-the stack, and on exit it is read back from the stack. This is done by the
-+allocate+ and +deallocate+ instructions, which are used for setting up
-and tearing down the stack frame for the current instruction.
-
-A function skeleton for a leaf function looks like this:
+叶函数的函数框架是这样的：
 
 [source,erlang]
 ----
@@ -256,8 +163,7 @@ A function skeleton for a leaf function looks like this:
     return.
 ----
 
-
-A function skeleton for a non leaf function looks like this:
+一个非叶函数的函数框架是这样的:
 
 [source,erlang]
 ----
@@ -270,17 +176,14 @@ A function skeleton for a non leaf function looks like this:
     ...
     call ...
     ...
-
+    
     {deallocate,Need}.
     return.
 ----
 
-The instruction +allocate StackNeed Live+ saves the continuation
-pointer (CP) and allocate space for +StackNeed+ extra words on the
-stack. If a GC is needed during allocation save +Live+ number of X
-registers. E.g. if +Live+ is 2 then registers X0 and X1 are saved.
+指令 +allocate StackNeed Live+ 保存 CP 指针( continuation pointer ) ，并在栈上为 +StackNeed+ 分配额外空间。如果在分配期间需要GC，则需要保存 +Live+ 个 X 寄存器。例如，如果 +Live+ 是 2，那么寄存器 X0 和 X1 将被保存。
 
-When allocating on the stack, the stack pointer (E) is decreased.
+在栈上分配空间时，栈指针 (E) 将被减小。
 
 .Allocate 1 0
 [ditaa]
@@ -295,24 +198,19 @@ When allocating on the stack, the stack pointer (E) is decreased.
          | xxx |            | xxx |
 ----
 
-For a full listing of all types of allocate and deallocate
-instructions see xref:AP-Instructions[].
+所有类型的分配 ( allocate ) 和释放 ( deallocate ) 指令的完整清单见 xref:AP-Instructions[]。
+
+=== 消息传递
+
+用 beam 码发送信息非常直接。你只需要使用 +send+ 指令。注意尽管发送指令不带任何参数,它更像是一个函数调用。它假设参数 (目的地和消息) 在参数寄存器 X0 和 X1 中。消息也被从 X1 复制到 X0。
+
+接收消息要稍微复杂一些，因为它既涉及带有模式匹配的选择性接收，又在函数体中引入一个 yield / resume 点。(还有一个特性可以使用 refs 最小化消息队列扫描，稍后将对此进行详细介绍。)
+
+==== 最小接收循环
+
+一个最小的接收循环，它接受任何消息并且没有超时 (例如：+receive _ -> ok end+ )，在 BEAM 代码中是这样的：
 
 
-=== Message Passing
-
-Sending a message is straight forward in beam code. You just use the
-+send+ instruction. Note though that the send instruction does not
-take any arguments, it is more like a function call. It assumes that
-the arguments (the destination and the message) are in the argument
-registers X0 and X1. The message is also copied from X1 to X0.
-
-Receiving a message  is a bit more complicated since  it involves both
-selective receive with pattern  matching and introduces a yield/resume
-point within  a function  body. (There  is also  a special  feature to
-minimize message queue scanning using refs, more on that later.)
-
-==== A Minimal Receive Loop
 
 A minimal receive loop, which accepts any message and has no timeout
 (e.g. +receive _ -> ok end+) looks like this in BEAM code:
@@ -331,25 +229,15 @@ A minimal receive loop, which accepts any message and has no timeout
      ...
 ----
 
-The +loop_rec L2 x0+ instruction first checks if there is any message
-in the message queue. If there are no messages execution jumps to L2,
-where the process will be suspended waiting for a message to arrive.
+ +loop_rec L2 x0+ 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。
 
-If there is a message in the message queue the +loop_rec+ instruction
-also moves the message from the _m-buf_ to the process heap. See
-xref:CH-Memory[] and xref:CH-Processes[] for details of the m-buf
-handling.
+如果消息队列中有消息，则 +loop_rec+ 指令还将该消息从 _m-buf_  移动到进程堆中。有关 m-buf 处理的详细信息，请参阅 xref:CH-Memory[] 和 xref:CH-Processes[]。
 
-For code like +receive _ -> ok end+, where we accept any messages,
-there is no pattern matching needed, we just do a +remove_message+
-which unlinks the next message from the message queue. (It also
-removes any timeout, more on this soon.)
+对于像 +receive _ -> ok end+ 这样的代码，我们接受任何消息，且不需要模式匹配，我们只需要执行一个  +remove_message+ 来从消息队列中将本消息与下一条消息分离。(它还消除了任何超时，稍后将详细介绍。)
 
-==== A Selective Receive Loop
+==== 选择性接收循环
 
-For a selective receive like e.g. +receive [] -> ok end+ we will
-loop over the message queue to check if any message in the queue
-matches.
+对于一个选择性接收，例如 +receive [] -> ok end+ ，我们将在消息队列循环检查队列中是否有匹配的消息。 
 
 [source,erlang]
 ----
@@ -366,23 +254,14 @@ matches.
     ...
 ----
 
-In this case we do a pattern match for Nil after the loop_rec
-instruction if there was a message in the mailbox. If the message
-doesn't match we end up at L3 where the instruction +loop_rec_end+
-advances the save pointer to the next message (+p->msg.save =
-&(*p->msg.save)->next+) and jumps back to L2.
+在本例中，如果邮箱中有消息，我们在 loop_rec 指令之后对 Nil 执行模式匹配。如果消息不匹配，我们会在 L3 结束，其中  +loop_rec_end+ 指令将保存指针指向到下一个消息 (+p->msg.save =
+&(*p->msg.save)->next+) ，并跳转回 L2。
 
-If there are no more messages in the message queue the process is
-suspended by the +wait+ instruction at L4 with the save pointer pointing
-to the end of the message queue. When the processes is rescheduled
-it will only look at new messages in the message queue (after the save
-point).
+如果消息队列中没有更多消息，则进程将被位于 L4 的  +wait+  指令挂起，保存指针将指向消息队列的末尾。当进程被重新调度时，它将只查看消息队列中的新消息 (保存点之后)。
 
-==== A Receive Loop With a Timeout
+==== 带超时的接收循环
 
-If we add a timeout to our selective receive the wait instruction is
-replaced by a wait_timeout instruction followed by a timeout
-instruction and the code following the timeout.
+如果我们向选择性接收添加一个超时，那么 wait 指令将被一个 wait_timeout 指令取代，后面跟着一个超时指令和超时之后要执行的代码。
 
 [source,erlang]
 ----
@@ -400,54 +279,27 @@ instruction and the code following the timeout.
     ...
 ----
 
-The +wait_timeout+ instructions sets up a timeout timer with the given
-time (1000 ms in our example) and it also saves the address of the
-next instruction (the +timeout+) in +p->def_arg_reg[0]+ and then
-when the timer is set,  +p->i+ is set to point to def_arg_reg.
++wait_timeout+ 指令用给定的时间 (在我们的示例中是 1000 毫秒) 设置一个超时计时器，它还在 +p->def_arg_reg[0]+ 保存了下一条指令的地址 ( +timeout+ )，然后当计时器被设置后，将 +p->i+ 设置为指向 def_arg_reg。
 
-This means that if no matching message arrives while the process is
-suspended a timeout will be triggered after 1 second and execution for
-the process will continue at the timeout instruction.
+这意味着当进程挂起时，如果没有匹配的消息到达，1 秒后超时将被触发，进程将在超时指令处继续执行指令。
 
-Note that if a message that doesn't match arrives in the mailbox, the
-process is scheduled for execution and will run the pattern matching
-code in the receive loop, but the timeout will not be canceled. It is
-the +remove_message+ code which also removes any timeout timer.
+注意，如果邮箱中接收到不匹配的消息，进程将被调度执行，并将在接收循环中运行模式匹配代码，但不会取消超时。因为超时计时器的取消是在 +remove_message+ 中执行的。
 
-The +timeout+ instruction resets the save point of the mailbox to the
-first element in the queue, and clears the timeout flag (F_TIMO) from
-the PCB.
+超时指令将邮箱的保存点重置为队列中的第一个元素，并从 PCB 中清除超时标志 (F_TIMO)。
 
-==== The Synchronous Call Trick (aka The Ref Trick)
+==== 同步调用的技巧 ( Ref Trick )
 
-We have now come to the last version of our receive loop, where we
-use the ref trick alluded to earlier to avoid a long message box scan.
+现在我们已经到了接收循环的最后一个版本，我们使用前面提到的 ref 技巧来避免长信箱扫描。
 
-A common pattern in Erlang code is to implement a type of "remote
-call" with send and a receive between two processes. This is for
-example used by gen_server. This code is often hidden behind a library
-of ordinary function calls. E.g., you call the function
-+counter:increment(Counter)+ and behind the scene this turns into
-something like +Counter ! {self(), inc}, receive {Counter, Count} ->
-Count end+.
+Erlang 代码中的一种常见模式是实现一种远程调用  "remote call" ，在两个进程之间进行消息的发送和接收。例如 gen_server 中就是这样用的。这种代码通常隐藏在一个用普通函数调用包装过的库之后。例如，你调用函数 +counter:increment(Counter)+ ，在这个场景的背后，它变成了类似 +Counter ! {self(), inc}, receive {Counter, Count} -> Count end+。
 
-This is usually a nice abstraction to encapsulate state in a
-process. There is a slight problem though when the mailbox of the
-calling process has many messages in it. In this case the receive will
-have to check each message in the mailbox to find out that no message
-except the last matches the return message.
+这通常是封装进程中状态的很好的抽象。不过，当调用进程的邮箱中有许多消息时，会出现一个小问题。在这种情况下，receive 必须检查邮箱中的每条消息，以确定除最后一条消息外没有任何消息与返回消息匹配。
 
-This can quite often happen if you have a server that receives many
-messages and for each message does a number of such remote calls, if
-there is no back throttle in place the servers message queue will
-fill up.
+如果您的服务器接收了许多消息，并且对于每个消息执行了许多此类远程调用，那么这种情况经常会发生，如果没有适当的反压，服务器消息队列将被填满。
 
-To remedy this there is a hack in ERTS to recognize this pattern and
-avoid scanning the whole message queue for the return message.
+为了补救这个问题，在 ERTS 中有一个技巧可以识别这个模式，并避免扫描整个消息队列来寻找返回消息。
 
-The compiler recognizes code that uses a newly created reference (ref)
-in a receive (see xref:ref_trick_code[]), and emits code to avoid the
-long inbox scan since the new ref can not already be in the inbox.
+编译器识别在接收中使用新创建的引用 (ref) 的代码 ( 参见 xref:ref_trick_code[])，并输出能避免长时间的收件箱扫描的代码，因为新的引用不可能已经在收件箱中。
 
 [source,erlang]
 ----
@@ -458,8 +310,7 @@ long inbox scan since the new ref can not already be in the inbox.
   end.
 ----
 
-This gives us the following skeleton for a complete receive, see
-xref:ref_receive[].
+这为我们提供了以下完整接收的框架，请参见 xref:ref_receive[]。
 
 [source,erlang]
 ----
@@ -484,12 +335,6 @@ xref:ref_receive[].
   {label,6}.
 ----
 
-The +recv_mark+ instruction saves the current position (the end
-+msg.last+) in +msg.saved_last+ and the address of the label
-in +msg.mark+
++recv_mark+ 指令在  +msg.saved_last+ 中保存当前位置( +msg.last+ )，在 +msg.mark+ 中保存 label 地址。
 
-The +recv_set+ instruction checks that +msg.mark+ points to the next
-instruction and in that case moves the save point (+msg.save+) to the
-last message received before the creation of the ref
-(+msg.saved_last+). If the mark is invalid ( i.e. not equal to
-+msg.save+) the instruction does nothing.
++recv_set+ 指令检查 +msg.mark+ 是否指向下一条指令，如果指向下一条指令，将保存点 ( +msg.save+ ) 移动到创建 ref  (+msg.saved_last+) 之前收到的最后一条消息。如果 +msg.mark+ 无效 (即不等于 msg.save)，则指令不执行任何操作。

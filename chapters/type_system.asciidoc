@@ -1,30 +1,17 @@
 [[CH-TypeSystem]]
-== The Erlang Type System and Tags
+== Erlang 类型系统和标签
 
-One of the most important aspects of ERTS to understand is how ERTS
-stores data, that is, how Erlang terms are stored in memory. This
-gives you the basis for understanding how garbage collection works,
-how message passing works, and gives you an insight into how much
-memory is needed.
+要理解 ERTS 最重要的方面之一，是 ERTS 如何存储数据，即 Erlang 项式如何存储在内存中。这为你理解垃圾收集如何工作、消息传递如何工作提供了基础，并使你了解需要多少内存。
 
-In this chapter you will learn the basic data types of Erlang and
-how they are implemented in ERTS. This knowledge will be essential
-in understanding the chapter on memory allocation and garbage
-collection, see xref:CH-Memory[].
+在本章中，您将学习Erlang 的基本数据类型以及如何在ERTS中实现它们。这些知识对于理解内存分配和垃圾收集这一章非常重要，请参阅xref:CH-Memory[]。
 
-=== The Erlang Type System
+===  Erlang 类型系统
 
-Erlang is _strongly typed_. That is, there is no way to coerce one
-type into another type, you can only convert from one type to another.
-Compare this to e.g. C where you can coerce a _char_ to an _int_ or
-any type pointed to by a pointer to (_void *_).
+Erlang 是强类型( _strong typed_ )语言。也就是说，无法将一种类型强制转换 ( coerce ) 为另一种类型，只能从一种类型转换 ( convert ) 为另一种类型。与 C语言 比较，在  C 语言中，你可以强制一个 _char_ 转换为一个 _int_，或任何类型的指针指向 ( _void *_ )。
 
-The Erlang type lattice is quite flat, there are only a few real sub
-types, numbers have the sub types integer and float, and list has the
-subtypes nil and cons. (One could also argue that tuple has one
-subtype for each size.)
+Erlang 类型格( lattice )是非常扁平的，只有很少的子类型，number有 整数( integer ) 和浮点( float )子类型，list有 nil（空表） 和 cons（列表单元，译注：源自list constructor） 子类型 (也可以认为每个大小的元组都有一个子类型)。
 
-The Erlang Type Lattice
+Erlang类型格
 
 
 [[erlang_type_lattice]]
@@ -105,80 +92,56 @@ digraph G {
 
 ----
 
-There is a partial order (< and >) on all terms in Erlang where the
-types are ordered from left to right in the above lattice.
 
-The order is partial and not total since integers and floats
-are converted before comparison. Both (1 < 1.0) and (1.0 < 1) are
-false, and (1 =< 1.0 and 1 >= 1.0) and (1 =/= 1.0). The number with
-the lesser precision is converted to the number with higher precision.
-Usually integers are converted to floats. For very large or small
-floats the float is converted to an integer. This happens if all
-significant digits are to the left of the decimal point.
 
-Since Erlang 18, when two maps are compared for order they are
-compared as follows: If one map has fewer elements than the other it
-is considered smaller. Otherwise the keys are compared in term order,
-where all integers are considered smaller than all floats. If all the
-keys are the same then each value pair (in key order) is compared
-arithmetically, i.e. by first converting them to the same precision.
+Erlang 中的所有项都有一个部分顺序 ( < 和 > )，上面型格图中各种类型在是从左到右排序的。
 
-The same is true when comparing for equality, thus +#{1 => 1.0} == #{1 => 1} but #{1.0 => 1} /= #{1 => 1}+.
+顺序是部分的而不是全部的，因为整数和浮点数在比较之前是要进行转换的。(1 < 1.0) 和 (1.0 < 1) 都是 false，(1 =< 1.0和1 >= 1.0) 和 (1 =/= 1.0) 都是 false。精度较低的数字被转换为精度较高的数字。通常整数被转换为浮点数。对于非常大或非常小的浮点数，如果所有有效数字都在小数点的左边，浮点数就会被转换为整数。
 
-In Erlang versions prior to 18 keys were also compared
-arithmetically.
+从 Erlang 18 开始，当比较两个 Map 的顺序时，它们的比较如下：如果一个 Map 的元素少于另一个，则认为它更小。否则，按项顺序比较键，即认为所有整数都比所有浮点数小。如果所有的键都是相同的，那么每个值对 (按键的顺序) 将进行算术比较，即首先将它们转换为相同的精度。
 
-Erlang is dynamically typed. That is, types will be checked at
-runtime and if a type error occurs an exception is thrown. The
-compiler does not check the types at compile time, unlike in a
-statically typed language like C or Java where you can get a
-type error during compilation.
+当比较相等时也是如此，因此 +#{1 => 1.0}== #{1 => 1}，但是 #{1.0 => 1}/= #{1 => 1}+。
 
-These aspects of the Erlang type system, strongly dynamically typed
-with an order on the types puts some constraints on the implementation
-of the language. In order to be able to check and compare types at
-runtime each Erlang term has to carry its type with it.
+在 Erlang 18 之前的版本，key 的比较也是算术比较。
 
-This is solved by _tagging_ the terms.
+Erlang 是动态类型的。也就是说，将在运行时检查类型，如果发生类型错误，则抛出异常。编译器不会在编译时检查类型，这与 C 或 Java 等静态类型语言不同，在这些语言中，编译时可能会出现类型错误。
 
-=== The Tagging Scheme
+Erlang 类型系统的这些方面是强动态类型，类型上有一个顺序，这给语言的实现带来了一些约束。为了能够在运行时检查和比较类型，每个 Erlang 项式都必须携带它的类型。
 
-In the memory representation of an Erlang term a few bits are reserved
-for a type tag. For performance reasons the terms are divided into
-_immediates_ and _boxed_ terms. An immediate term can fit into a
-machine word, that is, in a register or on a stack slot. A boxed term
-consists of two parts: a tagged pointer and a number of words stored
-on the process heap. The _boxes_ stored on the heap have a header and
-a body, unless it is a list.
+这可以通过标记这些项式来解决。
 
-Currently ERTS uses a staged tag scheme, the history and reasoning
-behind the this scheme is explained in a technical report from the
-HiPE group. (See
-link:http://www.it.uu.se/research/publications/reports/2000-029/[])
-The tagging scheme is implemented in
-link:https://github.com/erlang/otp/blob/OTP-23.0/erts/emulator/beam/erl_term.h[erl_term.h].
+=== 标签方案
 
-The basic idea is to use the least significant bits for tags. Since
-most modern CPU architectures aligns 32- and 64-bit words, there are at
-least two bits that are "unused" for pointers. These bits can be
-used as tags instead. Unfortunately those two bits are not enough
-for all the types in Erlang, more bits are therefore used as needed.
+在 Erlang 项式的内存表示中，为类型标记保留一些位。出于性能原因，项式被分为即时 ( _immediates_ ) 和装箱 ( _boxed_ )  项式。即时项式可以放入一个机器字中，也就是说，它可以放在寄存器（译注：指通用寄存器）或堆栈槽中。装箱项式由两部分组成：标记的指针和存储在进程堆上的若干字长。除列表外，存储在堆中的装箱 ( _box_ ) 项式都有一个头 header 和一个体  body。
 
-==== Tags for Immediates
+目前ERTS使用分级标签方案，HiPE小组的技术报告解释了该方案背后的历史和原因。(参见 link:http://www.it.uu.se/research/publications/2000029/[]) 标签方案的实现见 link:https://github.com/erlang/otp/blob/OTP-23.0/erts/emulator/beam/erl_term.h[erl_term.h]。
 
-The first two bits (the primary tag) are used as follows:
+基本思想是使用标签的最低有效位。由于大多数现代CPU体系结构对32位或64位的字长进行对齐，因此至少有两位是指针“未使用的”。这些位可以用作标签。不幸的是，对于 Erlang 中的所有类型，这两个位是不够的，因此需要使用更多的位。(译注：要了解这部分的内容，最好结合 OTP 源码：erl_term.h L: 70 开始阅读 )
+
+==== 即时类型的标签
+
+主标签（最低  2 位）被以如下方式使用：
 
 ----
   00 Header (on heap) CP (on stack)
-  01 List (cons)
+  01 List (cons，译注：列表项)
   10 Boxed
   11 Immediate
 ----
 
-The header tag is only used on the heap for header words, more on that later.
-On the stack 00 indicates a return address.
-The list tag is used for cons cells, and the boxed tag is used for all other
-pointers to the heap. The immediate tag is used further divided like this:
+(译注：以下内容源自 OTP erl_term.h, L:70)
+
+[source,c++]
+-------------------------------------------
+#define _TAG_PRIMARY_SIZE   2
+#define _TAG_PRIMARY_MASK  0x3
+#define TAG_PRIMARY_HEADER 0x0
+#define TAG_PRIMARY_LIST   0x1
+#define TAG_PRIMARY_BOXED  0x2
+#define TAG_PRIMARY_IMMED1 0x3
+-------------------------------------------
+
+Header 标记仅用于堆上的项式标签头，稍后将对此进行详细说明。栈上的 00 表示返回地址。列表标记用于 cons 单元格，装箱类型标记用于指向堆的所有其他装箱类型的指针。即时类型标签被进一步划分如下:
 
 ----
  00 11 Pid
@@ -187,93 +150,81 @@ pointers to the heap. The immediate tag is used further divided like this:
  11 11 Small integer
 ----
 
-Pid and ports are immediates and can be compared for equality
-efficiently. They are of course in reality just references, a pid
-is a process identifier and it points to a process. The process does
-not reside on the heap of any process but is handled by the PCB.
-A port works in much the same way.
+(译注：以下内容源自 OTP erl_term.h, L:79) 
+
+[source,c++]
+-------------------------------------------
+#define _TAG_IMMED1_SIZE	4
+#define _TAG_IMMED1_MASK	0xF
+#define _TAG_IMMED1_PID		((0x0 << _TAG_PRIMARY_SIZE) | TAG_PRIMARY_IMMED1)
+#define _TAG_IMMED1_PORT	((0x1 << _TAG_PRIMARY_SIZE) | TAG_PRIMARY_IMMED1)
+#define _TAG_IMMED1_IMMED2	((0x2 << _TAG_PRIMARY_SIZE) | TAG_PRIMARY_IMMED1)
+#define _TAG_IMMED1_SMALL	((0x3 << _TAG_PRIMARY_SIZE) | TAG_PRIMARY_IMMED1)
+-------------------------------------------
+
+Pid 和 port 是即时类型的，可以比较有效的比较大小。它们实际上只是引用，pid 是一个进程标识符，它指向一个进程。该进程不驻留在任何进程的堆中，而是由PCB处理。port 的工作方式也大致相同。
 
 //  (MORE ON THIS REF!)
 
-There are two types of integers in ERTS, small integers and
-bignums. Small integers fits in one machine word minus four tag bits,
-i.e. in 28 or 60 bits for 32 and 64 bits system respectively. Bignums
-on the other hand can be as large as needed (only limited by the heap
-space) and are stored on the heap, as boxed objects.
+在 ERTS 中有两种类型的整数：小整数和大整数。小整数使用一个机器字减去四个标签位，即在 32位机和 64 位机上分别对应 28 位或 60 位。另一方面，大整数可以根据需要大小扩展 ( 仅受堆空间大小的限制 )，并作为装箱对象存储在堆中。
 
-By having all four tag bits as ones for small integers the emulator
-can make an efficient test when doing integer arithmetic to see if
-both arguments are immediates. (+is_both_small(x,y)+ is defined as
-+(x & y & 1111) == 1111+).
+小整数的所有 4 个标记位为 1，仿真器可以在进行整数运算时进行有效的测试，以查看两个参数是否都是即时类型的。 (+is_both_small(x,y)+ 被定义为 +(x & y & 1111) == 1111+).
 
-The Immediate 2 tag is further divided like this:
-
+Immediate 2 的标签被进一步划分如下:
 ----
  00 10 11 Atom
  01 10 11 Catch
- 10 10 11   [UNUSED]
+ 10 10 11  [UNUSED]
  11 10 11 Nil
 ----
+(译注：以下内容源自 OTP erl_term.h, L:86) 
 
-Atoms are made up of an index in the _atom table_ and the atom tag.
-Two atom immediates can be compared for equality by just comparing
-their immediate representation.
+```c++
+#define _TAG_IMMED2_SIZE	6
+#define _TAG_IMMED2_MASK	0x3F
+#define _TAG_IMMED2_ATOM	((0x0 << _TAG_IMMED1_SIZE) | _TAG_IMMED1_IMMED2)
+#define _TAG_IMMED2_CATCH	((0x1 << _TAG_IMMED1_SIZE) | _TAG_IMMED1_IMMED2)
+#define _TAG_IMMED2_NIL		((0x3 << _TAG_IMMED1_SIZE) | _TAG_IMMED1_IMMED2)
+```
 
-In the atom table atoms are stored as C structs like this:
+原子由(指向) _atom table_ 表中的索引和 atom 标签组成。要比较两个 atom 即时类型变量是否相等，只要比较两个原子的即时表示就可以。
 
-----
+在 atom table 中，原子被存储为这样的 C 结构体：
+
+[source,c]
+-------------------------------------------
 typedef struct atom {
     IndexSlot slot;  /* MUST BE LOCATED AT TOP OF STRUCT!!! */
     int len;         /* length of atom name */
     int ord0;        /* ordinal value of first 3 bytes + 7 bits */
     byte* name;      /* name of atom */
 } Atom;
-----
+-------------------------------------------
 
-Thanks to the +len+ and the +ord0+ fields the order of two atoms can
-be compared efficiently as long as they don't start with the same four
-letters.
+由于 +len+ 和 +ord0+ 字段，只要两个原子不以相同的四个字母开头，它们的顺序可以高效地进行比较。
 
 ****
 
-NOTE: If you for some reason generate atoms with a pattern like name
-followed by a number and then store them in an ordered list or ordered
-tree the atom comparison will be more expensive if they all have the
-same first letters (e.g. foo_1, foo_2, etc.).
+NOTE: 如果出于某种原因，您生成了具有类似名称后面跟着数字这样模式的原子，然后将它们存储在有序列表或有序树中，如果它们的首字母都相同(例如，foo_1, foo_2，等等)，那么比较原子的代价会更大。
+这并不是说您应该生成 atom 名称，因为atom表是有限的。我只是说，这里有一个邪恶的优化技巧。
 
-Not that you should ever generate atom names, since the atom table is
-limited. I'm just saying, there is an evil micro optimization to be
-found here.
-
-You would of course never do this, but if you find code that generates
-atom with a number followed by a postfix name, now you know what the
-author of that code might have been thinking.
+当然，您永远不会这样做，但是如果您发现有数字后跟后缀名的 atom 的代码，那么现在您就知道代码的作者可能在想什么了。
 
 ****
 
-The Catch immediate is only used on the stack. It contains an indirect
-pointer to the continuation point in the code where execution should
-continue after an exception. More on this in xref:CH-Calls[].
+Catch 即时类型只在堆栈上使用。它包含一个间接的指针，指向代码中的接续点(continuation point)，在异常发生后执行应该从接续点继续开始。在 xref:CH-Calls[] 中有更多的内容。
 
-The Nil tag is used for the empty list (nil or +[]+). The rest of the
-word is filled with ones.
+Nil 标记用于空列表( Nil 或 +[]+ )。机器字的其余部分都被 1 填充。
 
+==== 装箱项式的标签
 
-==== Tags for Boxed Terms
+存储在堆上的 Erlang 项式使用几个机器字。列表或 cons 列表项单元只是堆上两个连续的字：头和尾(或者在 lisp 和 ERTS 代码的某些地方称为 car 和 cdr)。
 
-Erlang terms stored on the heap use several machine words. Lists, or
-cons cells, are just two consecutive words on the heap: the head and
-the tail (or car and cdr as they are called in lisp and some places in
-the ERTS code).
+Erlang 中的字符串只是表示字符的整数列表。在 Erlang OTP R14 之前的版本中，字符串被编码为 ISO-latin-1 (ISO8859-1)。自 R14 开始，字符串被编码为 Unicode 代码列表。对于 latin-1 中的字符串，它们和 Unicode 没有区别，因为latin-1是Unicode的子集。
 
-A string in Erlang is just a list of integers representing
-characters. In releases prior to Erlang OTP R14 strings have been
-encoded as ISO-latin-1 (ISO8859-1). Since R14 strings are encoded as
-lists of Unicode code points. For strings in latin-1 there is no
-difference since latin-1 is a subset of Unicode.
 // Describe Unicode code points better. Is the subset thing true?
 
-The string "hello" might look like this in memory:
+字符串 "hello" 在内存中看起来可能是这样的：
 
 .Representation of the string "hello" on a 32 bit machine.
 [ditaa]
@@ -301,12 +252,9 @@ The string "hello" might look like this in memory:
 
 ----
 
-All other boxed terms start with a header word. The header word uses a
-four bit header tag and the primary header tag (00), it also has an
-arity which says how many words the boxed term uses. On a 32-bit
-machine it looks like this: +aaaaaaaaaaaaaaaaaaaaaaaaaatttt00+.
+所有其他装箱的项式的主标签都以 Header 00 开头。标头字使用 4 位标头标记和 2 位主标头标记(00)，它还具有一个 arity域，用来表示装箱类型的变量使用了多少个字存储。在32位计算机上，它看起来是这样的：+aaaaaaaaaaaaaaaaaaaaaatttt00+。
 
-The tags are:
+标签如下：
 
 ----
 
@@ -320,7 +268,7 @@ The tags are:
  1000	REFC_BINARY     |               |
  1001	HEAP_BINARY     | BINARIES      |
  1010	SUB_BINARY      |               |
- 1011     [UNUSED]
+ 1011    [UNUSED]
  1100   EXTERNAL_PID  |                 |
  1101   EXTERNAL_PORT | EXTERNAL THINGS |
  1110   EXTERNAL_REF  |                 |
@@ -328,9 +276,86 @@ The tags are:
 
 ----
 
-Tuples are stored on the heap with just the arity and then each
-element in the following words. The empty tuple +{}+ is stored just as
-the word 0 (header tag 0, tuple tag 0000, and arity 0).
+(译注：以下内容源自 OTP erl_term.h, L:92) 
+
+[source,c++]
+-------------------------------------------
+/*
+ * HEADER representation:
+ *
+ *	aaaaaaaaaaaaaaaaaaaaaaaaaatttt00	arity:26, tag:4
+ *
+ * HEADER tags:
+ *
+ *	0000	ARITYVAL
+ *  0001    BINARY_AGGREGATE                |
+ *	001x	BIGNUM with sign bit		|
+ *	0100	REF				|
+ *	0101	FUN				| THINGS
+ *	0110	FLONUM				|
+ *  0111    EXPORT                          |
+ *	1000	REFC_BINARY	|		|
+ *	1001	HEAP_BINARY	| BINARIES	|
+ *	1010	SUB_BINARY	|		|
+ *  1011    Not used; see comment below
+ *  1100    EXTERNAL_PID  |                 |
+ *  1101    EXTERNAL_PORT | EXTERNAL THINGS |
+ *  1110    EXTERNAL_REF  |                 |
+ *  1111    MAP
+ *
+ * COMMENTS:
+ *
+ * - The tag is zero for arityval and non-zero for thing headers.
+ * - A single bit differentiates between positive and negative bignums.
+ * - If more tags are needed, the REF and and EXTERNAL_REF tags could probably
+ *   be combined to one tag.
+ *
+ * XXX: globally replace XXX_SUBTAG with TAG_HEADER_XXX
+ */
+#define ARITYVAL_SUBTAG		(0x0 << _TAG_PRIMARY_SIZE) /* TUPLE */
+#define BIN_MATCHSTATE_SUBTAG	(0x1 << _TAG_PRIMARY_SIZE) 
+#define POS_BIG_SUBTAG		(0x2 << _TAG_PRIMARY_SIZE) /* BIG: tags 2&3 */
+#define NEG_BIG_SUBTAG		(0x3 << _TAG_PRIMARY_SIZE) /* BIG: tags 2&3 */
+#define _BIG_SIGN_BIT		(0x1 << _TAG_PRIMARY_SIZE)
+#define REF_SUBTAG		(0x4 << _TAG_PRIMARY_SIZE) /* REF */
+#define FUN_SUBTAG		(0x5 << _TAG_PRIMARY_SIZE) /* FUN */
+#define FLOAT_SUBTAG		(0x6 << _TAG_PRIMARY_SIZE) /* FLOAT */
+#define EXPORT_SUBTAG		(0x7 << _TAG_PRIMARY_SIZE) /* FLOAT */
+#define _BINARY_XXX_MASK	(0x3 << _TAG_PRIMARY_SIZE)
+#define REFC_BINARY_SUBTAG	(0x8 << _TAG_PRIMARY_SIZE) /* BINARY */
+#define HEAP_BINARY_SUBTAG	(0x9 << _TAG_PRIMARY_SIZE) /* BINARY */
+#define SUB_BINARY_SUBTAG	(0xA << _TAG_PRIMARY_SIZE) /* BINARY */
+/*   _BINARY_XXX_MASK depends on 0xB being unused */
+#define EXTERNAL_PID_SUBTAG	(0xC << _TAG_PRIMARY_SIZE) /* EXTERNAL_PID */
+#define EXTERNAL_PORT_SUBTAG	(0xD << _TAG_PRIMARY_SIZE) /* EXTERNAL_PORT */
+#define EXTERNAL_REF_SUBTAG	(0xE << _TAG_PRIMARY_SIZE) /* EXTERNAL_REF */
+#define MAP_SUBTAG		(0xF << _TAG_PRIMARY_SIZE) /* MAP */
+
+
+#define _TAG_HEADER_ARITYVAL       (TAG_PRIMARY_HEADER|ARITYVAL_SUBTAG)
+#define _TAG_HEADER_FUN	           (TAG_PRIMARY_HEADER|FUN_SUBTAG)
+#define _TAG_HEADER_POS_BIG        (TAG_PRIMARY_HEADER|POS_BIG_SUBTAG)
+#define _TAG_HEADER_NEG_BIG        (TAG_PRIMARY_HEADER|NEG_BIG_SUBTAG)
+#define _TAG_HEADER_FLOAT          (TAG_PRIMARY_HEADER|FLOAT_SUBTAG)
+#define _TAG_HEADER_EXPORT         (TAG_PRIMARY_HEADER|EXPORT_SUBTAG)
+#define _TAG_HEADER_REF            (TAG_PRIMARY_HEADER|REF_SUBTAG)
+#define _TAG_HEADER_REFC_BIN       (TAG_PRIMARY_HEADER|REFC_BINARY_SUBTAG)
+#define _TAG_HEADER_HEAP_BIN       (TAG_PRIMARY_HEADER|HEAP_BINARY_SUBTAG)
+#define _TAG_HEADER_SUB_BIN        (TAG_PRIMARY_HEADER|SUB_BINARY_SUBTAG)
+#define _TAG_HEADER_EXTERNAL_PID   (TAG_PRIMARY_HEADER|EXTERNAL_PID_SUBTAG)
+#define _TAG_HEADER_EXTERNAL_PORT  (TAG_PRIMARY_HEADER|EXTERNAL_PORT_SUBTAG)
+#define _TAG_HEADER_EXTERNAL_REF   (TAG_PRIMARY_HEADER|EXTERNAL_REF_SUBTAG)
+#define _TAG_HEADER_BIN_MATCHSTATE (TAG_PRIMARY_HEADER|BIN_MATCHSTATE_SUBTAG)
+#define _TAG_HEADER_MAP	           (TAG_PRIMARY_HEADER|MAP_SUBTAG)
+
+
+#define _TAG_HEADER_MASK	0x3F
+#define _HEADER_SUBTAG_MASK	0x3C	/* 4 bits for subtag */
+#define _HEADER_ARITY_OFFS	6
+
+-------------------------------------------
+
+只带有 arity 的 元组类型 被存储在堆中，然后用 arity 下面的字表示每个元素。空的tuple{}与单词0一样存储 ( header 标记00、tuple 标记 0000 和 arity 0)。
 
 .Representation of the tuple {104,101,108,108,111} on a 32 bit machine.
 [ditaa]
@@ -354,44 +379,21 @@ the word 0 (header tag 0, tuple tag 0000, and arity 0).
 
 ----
 
-A _binary_ is an immutable array of bytes. There are four types of
-internal representations of _binaries_. The two types _heap binaries_
-and _refc binaries_ contains binary data. The other two types, _sub
-binaries_ and _match contexts_ (the BINARY_AGGREGATE tag) are smaller
-references into one of the other two types.
+_binary_ 是一个不可变的字节数组。 _binary_ 的内部表示有四种类型。 _heap binaries_ 和  _refc binaries_ 这两种类型包含二进制数据。其他两种类型，_sub binaries_ 和 _match contexts_ ( BINARY_AGGREGATE 标签) 子二进制文件和匹配上下文(BINARY_AGGREGATE标记)是对其他两种类型之一的较小引用。
 
-Binaries that are 64 bytes or less can be stored directly on the
-process heap as _heap binaries_. Larger binaries are reference
-counted and the payload is stored outside of the process heap, a
-reference to the payload is stored on the process heap in an object
-called a _ProcBin_.
+使用 64 字节或更少空间的 _binary_ 可以作为 _heap binaries_ 直接存储在进程堆上。对较大的 _binary_ 来说，它们被引用计数，且有效载荷存储在进程堆之外。对有效载荷的引用存储在进程堆上一个名为 _ProcBin_ 的对象中。
 
 // Todo: draw a picture of binaries and their tags.
 
-We will talk more about binaries in the xref:CH-Memory[].
+我们将在  xref:CH-Memory[] 更多地讨论二进制。
 
-Integers that do not fit in a small integer (word size - 4 bits) are
-stored on the heap as "bignums" (or arbitrary precision integers). A
-bignum has a header word followed by a number of words encoding the
-bignum. The sign part of the bignum tag (`s`) in the header encodes the
-sign of the number (s=0 for positive numbers, and s=1 for negative
-numbers).
+如果一个整数不能装入小整数 (字长减 4 位) 空间，它将以 “bignums” (或者叫任意精度整数) 的形式存储在堆中。bignum 在内存中有一个 header，后面跟着许多编码的字。header 中 bignum 标记的符号部分 (`s`) 对数字的符号进行编码(对于正数，s=0，对于负数，s=1)。
 
-TODO: Describe bignum encoding. (And arithmetic ?)
+// Todo: 描述bignum编码。(和算术运算?)
 
-A reference is a _"unique"_ term often used to tag messages in order
-to basically implement a channel over a process mailbox. A reference
-is implemented as an 82 bit counter. After 9671406556917033397649407
-calls to +make_ref/0+ the counter will wrap and start over with ref 0
-again. You need a really fast machine to do that many calls to
-+make_ref+ within your lifetime. Unless you restart the node, in which
-case it also will start from 0 again, but then all the old local refs
-are gone. If you send the pid to another node it becomes an external
-ref, see below.
+引用是一个“唯一的”( _"unique"_) 项式，通常用于标记消息，以便实现进程邮箱上的通道。引用被实现为 82 位的计数器。在调用  +make_ref/0+  9671406556917033397649407 次后，计数器将折返并再次以 ref 0 重新开始。在程序生命周期内，你需要一个非常快的机器来执行那么多次 +make_ref+ 调用。重新启动该节点后 (在这种情况下，它也将再次从0开始) 所有旧的本地 refs 都会消失。如果您将 pid 发送到另一个节点，它将成为一个 external ref，见下面描述：
 
-On a 32-bit system a local ref takes up four 32-bit words on the
-heap. On a 64-bit system a ref takes up three 64-bit words on the
-heap.
+在32位系统上，local ref 在堆上占用 4 个 32 位字长。在 64 位系统上，ref 在堆上占用 3 个 64 位字长。
 
 .Representation of a ref in a 32-bit (or half-word) system.
 ----
@@ -403,7 +405,7 @@ heap.
 
 ----
 
-The reference number is (Data2 bsl 50) + (Data1 bsl 18) + Data0.
+引用数为： (Data2 bsl 50) + (Data1 bsl 18) + Data0.
 
 .Outline
 ****
@@ -416,4 +418,5 @@ The reference number is (Data2 bsl 50) + (Data1 bsl 18) + Data0.
  Possibly: The half-word machine. Sharing and deep copy. (or this will be in GC)
 
  Outro/conclusion
+
 ****

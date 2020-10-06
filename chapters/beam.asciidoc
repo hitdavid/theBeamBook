@@ -1,43 +1,19 @@
 [[CH-BEAM]]
-== The Erlang Virtual Machine: BEAM
+== Erlang 虚拟机: BEAM
 
-BEAM (Bogumil's/Björn’s Abstract Machine) is the machine that executes
-the code in the Erlang Runtime System. It is a garbage collecting,
-reduction counting, virtual, non-preemptive, directly threaded,
-register machine. If that doesn't tell you much, don't worry, in the
-following sections we will go through what each of those words means
-in this context.
+BEAM  (Bogumil / Björn 抽象机)是在 Erlang 运行时系统中执行代码的机器。它是一台垃圾收集，规约值计数，虚拟，非抢占式，直接线程，寄存器式机器。如果这还不能说明什么，不用担心，在接下来的部分中，我们将介绍这些单词在此上下文中的含义。
 
-The virtual machine, BEAM, is at the heart of the Erlang node.
-It is the BEAM that executes the Erlang code. That is, it is
-BEAM that executes your application code. Understanding how BEAM
-executes the code is vital to be able to profile and tune your
-code.
+虚拟机 BEAM 位于 Erlang 节点的核心。执行 Erlang 代码的是 BEAM。也就是说，是 BEAM 执行您的应用程序代码。理解 BEAM 是如何执行代码的，对于配置和调优您的代码至关重要。
 
-The BEAM design influences large parts of the rest of ERTS. The
-primitives for scheduling influences the Scheduler
-(xref:CH-Scheduling[]), the representation of Erlang terms and the
-interaction with the memory influences the Garbage Collector
-(xref:CH-Memory[]). By understanding the basic design of BEAM you
-will more easily understand the implementations of these other
-components.
+BEAM 的设计对 BEAM 的其他部分有很大的影响。用于调度的原语会影响调度器 ( xref:CH-Scheduling[] )，Erlang 短语的表示以及与内存的交互会影响垃圾收集器 ( xref:CH-Memory[] )。通过理解 BEAM 的基本设计，您将更容易理解这些其他组件的实现。
 
-=== Working Memory: A stack machine, it is not
+=== 工作内存: 堆栈机？并不是！
 
-As opposed to its predecessor JAM (Joe's Abstract Machine) which was a
-stack machine, the BEAM is a register machine loosely based on WAM
- <<warren>>. In a stack machine each operand to an instruction is
-first pushed to the working stack, then the instruction pops its
-arguments and then it pushes the result on the stack.
+与它的前身 JAM (Joe 's Abstract Machine) 是一个堆栈机不同，BEAM 是一个基于WAM <<warren>> 的寄存器机器。在堆栈机器中，指令的每个操作数首先被推入工作堆栈，然后指令弹出它的参数，然后将结果推入堆栈。
 
-Stack machines are quite popular among virtual machine and
-programming language implementers since they are quite easy to
-generate code for, and the code becomes very compact. The compiler
-does not need to do any register allocation, and most operations do
-not need any arguments (in the instruction stream).
+堆栈机在虚拟机和编程语言实现者中非常流行，因为它们很容易为其生成代码，而且代码变得非常紧凑。编译器不需要做任何寄存器分配，并且大多数操作不需要任何参数(在指令流中)。
 
-Compiling the expression "8 + 17 * 2." to a stack machine
-could yield code like:
+编译表达式 "8 + 17 * 2." 到堆栈机器可以产生如下代码：
 
 ----
 push 8
@@ -47,11 +23,7 @@ multiply
 add
 ----
 
-This code can be generated directly from the parse tree of
-the expression. By using Erlang expression and the modules
-https://erlang.org/doc/man/erl_scan.html[+erl_scan+] and
-https://erlang.org/doc/man/erl_parse.html[+erl_parse+] we
-can build the world's most simplistic compiler.
+此代码可以直接从表达式的解析树生成。通过使用 Erlang 表达式和 https://erlang.org/doc/man/erl_scan.html[+erl_scan+]  和 https://erlang.org/doc/man/erl_parse.html[+erl_parse+] 模块，我们可以构建世界上最简单的编译器。
 
 [source,erlang]
 -------------------------------------------
@@ -69,7 +41,7 @@ generate_code({op, _Line, '*', Arg1, Arg2}) ->
 generate_code({integer, _Line, I}) -> [push, I].
 -------------------------------------------
 
-And an even more simplistic virtual stack machine:
+和一个更简单的虚拟堆栈机：
 
 [source,erlang]
 -------------------------------------------
@@ -89,34 +61,17 @@ And a quick test run gives us the answer:
 42
 -------------------------------------------
 
-Great, you have built your first virtual machine! Handling
-subtraction, division and the rest of the Erlang language is left as
-an exercise for the reader.
+很好，您已经构建了您的第一个虚拟机！如何处理减法、除法和 Erlang 语言的其他部分留给读者作为练习。
 
-Anyway, the BEAM is *not* a stack machine, it is a _register machine_.
-In a register machine instruction operands are stored in registers
-instead of the stack, and the result of an operation usually ends up
-in a specific register.
+无论如何，BEAM *不是* 一个堆栈机，它是一个寄存器机器。在寄存器中，机器指令操作数存储在寄存器中而不是堆栈中，操作的结果通常在一个特定的寄存器中结束。
 
-Most register machines do still have a stack used for passing arguments
-to functions and saving return addresses. BEAM has both a stack and
-registers, but just as in WAM the stack slots are accessible through
-registers called Y-registers. BEAM also has a number of X-registers,
-and a special register X0 (sometimes also called R0) which works as
-an accumulator where results are stored.
+大多数寄存器机器仍然有一个用于向函数传递参数和保存返回地址的栈。BEAM 既有栈也有寄存器，但就像 WAM 一样，堆栈槽只可以通过称为 Y 寄存器（Y-registers）的寄存器访问。BEAM 也有一些 X 寄存器（X-registers）和一个特殊功能寄存器 X0 (有时也称为R0)，它作为一个存储结果的累加器。
 
-The X registers are used as argument registers for function calls
-and register X0 is used for the return value.
+X 寄存器用作函数调用的参数寄存器，而寄存器 X0 用于存储返回值。
 
-The X registers are stored in a C-array in the BEAM emulator and they
-are globally accessible from all functions. The X0 register is cached
-in a local variable mapped to a physical machine register in the native
-machine on most architectures.
+X 寄存器存储在 BEAM 模拟器的 c 数组中，可以从所有函数全局地访问它们。X0 寄存器缓存在一个本地变量中，该变量映射到大多数体系结构中本机上的物理机器寄存器。
 
-The Y registers are stored in the stack frame of the caller and only
-accessible by the calling functions. To save a value across a function
-call BEAM allocates a stack slot for it in the current stack frame and
-then moves the value to a Y register.
+Y 寄存器存储在调用方的堆栈框架中，仅供调用函数访问。为了跨函数调用保存一个值，BEAM 在当前栈帧中为它分配一个栈槽，然后将该值移动到Y寄存器。
 
 [[x_and_y_regs_in_memory]]
 .X and Y Registers in Memory
@@ -145,7 +100,7 @@ then moves the value to a Y register.
            +----+
 ----
 
-Let us compile the following program with the _'S'_ flag:
+我们使用 _'S'_ flag 编译以下程序：
 
 [source,erlang]
 ------------------------------------------
@@ -157,7 +112,7 @@ add(A,B) ->  id(A) + id(B).
 id(I) -> I.
 ------------------------------------------
 
-Then we get the following code for the add function:
+之后，我们对 add 函数，得到了如下代码：
 
 [source,erlang]
 ------------------------------------------
@@ -177,31 +132,20 @@ Then we get the following code for the add function:
     return.
 ------------------------------------------
 
-Here we can see that the code (starting at label 2) first allocates a
-stack slot, to get space to save the argument `B` over the function
-call `id(A)`. The value is then saved by the instruction
-`{move,{x,1},{y,0}}` (read as move `x1` to `y0` or in imperative style: `y0
-:= x1`).
+在这里，我们可以看到代码 (从 label 2 开始) 首先分配了一个栈槽，以获得空间来保存函数调用 `id(A)` 上的参数 `B`。然后该值由指令 `{move,{x,1},{y,0}}` 保存 (读做：将 `x1` 移动到 `y0` 或以命令式方式： `y0:= x1`)。
 
-The id function (at label f4) is then called by 
-`{call,1,{f,4}}`. (We will come back to what the argument "1" stands for later.)
-Then the result of the call (now in `X0`)
-needs to be saved on the stack (`Y0`), but the argument `B`
-is saved in `Y0` so the BEAM does a bit of shuffling:
+id 函数(在标签 f4 )然后被 `{call,1,{f,4}}` 调用。(我们稍后会了解参数 “1” 代表什么) 然后调用的结果(现在在 `X0` 中) 需要保存在堆栈 (`Y0`) 上，但是参数 `B` 保存在 `Y0` 中，所以 BEAM 做了一点变换：
 
-Except for the x and y registers, there are a number of special
-purpose registers:
+除 x 和 y 寄存器外，还有一些特殊功能寄存器：
 
 .Special Purpose Registers
-* Htop - The top of the heap.
-* E - The top of the stack.
-* CP - Continuation Pointer, i.e. function return address
-* I - instruction pointer
-* fcalls - reduction counter
+* Htop - The top of the heap.（堆顶）
+* E - The top of the stack. （栈顶）
+* CP - Continuation Pointer, i.e. function return address （接续点）
+* I - instruction pointer （指令指针）
+* fcalls - reduction counter （规约值计数器）
 
-These registers are cached versions of the corresponding
-fields in the PCB.
-
+这些寄存器是 PCB 中相应字段的缓存版本。
 
 ------------------------------------------
     {move,{x,0},{x,1}}. % x1 := x0 (id(A))
@@ -209,33 +153,17 @@ fields in the PCB.
     {move,{x,1},{y,0}}. % y0 := x1 (id(A))
 ------------------------------------------
 
-Now we have the second argument `B` in `x0` (the first
-argument register) and we can call the `id` function
-again `{call,1,{f,4}}`.
+现在我们在 `x0` 中有了第二个参数 `B` (第一个参数寄存器)，我们可以再次调用 `id` 函数 `{call,1,{f,4}}`。
 
-After the call x0 contains `id(B)` and `y0` contains `id(A)`,
-now we can do the addition: `{gc_bif,'+',{f,0},1,[{y,0},{x,0}],{x,0}}`.
-(We will go into the details of BIF calls and GC later.)
+在调用后，x0 包含 `id(B)`，`y0` 包含 `id(A)`，现在我们可以进行加法操作：`{gc_bif,'+',{f,0},1,[{y,0},{x,0}],{x,0}}`。(稍后我们将详细讨论 BIF 调用和 GC。)
 
-=== Dispatch: Directly Threaded Code
+=== 分派(Dispatch)：直接线程代码
 
-The instruction decoder in BEAM is implemented with a technique called
-_directly threaded_ code. In this context the word _threaded_ has
-nothing to do with OS threads, concurrency or parallelism. It is the
-execution path which is threaded through the virtual machine itself.
+BEAM 中的指令译码器是用一种被称为直接线程（ _directly threaded_ ）代码的技术实现的。在这个上下文中，线程 _thread_ 这个词与操作系统线程、并发性或并行性没有任何关系。它是通过虚拟机本身线程化的执行路径。
 
-If we take a look at our naive stack machine for arithmetic expressions
-we see that we use Erlang atoms and pattern matching to decode which
-instruction to execute. This is a very heavy machinery to just decode
-machine instructions. In a real machine we would code each instruction
-as a "machine word" integer. 
+如果我们看一下上文所示的处理算术表达式的朴素堆栈机，就会发现我们使用 Erlang 原子和模式匹配来解码要执行的指令。这是一个非常重的解码机器指令的机器。在实际机器中，我们将每条指令编码为一个 “机器字” 整数。
 
-We can rewrite our stack machine to be a _byte code_ machine
-implemented in C. First we rewrite the compiler so that it produces
-byte codes. This is pretty straight forward, just replace each
-instruction encoded as an atom with a byte representing the
-instruction. To be able to handle integers larger than 255 we encode
-integers with a size byte followed by the integer encoded in bytes.
+我们可以使用 C 语言，将堆栈机重写为 _字节码_（ _byte code_ ）机。首先，我们重写编译器，使其产生字节码。这是非常直接的，只需将每条被编码为 atom 的指令替换为表示该指令的字节。为了能够处理大于 255 的整数，我们将整数编码为一个存储大小 ( size ) 的字节，后面接的是用字节编码的整数数值。
 
 [source,erlang]
 -------------------------------------------
@@ -260,11 +188,9 @@ integer(I) ->
     L = binary_to_list(binary:encode_unsigned(I)),
     [length(L) | L].
 -------------------------------------------
+现在让我们用 C 语言编写一个简单的虚拟机。完整的代码可以在 xref:AP-listings[] 中找到。
 
-Now lets write a simple virtual machine in C. The full code can
-be found in xref:AP-listings[].
-
-[source, C]
+[source,c++]
 -------------------------------------------
 #define STOP 0
 #define ADD  1
@@ -278,7 +204,7 @@ int run(char *code) {
   int stack[1000];
   int sp = 0, size = 0, val = 0;
   char *ip = code;
-  
+
   while (*ip != STOP) {
     switch (*ip++) {
     case ADD: push(pop() + pop()); break;
@@ -295,18 +221,11 @@ int run(char *code) {
 }
 -------------------------------------------
 
-You see, a virtual machine written in C does not need to 
-be very complicated. This machine is just a loop checking
-the byte code at each instruction by looking at the value
-pointed to by the _instruction pointer_ (`ip`).
+你看，用  C 语言写的虚拟机不需要非常复杂。这台机器只是一个循环，通过查看指令指针 ( _instruction pointer_ , `ip`) 指向的值来检查每条指令的字节码。
 
-For each byte code instruction it will switch on the instruction byte
-code and jump to the case which executes the instruction. This
-requires a decoding of the instruction and then a jump to the correct
-code. If we look at the assembly for vsm.c (+gcc -S vsm.c+) we see
-the inner loop of the decoder:
+对于每个字节码指令，它将通过指令字节码分支跳转，跳到对应指令的 case 上执行指令。这需要对指令进行解码，然后跳转到正确的代码上。如果我们看一下vsm.c (+gcc -S vsm.c+) 的汇编指令，我们可以看到解码器的内部循环：
 
-
+[source,assembly]
 -------------------------------------------
 L11:
         movl    -16(%ebp), %eax
@@ -321,27 +240,13 @@ L11:
         jne     L5
 -------------------------------------------
 
-It has to compare the byte code with each instruction code and
-then do a conditional jump. In a real machine with many instructions
-this can become quite expensive. 
+它必须将字节代码与每个指令代码进行比较，然后执行条件跳转。在一个指令集中有许多指令的真实机器中，这可能会变得相当昂贵。
 
-A better solution would be to have a table with the address of
-the code then we could just use an index into the table 
-to load the address and jump without
-the need to do a compare. This technique is sometimes called
-_token threaded code_. Taking this a step further we can
-actually store the address of the function implementing the
-instruction in the code memory. This is called
-_subroutine threaded code_.
+更好的解决方案是有一个包含代码地址的表，这样我们就可以在表中使用索引来加载地址并跳转，而不需要进行比较。这种技术有时称为 _标记线程代码_ ( _token threaded code_ )。更进一步，我们可以将实现指令的函数的地址存储在代码内存中。这叫做 _子程序线程代码_ ( _subroutine threaded code_ )。
 
-// TODO make sure to use the right terminology for different threaded code types.
+这种方法将使在运行时解码更简单，但它使整个VM更加复杂，因为它需要一个加载器。加载程序将字节代码指令替换为实现指令的函数的地址。
 
-This approach will make the decoding simpler at runtime, but it makes
-the whole VM more complicated by requiring a loader. The loader
-replaces the byte code instructions with addresses to
-functions implementing the instructions.
-
-A loader might look like:
+一个加载器可能看起来像这样：
 
 [source, C]
 -------------------------------------------
@@ -354,17 +259,17 @@ instructionp_t *read_file(char *name) {
   long  size;
   char ch;
   unsigned int val;
-  
+
   file = fopen(name, "r");
- 
+
   if(file == NULL) exit(1);
- 
+
   fseek(file, 0L, SEEK_END);
   size = ftell(file);
   code = calloc(size, sizeof(instructionp_t));	
   if(code == NULL) exit(1);
   cp = code;
-  
+
   fseek(file, 0L, SEEK_SET);	
   while ( ( ch = fgetc(file) ) != EOF ) 
     {
@@ -387,11 +292,9 @@ instructionp_t *read_file(char *name) {
 }
 -------------------------------------------
 
-As we can see, we do more work at load time here, including the
-decoding of integers larger than 255. (Yes, I know, the code
-is not safe for very large integers.)
+正如我们所看到的，我们在加载时做了更多的工作，包括对大于255的整数进行解码。(是的，我知道，以上代码对于非常大的整数是不安全的。)
 
-The decode and dispatch loop of the VM becomes quite simple though:
+如此，解码和分派循环的VM变得相当简单：
 
 [source, C]
 -------------------------------------------
@@ -405,7 +308,7 @@ int run() {
 }
 -------------------------------------------
 
-Then we just need to implement the instructions:
+然后我们只需要实现这些指令：
 
 [source, C]
 -------------------------------------------
@@ -415,18 +318,9 @@ void pushi(){ int x;   x = (int)*ip++;       push(x); }
 void stop() { running = 0; }
 -------------------------------------------
 
-In BEAM this concept is taken one step further, and BEAM uses
-_directly threaded code_ (sometimes called only _thread code_). In
-directly threaded code the call and return sequence is replaced by
-direct jumps to the implementation of the next instruction. In order
-to implement this in C, BEAM uses the GCC extension "labels as
-values".
+在 BEAM 中，这个概念更进一步，BEAM使用直接线程代码(_directly threaded code_ 有时也被称为 _thread code_ )。在直接线程代码中，调用和返回序列被直接跳转到下一条指令的实现所取代。为了在 C 语言中实现这一点，BEAM 使用了 GCC "labels as values" 扩展。
 
-We will look closer at the BEAM emulator later but we will take a
-quick look at how the add instruction is implemented. The code is
-somewhat hard to follow due to the heavy usage of macros. The
-`STORE_ARITH_RESULT` macro actually hides the dispatch function which
-looks something like: `I += 4; Goto(*I);`.
+稍后我们将进一步研究 BEAM 模拟器，但我们将快速了解 add 指令是如何实现的。由于大量使用宏，代码有些难以理解。这个 `STORE_ARITH_RESULT` 宏实际上隐藏了一个看起来像：`I += 4; Goto(*I);` 的分派函数。
 
 [source, C]
 -------------------------------------------
@@ -440,12 +334,12 @@ looks something like: `I += 4; Goto(*I);`.
      Eterm result;
 
      if (is_both_small(tmp_arg1, tmp_arg2)) {
-	 Sint i = signed_val(tmp_arg1) + signed_val(tmp_arg2);
-	 ASSERT(MY_IS_SSMALL(i) == IS_SSMALL(i));
-	 if (MY_IS_SSMALL(i)) {
-	     result = make_small(i);
-	     STORE_ARITH_RESULT(result);
-	 }
+     Sint i = signed_val(tmp_arg1) + signed_val(tmp_arg2);
+     ASSERT(MY_IS_SSMALL(i) == IS_SSMALL(i));
+     if (MY_IS_SSMALL(i)) {
+         result = make_small(i);
+         STORE_ARITH_RESULT(result);
+     }
      
      }
      arith_func = ARITH_FUNC(mixed_plus);
@@ -453,19 +347,16 @@ looks something like: `I += 4; Goto(*I);`.
  }
 -------------------------------------------
 
-To make it a little easier to understand how the BEAM dispatcher is
-implemented let us take a somewhat imagenary example. We will start
-with some real external BEAM code but then I will invent some internal
-BEAM instructions and implement them in C. 
+为了让我们更容易理解 BEAM 分派器是如何实现的，让我们举一个更形象的例子。我们将从一些真正的 external BEAM 代码开始，然后我会发明一些 internal BEAM 指令，并用 C 实现它们。
 
-If we start with a simple add function in Erlang:
+如果我们从 Erlang 中一个简单的 add 函数开始：
 
 [source, Erlang]
 -------------------------------------------
 add(A,B) -> id(A) + id(B).
 -------------------------------------------
 
-Compiled to BEAM code this will look like:
+编译为 BEAM 码后如下：
 
 [source, Erlang]
 -------------------------------------------
@@ -485,10 +376,9 @@ Compiled to BEAM code this will look like:
     return.
 -------------------------------------------
 
-(See add.erl and add.S in xref:AP-listings[] for the full code.)
+(完整代码见  xref:AP-listings[]  中的 add.erl 和 add.S。)
 
-Now if we zoom in on the three instructions betwen the function calls
-in this code:
+现在，如果我们聚焦这段代码中函数调用的三条指令：
 
 [source, Erlang]
 -------------------------------------------
@@ -497,15 +387,9 @@ in this code:
     {move,{x,1},{y,0}}.
 -------------------------------------------
 
-This code first saves the return value of the function call (`x0`) in a
-new register (`x1`). Then it moves the caller saves register (`y0`) to
-the first argument register (`x0`). Finally it moves the saved value in
-x1 to the caller save register (`y0`) so that it will survive the next
-function call.
+这段代码首先将函数调用  (`x0`)  的返回值保存在一个新的寄存器 (`x1`) 中。然后，它将调用者保存寄存器 (`y0`)  移动到第一个参数寄存器 (`x0`)。最后，它将 x1 中保存的值移动到调用者保存寄存器 (`y0`) ，以便在下一个函数调用时依旧存活。
 
-Imagine that we would implement three instruction in BEAM called
-+move_xx+, +move_yx+, and +move_xy+ (These instructions does not exist
-in the BEAM we just use them to illustrate this example):
+假设我们要在 BEAM 中实现三条指令+move_xx+, +move_yx+, 和 +move_xy+  ( 这些指令在 BEAM 中不存在，我们只是用它们来演示这个例子)：
 
 [source, C]
 -------------------------------------------
@@ -536,17 +420,9 @@ in the BEAM we just use them to illustrate this example):
 
 -------------------------------------------
 
-Note that the star in `+goto *+` does not mean dereference, the
-expression means jump to an address pointer, we should really write it
-as `+goto*+`.
+注意，`+goto *+` 中的星号并不意味着解引用，该表达式意味着跳转到地址指针，我们实际上应该将其写为 `+goto*+`。
 
-Now imagine that the compiled C code for these instructions end up at
-memory addresses 0x3000, 0x3100, and 0x3200. When the BEAM code is
-loaded the three move instructions in the code will be replaced by the
-memory addresses of the implementation of the instructions. Imagine
-that the code (`+{move,{x,0},{x,1}}, {move,{y,0},{x,0}},
-{move,{x,1},{y,0}}+`) is loaded at address 0x1000:
-
+现在假设这些指令的编译后的 C 代码最终被加载在内存地址 0x3000、0x3100 和 0x3200中。当 BEAM 码被加载时，三个移动指令中的代码将被执行指令的内存地址所取代。假设代码 (`+{move,{x,0},{x,1}}, {move,{y,0},{x,0}}, {move,{x,1},{y,0}}+`) 被加载到地址 0x1000：
 
 -------------------------------------------
                      /  0x1000: 0x3000 -> 0x3000: OpCase(move_xx): x(Arg(1)) = x(Arg(0))
@@ -560,111 +436,49 @@ that the code (`+{move,{x,0},{x,1}}, {move,{y,0},{x,0}},
                      \  0x1020: 0x0
 -------------------------------------------
 
-The word at address 0x1000 points to the implementation of
-the move_xx instruction. If the register `I` contains the instruction
-pointer, pointing to 0x1000 then the dispatch will be to fetch `+*I+`
-(i.e. 0x3000) and jump to that address. (`+goto* *I+`)
+地址 0x1000 处的一个"字"指向 move_xx 指令的实现。如果寄存器 `I` 包含指向 0x1000 的指令指针，那么分派器将会去获取  `+*I+`( 即 0x3000 ) 并跳转到那个地址。 (`+goto* *I+`)
 
-In xref:CH-Instructions[] we will look more closely at some real
-BEAM instructions and how they are implemented.
+在 xref:CH-Instructions[] 中，我们将更深入地研究一些真实的 BEAM 指令以及它们是如何实现的。
 
-=== Scheduling: Non-preemptive, Reduction counting 
+=== 调度：非抢占，规约值计数
 
-Most modern multi-threading operating systems use preemptive scheduling.
-This means that the operating system decides when to switch from one
-process to another, regardless of what the process is doing. This protects
-the other processes from a process misbehaving by not yielding in time.
+大多数现代多线程操作系统使用抢占式调度。这意味着操作系统决定何时从一个进程切换到另一个进程，而不管进程在做什么。这可以保护其他进程不受某个进程行为不当(例如：没有及时做出让步)的影响。
 
-In cooperative multitasking which uses a non-preemptive scheduler the
-running process decides when to yield. This has the advantage that the
-yielding process can do so in a known state.
+在使用非抢占式调度器的协作多任务中，运行的进程决定何时让步。这样做的好处是，让步过程可以在已知状态下完成。
 
-For example in a language such as Erlang with dynamic memory
-management and tagged values, an implementation may be designed such
-that a process only yields when there are no untagged values in
-working memory.
+例如，在像 Erlang 这样具有动态内存管理和类型标记值的语言中，实现可能被设计成只有在工作内存中没有 ”解除标记 ( untagged )“ 值时进程才会产生进程调度让步。
 
-Take the add instruction as an example, to add two Erlang integers,
-the emulator first has to untag the integers, then add them together
-and then tag the result as an integer. If a fully preemptive scheduler
-is used there would be no guarantee that the process isn't suspended
-while the integers are untagged. Or the process could be suspended
-while it is creating a tuple on the heap, leaving us with half a
-tuple. This would make it very hard to traverse a suspended process
-stack and heap.
+以 add 指令为例，要添加两个 Erlang 整数，仿真器首先必须解除对整数的标记（译注：值的类型标记被记录在变量所占内存中，要取得整数值，需要先把标签去除），然后将它们相加，然后将结果标记为（译注：增加标签）整数。如果使用了完全抢占式的调度程序，则无法保证在未标记整数时进程不会挂起。或者进程在堆上创建元组时被挂起，只剩下半个元组。这将使遍历挂起的进程堆栈和堆变得非常困难。
 
-On the language level all processes are running concurrently and the
-programmer should not have to deal with explicit yields. BEAM solves
-this by keeping track of how long a process has been running. This is
-done by counting _reductions_. The term originally comes from the
-mathematical term beta-reduction used in lambda calculus.
+在语言级别上，所有进程都是并发运行的，程序员不应该处理显式的调度让步。BEAM 通过跟踪进程运行了多长时间来解决这个问题。这是通过计算规约值来实现的。这个术语最初来自于微积分中使用的数学术语：lambda 演算中使用的 beta-reduction。
 
-The definition of a reduction in BEAM is not very specific, but we can
-see it as a small piece of work, which shouldn't take _too long_.
-Each function call is counted as a reduction. BEAM does a test
-upon entry to each function to check whether the process has used up all its
-reductions or not. If there are reductions left the function is executed
-otherwise the process is suspended.
+BEAM 中规约值的定义并不是很明确，但我们可以把它看作是一小块工作，不会花太长时间 ( _too long_ )。每个函数调用都被视为一次规约计数。BEAM 在进入每个函数时都要做一个测试，以检查进程是否耗尽了所有的规约值。如果有剩余的规约值，函数将被执行，否则进程将被挂起。
 
-Since there are no loops in Erlang, only tail-recursive function
-calls, it is very hard to write a program that does any significant
-amount of work without using up its reductions.
+由于 Erlang 中没有循环，只有尾部递归函数调用，所以很难编写一个不消耗掉规约计数而完成大量工作的程序。
 
 [WARNING]
 ====
 
-There are some BIFs that can run for a long time only using 1
-reduction, like +term_to_binary+ and +binary_to_term+. Try to make
-sure that you only call these BIFs with small terms or binaries, or
-you might lock up the scheduler for a very long time.
+有些 BIFs 只使用 1 个规约计数就可以运行很长时间，比如 +term_to_binary+ 和 +binary_to_term+。请确保调用这些BIFs时，只使用小项式或 binary，否则可能会将调度器锁定很长一段时间。
 
-Also, if you write your own NIFs, make sure they can yield and that
-they bump the reduction counter by an amount proportional to their
-run time.
-
+另外，如果您编写自己的 NIFs，请确保它们能够产生让步，并与运行时间成比例地使规约值减少。
 ====
 
-We will go through the details of how the scheduler works in
-xref:CH-Scheduling[].
+我们将在 xref:CH-Scheduling[] 中详细介绍调度器的工作方式。
 
-=== Memory Management: Garbage Collecting
+=== 内存管理：垃圾收集
 
-Erlang supports garbage collection; as an Erlang progammer you do not
-need to do explicit memory management. On the BEAM level, though, the
-code is responsible for checking for stack and heap overrun, and for
-allocating enough space on the stack and the heap.
+Erlang 支持垃圾回收；作为 Erlang 程序员，您不需要执行显式内存管理。在 BEAM 层面，代码负责检查栈和堆溢出，并在栈和堆上分配足够的空间。
 
-The BEAM instruction https://github.com/erlang/otp/blob/OTP-23.0/lib/compiler/src/genop.tab#L118[+test_heap+]
-will ensure that there is as much
-space on the heap as requested. If needed the instruction will call
-the garbage collector to reclaim space on the heap. The garbage
-collector in turn will call the lower levels of the memory subsystem
-to allocate or free memory as needed. We will look at the details
-of memory management and garbage collection in xref:CH-Memory[].
+BEAM 指令 https://github.com/erlang/otp/blob/OTP-23.0/lib/compiler/src/genop.tab#L118[+test_heap+] 将确保堆上有足够的空间满足需求。如果需要，该指令将调用垃圾收集器来回收堆上的空间。垃圾收集器将依次调用内存子系统的更底层实现来根据需要分配或释放内存。我们将在 xref:CH-Memory[] 中详细介绍内存管理和垃圾收集。
 
+=== BEAM: 一个虚拟机
 
-=== BEAM: it is virtually unreal
+BEAM 是一个虚拟机，也就是说它是用软件而不是硬件实现的。已经有项目通过 FPGA 实现 BEAM，同样也没有什么可以阻止任何人在硬件上实现 BEAM。一个更好的描述可能是称 BEAM 为一个抽象的机器，并把它看作可以执行 BEAM 代码的机器的蓝图。事实上，BEAM 中的 "AM" 两个字母就代表 “抽象机器”。
 
-The BEAM is a virtual machine, by that we mean that it is implemented
-in software instead of in hardware. There has been projects to
-implement the BEAM by FPGA, and there is nothing stopping anyone from
-implementing the BEAM in hardware. A better description might be to
-call the BEAM an Abstract machine, and see it as blueprint for a
-machine which can execute BEAM code. And, in fact, the "am" in BEAM
-stands for "Abstract Machine".
+在本书中，我们将不区分抽象机器，虚拟机或它们的实现。在更正式的设定中，抽象机器是计算机的理论模型，虚拟机是抽象机器的软件实现，或者是真实物理机器的软件仿真器。
 
-In this book we will make no distinction between abstract machines,
-and virtual machines or their implementation. In a more formal setting
-an abstract machine is a theoretical model of a computer, and a
-virtual machine is either a software implementation of an abstract
-machine or a software emulator of a real physical machine.
-
-Unfortunately there exist no official specification of the BEAM, it is
-currently only defined by the implementation in Erlang/OTP.
-If you want to implement your own BEAM you would have to try to mimic
-the current implementation not knowing which parts are essential and
-which parts are accidental. You would have to mimic every observable
-behavior to be sure that you have a valid BEAM interpreter. 
+不幸的是，目前还没有关于 BEAM 的官方规范，它目前仅由 Erlang/OTP 中的实现定义。如果您想实现您自己的 BEAM，您就必须尝试模拟当前的实现，而不知道哪些部分是必要的，哪些部分是偶然的。你必须模仿每一个可观察的行为，以确保你有一个有效的 BEAM 解释器。
 
 ****
 

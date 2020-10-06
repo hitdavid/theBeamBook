@@ -1,6 +1,6 @@
 [[AP-Instructions]]
 [appendix]
-= BEAM Instructions
+= BEAM 指令
 
 Here we will go through most of the instructions in the BEAM generic instruction set in detail. In the next section we list all instructions with a brief explanation generated from the documentaion in the code (see `lib/compiler/src/genop.tab`).
 
@@ -180,7 +180,7 @@ A function skeleton for a non leaf function looks like this:
     ...
     call ...
     ...
-
+    
     {deallocate,Need}.
     return.
 ----

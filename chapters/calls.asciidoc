@@ -1,39 +1,32 @@
 [[CH-Calls]]
-== Different Types of Calls, Linking and Hot Code Loading (5p)
+== 各种类型的调用，链接以及热代码加载（原书未完成）
 
 ****
-Local calls, remote calls, closure calls, tuple calls, p-mod
-calls. The code server. Linking. Hot code loading, purging. (Overlap
-with Chapter 4, have to see what goes where.) Higher order functions,
-Implementation of higher order functions. Higher order functions and
-hot code loading. Higher order functions in a distributed system.
+- 本地调用，远程调用，闭包调用，元组调用，p-mod调用
+
+- 代码服务器
+
+- 链接
+
+- 热代码加载、清除。(与第四章重叠，要看什么写在哪里)
+
+- 高阶函数，高阶函数的实现
+
+- 高阶函数和热代码加载
+
+- 分布式系统中的高阶函数
+
 ****
 
-=== Hot Code Loading
+=== 热代码加载
 
-In Erlang there is a semantic difference between a local function call
-and a remote function call. A remote call, that is a call to a
-function in a named module, is guaranteed to go to the latest loaded
-version of that module. A local call, an unqualified call to a function
-within the same module, is guaranteed to go to the same version
-of the code as the caller.
+在 Erlang 中，本地函数调用和远程函数调用之间存在语义上的差异。远程调用 (即对已命名模块中的函数的调用) 保证会转到该模块的最新加载版本。本地调用 (对同一模块内的函数的非限定调用) 保证会与调用转到相同的代码版本。
 
-A call to a local function can be turned into a remote call by
-specifying the module name at the call site. This is usually
-done with the ?MODULE macro as in +?MODULE:foo()+.
-A remote call to a non local module can not be turned into
-a local call, i.e. there is no way to guarantee the version
-of the callee in the caller.
+通过在调用点指定模块名称，可以将对本地函数的调用转换为远程调用。这通常通过 ?MODULE 宏来完成，如 +?MODULE:foo()+ 。对非本地模块的远程调用不能转换为本地调用，也就是说，无法在调用者中保证被调用者的版本。
 
-This is an important feature of Erlang which makes _hot code loading_
-or _hot upgrades_ possible. Just make sure you have a remote
-call somewhere in your server loop and you can then load new code
-into the system while it is running; when execution reaches the
-remote call it will switch to executing the new code.
+这是 Erlang 的一个重要特性，它使得热代码加载或热升级成为可能。只要确保你在服务器循环的某个地方有一个远程调用，然后你可以在系统运行时加载这个远程调用函数的新代码；当执行到达远程调用时，它将切换为执行新代码。
 
-A common way of writing server loops is to have a local call
-for the main loop and a code upgrade handler which does
-a remote call and possibly a state upgrade:
+写服务器循环的一种常见方式是有一个本地调用的主循环和一个代码升级处理程序，升级处理程序负责做一个远程调用和可能的状态升级：
 
 [source,erlang]
 ------------------------------------------
@@ -49,25 +42,13 @@ loop(State) ->
 
 ------------------------------------------
 
-With this construct, which is basically what `gen_server` uses,
-the programmer has control over when and how a code upgrade is done.
+使用这个构造，也就是 `gen_server`  使用的基本构造，程序员可以控制何时以及如何进行代码升级。
 
-The hot code upgrade is one of the most important features of Erlang
-which makes it possible to write servers that operates 24/7 year out
-and year in. It is also one of the main reasons why Erlang is
-dynamically typed. It is very hard in a statically typed language to
-give type for the `code_upgrade` function. (It is also hard to give the
-type of the loop function). These types will change in the future as
-the type of State changes to handle new features.
+热代码升级是 Erlang 最重要的特性之一，它使编写全天候运行的服务器成为可能。这也是 Erlang 是动态类型的主要原因之一。在静态类型语言中，为 `code_upgrade` 函数指定类型是非常困难的。(也很难给出循环函数的类型)。这些类型将在未来随着状态类型的改变而改变，以处理新特性。
 
-For a language implementer concerned with performance, the hot code
-loading functionality is a burden though. Since each call to or from a
-remote module can change to new code in the future it is very hard to
-do whole program optimization across module boundaries. (Hard but not
-impossible, there are solutions but so far I have not seen one fully
-implemented).
+语言实现者关心性能问题，热代码加载功能是一种负担。由于对远程模块的每次调用或从远程模块调用都可能在将来更改为新代码，因此跨模块边界进行整个程序优化非常困难。(这很难，但并非不可能，有解决方案，但迄今为止我还没有看到一个全面实施的案例)。
 
-=== Code Loading
+=== 代码加载
 
 ++++
 <!--
@@ -75,19 +56,8 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 -->
 ++++
 
+在 Erlang 运行时系统中，代码加载由代码服务器 (code server) 处理。代码服务器将调用 +erlang+  模块中的更底层 BIFs 来进行实际加载。但是代码服务器也决定清除策略。
 
-In the Erlang Runtime System the code loading is handled by the
-code server. The code server will call the lower level BIFs in the
-+erlang+ module for the actual loading. But the code server also
-determines the purging policy.
+运行时系统可以保存每个模块的两个版本，一个是当前版本，一个是旧版本。所有完全限定 (远程) 调用都转到当前版本。旧版本中的本地函数调用和堆栈上的返回地址仍然可以转到旧版本函数。
 
-The runtime system can keep two versions of each module, a _current_
-version and an _old_ version. All fully qualified (remote) calls go
-to the current version. Local calls in the old version and return
-addresses on the stack can still go to the old version.
-
-If a third version of a module is loaded and there are still processes
-running (have pointers on the stack to) the code server
-will kill those processes and purge the old code. Then the current
-version will become old and the third version will be loaded as the
-current version.
+如果加载了模块的第三个版本，并且仍然有进程在运行 (在堆栈上有指向旧代码的指针) 旧代码，代码服务器将杀死那些进程并清除旧代码。然后，当前版本将变成旧代码，第三个版本将作为当前版本加载。

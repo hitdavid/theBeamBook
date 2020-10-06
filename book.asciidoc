@@ -1,4 +1,4 @@
-= The Erlang Runtime System
+= Erlang 运行时系统（The Erlang Runtime System）
 :author: Erik Stenman
 :encoding: utf-8
 :lang: en
@@ -17,15 +17,15 @@
 :attribute-missing: warn
 :xrefstyle: short
 
-include::chapters/preface.asciidoc[]
+include::chapters/preface.asciidoc[前言]
 
 // Part I
 [[P-ERTS]]
-= Understanding ERTS
+= 理解 ERTS
 
-include::chapters/introduction.asciidoc[]
+include::chapters/introduction.asciidoc[Erlang 运行时系统介绍]
 
-include::chapters/compiler.asciidoc[]
+include::chapters/compiler.asciidoc[编译器]
 
 include::chapters/processes.asciidoc[]
 
@@ -59,7 +59,7 @@ include::chapters/hipe.asciidoc[]
 
 // Part II
 [[P-Running]]
-= Running ERTS
+= 运行 ERTS
 
 include::chapters/tracing.asciidoc[]
 
