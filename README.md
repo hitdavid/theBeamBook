@@ -138,15 +138,15 @@ Table of Contents
     - [x] [8.1. 热代码加载](#_hot_code_loading)
     - [x] [8.2. 代码加载](#_code_loading)
 
-  - [ ] 9. The BEAM Loader
+  - [x] 9. [BEAM 加载器](#CH-Beam_loader)
 
-    - [ ] [9.1. Transforming from Generic to Specific instructions](#_transforming_from_generic_to_specific_instructions)
-    - 9.2. Understanding ops.tab
-      - [ ] [9.2.1. Transformations](#_transformations)
-      - [ ] [9.2.2. Specific instruction](#_specific_instruction)
-    - 9.3. Optimizations
-      - [ ] [9.3.1. select_val optimizations](#_select_val_optimizations)
-      - [ ] [9.3.2. pre-hashing of literals](#_pre_hashing_of_literals)
+    - [x] 9.1. [从通用指令变换为特定指令](#_从通用指令变换为特定指令)
+    - 9.2. [理解 ops.tab](#_理解_ops_tab)
+      - [x] 9.2.1. [ 变换](#_变换)
+      - [x] 9.2.2. [特定指令](#_特定指令)
+    - 9.3. [优化](#_优化)
+      - [x] 9.3.1. [select_val 优化](#_select_val_优化)
+      - [x] 9.3.2. [字面值预哈希](#_字面值预哈希)
 
   - [ ] [10. BEAM Internal Instructions](#CH-Internal_instructions)
 
