@@ -210,11 +210,6 @@ id(I) when is_integer(I) -> I.
 
 一个最小的接收循环，它接受任何消息并且没有超时 (例如：+receive _ -> ok end+ )，在 BEAM 代码中是这样的：
 
-
-
-A minimal receive loop, which accepts any message and has no timeout
-(e.g. +receive _ -> ok end+) looks like this in BEAM code:
-
 [source,erlang]
 ----
   {label,2}.
@@ -229,7 +224,7 @@ A minimal receive loop, which accepts any message and has no timeout
      ...
 ----
 
- +loop_rec L2 x0+ 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。
++loop_rec L2 x0+ 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。
 
 如果消息队列中有消息，则 +loop_rec+ 指令还将该消息从 _m-buf_  移动到进程堆中。有关 m-buf 处理的详细信息，请参阅 xref:CH-Memory[] 和 xref:CH-Processes[]。
 

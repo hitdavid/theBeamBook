@@ -295,7 +295,7 @@ transformations and no support is offered for problems encountered.
 
 这意味着您不能从根本上改变 Erlang 句法，但是您可以更改语义。举个例子，假如你想在 Erlang 代码中直接写json代码，你也很幸运，因为 json 和 Erlang 的标记是基本上是一样的。另外，由于 Erlang 编译器在解析转换后的 linter pass 才会做大部分的完整性检查工作，所以，可以允许一个不代表有效Erlang的 AST。
 
-要编写解析转换，您需要编写一个Erlang模块(让我们称它为_p_)，它导出函数+parse_transform/2+。如果这个模块(我们称其为_m_)的编译过程包含 + {parse_transform p} + 编译器选项，这个函数就会在解析转换 pass 期间被编译器调用。函数的参数是模块 m 的 AST 和调用的编译器时的编译器选项。
+要编写解析转换，您需要编写一个Erlang模块(让我们称它为_p_)，它导出函数 +parse_transform/2+。如果这个模块(我们称其为_m_)的编译过程包含 +{parse_transform p}+ 编译器选项，这个函数就会在解析转换 pass 期间被编译器调用。函数的参数是模块 m 的 AST 和调用的编译器时的编译器选项。
 
 [NOTE]
 ====
@@ -384,7 +384,7 @@ error
 
 
 
-因为模块包含无效的 Erlang 语法，故编译+json_test+失败，但是你可以看到AST是什么样子的。现在我们可以编写一些函数来遍历 AST 并将 json 代码回写到 Erlang 代码中。footnote:[此处的翻译是在根据 link:http://www.erlang.org/eeps/eep-0018.html[EEP 18] (Erlang增强建议18:"JSON bifs")进行的]
+因为模块包含无效的 Erlang 语法，故编译 +json_test+ 失败，但是你可以看到AST是什么样子的。现在我们可以编写一些函数来遍历 AST 并将 json 代码回写到 Erlang 代码中。footnote:[此处的翻译是在根据 link:http://www.erlang.org/eeps/eep-0018.html[EEP 18] (Erlang增强建议18:"JSON bifs")进行的]
 
 [source,erlang]
 ----
@@ -523,15 +523,15 @@ ok
 {ok,world}
 ----
 
-注意 +.core+ 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加+binary+选项。
+注意 +.core+ 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加 +binary+ 选项。
 
 ==== 编译器 Pass: Kernel Erlang
 
 Kernel Erlang 是 Core Erlang 的一个扁平版本，它们有一些不同之处。例如，每个变量在一个完整的函数作用域中都是唯一的。模式匹配被编译成更原始的操作。
 
-==== 编译器 Pass: BEAM 码
+==== 编译器 Pass: BEAM 代码
 
-正常编译的最后一步是外部 beam 码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。
+正常编译的最后一步是外部 beam 代码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。
 
 BEAM 码在 xref:CH-Instructions[] 和 xref:AP-Instructions[] 中有详细描述。
 
@@ -543,7 +543,7 @@ BEAM 码在 xref:CH-Instructions[] 和 xref:AP-Instructions[] 中有详细描述
 
 有许多工具可以帮助您处理代码生成和代码操作。这些工具是用 Erlang 编写的，但并不是运行时系统的一部分，但是如果你想在 BEAM 之上实现另一种语言，了解它们是非常好的。
 
-在本节中，我们将介绍三个最有用的代码工具: 词法分析器 (Leex)、解析器生成器(Yecc)，和一组用于操作（语言）抽象形式的通用函数(Syntax Tools)。
+在本节中，我们将介绍三个最有用的代码工具: 词法分析器 ( Leex )、解析器生成器 ( Yecc )，和一组用于操作（语言）抽象形式的通用函数 ( Syntax Tools )。
 
 ==== Leex
 

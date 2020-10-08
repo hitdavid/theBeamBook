@@ -1,5 +1,5 @@
 = Erlang 运行时系统（The Erlang Runtime System）
-:author: Erik Stenman
+:author: Erik Stenman (杜宇 翻译)
 :encoding: utf-8
 :lang: en
 :toc: left

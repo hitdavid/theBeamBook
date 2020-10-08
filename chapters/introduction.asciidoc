@@ -274,7 +274,7 @@ Ling 实现了 BEAM 通用指令集，他可以重用 OTP 层的 BEAM 编译器�
 
 ==== Erjang
 
-Erjang (链接: http://www.erjang.org[]，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载+.beam+ 文件后，将其重编译为 Java +.class+ 文件。他与 BEAM 几乎 100% 二进制兼容。
+Erjang (链接: http://www.erjang.org[]，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载 +.beam+ 文件后，将其重编译为 Java +.class+ 文件。他与 BEAM 几乎 100% 二进制兼容。
 
 图 xref:the_erjang_stack 中可以看到 Erlang 的 Erjang 实现栈与 ERTS 的区别。需要注意的是，这个方案中 JVM 替代了 BEAM 作为虚拟机，Erjang 在虚拟机上使用 Java 实现 ERTS 提供的服务。
 
