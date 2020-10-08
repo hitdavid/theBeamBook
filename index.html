@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="Erik Stenman">
+<meta name="author" content="Erik Stenman (杜宇 翻译)">
 <title>Erlang 运行时系统（The Erlang Runtime System）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -445,7 +445,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Erlang 运行时系统（The Erlang Runtime System）</h1>
 <div class="details">
-<span id="author" class="author">Erik Stenman</span><br>
+<span id="author" class="author">Erik Stenman (杜宇 翻译)</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -498,7 +498,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_编译器_pass_expand">2.3.5. 编译器 Pass: Expand</a></li>
 <li><a href="#_编译器_pass_core_erlang">2.3.6. 编译器 Pass: Core Erlang</a></li>
 <li><a href="#_编译器_pass_kernel_erlang">2.3.7. 编译器 Pass: Kernel Erlang</a></li>
-<li><a href="#_编译器_pass_beam_码">2.3.8. 编译器 Pass: BEAM 码</a></li>
+<li><a href="#_编译器_pass_beam_代码">2.3.8. 编译器 Pass: BEAM 代码</a></li>
 <li><a href="#_编译器_pass_本地native码">2.3.9. 编译器 Pass: 本地（Native）码</a></li>
 </ul>
 </li>
@@ -897,10 +897,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_preface"><a class="link" href="#_preface">Preface</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>本书并不是关于如何正确并且优雅的书写代码的，因为我假设你已经了解如何做到那些了。尽管本书有关于跟踪诊断，以便帮助你找到程序瓶颈和不必要的资源使用，以及性能调优的章节，但是，本书也不是真正的关于诊断和性能调优的书。</p>
-</div>
-<div class="paragraph">
-<p>这两章是全书的最后部分，整本书都在为这些章节做准备。但是本书的真正目标是把所有的信息和细节展示出来，以便你真正的理解你的Erlang应用的性能表现。</p>
+<p>本书并不是关于如何正确并且优雅的书写代码的，因为我假设你已经了解如何做到那些了。尽管本书有关于跟踪诊断，以便帮助你找到程序瓶颈和不必要的资源使用，以及性能调优的章节，但是，本书也不是真正的关于诊断和性能调优的书。
+这两章是全书的最后部分，整本书都在为这些章节做准备。但是本书的真正目标是把所有的信息和细节展示出来，以便你真正的理解你的Erlang应用的性能表现。</p>
 </div>
 <div id="who_is_this_book_for" class="paragraph">
 <p>关于本书</p>
@@ -991,8 +989,8 @@ Roberto Aloi
 Dmytro Lytovchenko
 Anthony Molinaro
 Alexandre Rodrigues
-Yoshihiro TANAKA
 hitdavid
+Yoshihiro TANAKA
 Ken Causey
 Lukas Larsson
 Kim Shrier
@@ -1299,7 +1297,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 <div class="sect3">
 <h4 id="_erjang"><a class="link" href="#_erjang">1.4.2. Erjang</a></h4>
 <div class="paragraph">
-<p>Erjang (链接: <a href="http://www.erjang.org" class="bare">http://www.erjang.org</a>，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载+.beam+ 文件后，将其重编译为 Java .class 文件。他与 BEAM 几乎 100% 二进制兼容。</p>
+<p>Erjang (链接: <a href="http://www.erjang.org" class="bare">http://www.erjang.org</a>，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载 .beam 文件后，将其重编译为 Java .class 文件。他与 BEAM 几乎 100% 二进制兼容。</p>
 </div>
 <div class="paragraph">
 <p>图 xref:the_erjang_stack 中可以看到 Erlang 的 Erjang 实现栈与 ERTS 的区别。需要注意的是，这个方案中 JVM 替代了 BEAM 作为虚拟机，Erjang 在虚拟机上使用 Java 实现 ERTS 提供的服务。</p>
@@ -1640,7 +1638,7 @@ transformations and no support is offered for problems encountered.
 <p>这意味着您不能从根本上改变 Erlang 句法，但是您可以更改语义。举个例子，假如你想在 Erlang 代码中直接写json代码，你也很幸运，因为 json 和 Erlang 的标记是基本上是一样的。另外，由于 Erlang 编译器在解析转换后的 linter pass 才会做大部分的完整性检查工作，所以，可以允许一个不代表有效Erlang的 AST。</p>
 </div>
 <div class="paragraph">
-<p>要编写解析转换，您需要编写一个Erlang模块(让我们称它为_p_)，它导出函数+parse_transform/2+。如果这个模块(我们称其为_m_)的编译过程包含 + {parse_transform p} + 编译器选项，这个函数就会在解析转换 pass 期间被编译器调用。函数的参数是模块 m 的 AST 和调用的编译器时的编译器选项。</p>
+<p>要编写解析转换，您需要编写一个Erlang模块(让我们称它为_p_)，它导出函数 parse_transform/2。如果这个模块(我们称其为_m_)的编译过程包含 {parse_transform p} 编译器选项，这个函数就会在解析转换 pass 期间被编译器调用。函数的参数是模块 m 的 AST 和调用的编译器时的编译器选项。</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1741,7 +1739,7 @@ error</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>因为模块包含无效的 Erlang 语法，故编译+json_test+失败，但是你可以看到AST是什么样子的。现在我们可以编写一些函数来遍历 AST 并将 json 代码回写到 Erlang 代码中。<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>因为模块包含无效的 Erlang 语法，故编译 json_test 失败，但是你可以看到AST是什么样子的。现在我们可以编写一些函数来遍历 AST 并将 json 代码回写到 Erlang 代码中。<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1896,7 +1894,7 @@ ok
 </div>
 </div>
 <div class="paragraph">
-<p>注意 .core 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加+binary+选项。</p>
+<p>注意 .core 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加 binary 选项。</p>
 </div>
 </div>
 <div class="sect3">
@@ -1906,9 +1904,9 @@ ok
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_beam_码"><a class="link" href="#_编译器_pass_beam_码">2.3.8. 编译器 Pass: BEAM 码</a></h4>
+<h4 id="_编译器_pass_beam_代码"><a class="link" href="#_编译器_pass_beam_代码">2.3.8. 编译器 Pass: BEAM 代码</a></h4>
 <div class="paragraph">
-<p>正常编译的最后一步是外部 beam 码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。</p>
+<p>正常编译的最后一步是外部 beam 代码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。</p>
 </div>
 <div class="paragraph">
 <p>BEAM 码在 <a href="#CH-Instructions">Chapter 7</a> 和 <a href="#AP-Instructions">Appendix B</a> 中有详细描述。</p>
@@ -1927,7 +1925,7 @@ ok
 <p>有许多工具可以帮助您处理代码生成和代码操作。这些工具是用 Erlang 编写的，但并不是运行时系统的一部分，但是如果你想在 BEAM 之上实现另一种语言，了解它们是非常好的。</p>
 </div>
 <div class="paragraph">
-<p>在本节中，我们将介绍三个最有用的代码工具: 词法分析器 (Leex)、解析器生成器(Yecc)，和一组用于操作（语言）抽象形式的通用函数(Syntax Tools)。</p>
+<p>在本节中，我们将介绍三个最有用的代码工具: 词法分析器 ( Leex )、解析器生成器 ( Yecc )，和一组用于操作（语言）抽象形式的通用函数 ( Syntax Tools )。</p>
 </div>
 <div class="sect3">
 <h4 id="_leex"><a class="link" href="#_leex">2.4.1. Leex</a></h4>
@@ -4729,7 +4727,7 @@ p-mod调用的技巧
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-自OTP 20 以来，这个标签格式已经改变， <code>Extended - Float</code> 消失了。下面所有的标签值向下移动1: List 是 2#10111，fpreg 是 2#100111，alloc List 是 2#110111，literal 是 2#1010111。浮点值现在直接进入 BEAM 文件的文字区域 (literal area)。
+自OTP 20 以来，这个标签格式已经改变， <code>Extended - Float</code> 消失了。下面所有的标签值向下移动1: List 是 2#10111，fpreg 是 2#100111，alloc List 是 2#110111，literal 是 2#1010111。浮点值现在直接进入 BEAM 文件的字面值区域 (literal area)。
 </td>
 </tr>
 </table>
@@ -5070,10 +5068,6 @@ p-mod调用的技巧
 <div class="paragraph">
 <p>一个最小的接收循环，它接受任何消息并且没有超时 (例如：receive _ -&gt; ok end )，在 BEAM 代码中是这样的：</p>
 </div>
-<div class="paragraph">
-<p>A minimal receive loop, which accepts any message and has no timeout
-(e.g. receive _ -&gt; ok end) looks like this in BEAM code:</p>
-</div>
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="erlang">  <span class="p">{</span><span class="n">label</span><span class="p">,</span><span class="mi">2</span><span class="p">}.</span>
@@ -5088,10 +5082,8 @@ p-mod调用的技巧
      <span class="p">...</span></code></pre>
 </div>
 </div>
-<div class="literalblock">
-<div class="content">
-<pre>+loop_rec L2 x0+ 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。</pre>
-</div>
+<div class="paragraph">
+<p>loop_rec L2 x0 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。</p>
 </div>
 <div class="paragraph">
 <p>如果消息队列中有消息，则 loop_rec 指令还将该消息从 <em>m-buf</em>  移动到进程堆中。有关 m-buf 处理的详细信息，请参阅 <a href="#CH-Memory">Chapter 12</a> 和 <a href="#CH-Processes">Chapter 3</a>。</p>
@@ -5368,51 +5360,39 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <dl>
 <dt class="hdlist1">move</dt>
 <dd>
-<p>is the instruction that the pattern first has to match. This can be either
-a generic instruction that the compiler has emitted, or a temporary instruction
-that <code>ops.tab</code> has emitted to help with transformations.</p>
+<p>是模式首先要匹配的指令。这(译注：指这个位置的指令) 可以是编译器产生的通用指令，也可以是 <code>ops.tab</code> 生成的用以帮助变换的临时指令。</p>
 </dd>
 <dt class="hdlist1">S</dt>
 <dd>
-<p>is a variable binding any type of value. Any value in the pattern (left hand side or <code>&#8658;</code>)
-that is used in the generator (right hand side of <code>&#8658;</code>) has to be bound to a variable.</p>
+<p>是一个绑定任何类型值的变量。模式中的任何值 ( <code>&#8658;</code> 的左值)，若在产生器中使用 ( <code>&#8658;</code> 的右值) ，都必须绑定到一个变量。</p>
 </dd>
 <dt class="hdlist1">x==0</dt>
 <dd>
-<p>is a guard that says that we only apply the transformation if the target
-location is an <code>x</code> register with the value <code>0</code>. It is possible to chain multiple
-types and also bind a variable here. For instance <code>D=xy==0</code> would allow both
-<code>x</code> and <code>y</code> registers with a value of <code>0</code> and also bind the argument to the variable <code>D</code>.</p>
+<p>是一个卫兵检查，说明该模式只在目标位置是 x 寄存器且值为 0 时应用转换。这里可以链接多个类型 (译注：指多个类型的寄存器)，也可以绑定一个变量。例如， <code>D=xy==0</code>  将允许`x` 和 <code>y</code> 寄存器的值为 <code>0</code> ，并且将参数绑定到变量 <code>D</code>.。</p>
 </dd>
 <dt class="hdlist1">|</dt>
 <dd>
-<p>signifies the end of this instruction and the beginning of another instruction
-that is part of the same pattern.</p>
+<p>表示属于同一模式的本条指令结束，另一条指令开始。</p>
 </dd>
 <dt class="hdlist1">return</dt>
 <dd>
-<p>is the second instruction to match in this pattern.</p>
+<p>是该模式中要匹配的第二个指令。</p>
 </dd>
 <dt class="hdlist1"><code>&#8658;</code></dt>
 <dd>
-<p>signifies the end of the pattern and the start of the code that is to be
-generated.</p>
+<p>表示模式的结束和要生成的代码的开始。</p>
 </dd>
 <dt class="hdlist1">move_return S</dt>
 <dd>
-<p>is the name of the generated instruction together with the name of
-the variable on the lhs. It is possible to generate
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/ops.tab#L625">multiple instructions</a>
-as part of a transformation by using the <code>|</code> symbol.</p>
+<p>表示生成的指令的名称，以及左值变量的名称。可以使用 <code>|</code> 符号生成 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/ops.tab#L656">多条指令(multiple instructions)</a>，此时，本条指令将作为变换的一部分。</p>
 </dd>
 </dl>
 </div>
 <div id="complex_example" class="paragraph">
-<div class="title">A more complex example</div>
-<p>More complex translations can be done in <code>ops.tab</code>. For instance take the
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/ops.tab#L127-L182"><code>select_val</code></a>
-instruction. It will be translated by the loader into either a jump table, a linear
-search array or a binary search array depending on the input values.</p>
+<p>一个更复杂的例子</p>
+</div>
+<div class="paragraph">
+<p>更复杂的翻译可以在 <code>ops.tab</code> 中完成。例如，以 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/ops.tab#L142-L189"><code>select_val</code></a> 指令为例。它将根据输入值，由加载器翻译到跳表，线性搜索数组，或二分搜索的数组中。</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -5421,38 +5401,29 @@ search array or a binary search array depending on the input values.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The above transformation creates a jump table if possible of the <code>select_val</code>.
-There are a bunch of new techniques used in the transformations.</p>
+<p>如果可能的话，上面的变换会为 <code>select_val</code> 创建一个跳转表。在变换中使用了很多新技术。</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">S</dt>
 <dd>
-<p>is used in both <code>is_integer</code> and <code>select_val</code>. This means that both the
-values have to be of the same type and have the same value. Furthermore the <code>S=s</code> guard
-limits the type to a be a source register.</p>
+<p>同时在 <code>is_integer</code> and <code>select_val</code> 中使用。这意味着这两个值必须具有相同的类型和相同的值。此外， <code>S=s</code> 卫兵检查将类型限制为源寄存器。</p>
 </dd>
 <dt class="hdlist1">Rest=*</dt>
 <dd>
-<p>allows a variable number of arguments in the instruction and binds them to
-variable <code>Rest</code>.</p>
+<p>允许指令中的参数数目可变，并将它们绑定到变量 <code>Rest</code> 。</p>
 </dd>
 <dt class="hdlist1">use_jump_tab(Size, Rest)</dt>
 <dd>
-<p>calls the
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_load.c#L2707">use_jump_tab</a>
-C function in <code>beam_load.c</code> that decides whether the arguments in the <code>select_val</code>
-can be transformed into a jump table.</p>
+<p>调用 <code>beam_load.c</code> 中的 C 函数 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/beam_load.c#L3039">use_jump_tab</a>，该函数决定 <code>select_val</code> 中的参数是否可以转换为跳转表。</p>
 </dd>
 <dt class="hdlist1">\</dt>
 <dd>
-<p>signifies that the transformation rule continues on the next line.</p>
+<p>表示转换规则在下一行继续。</p>
 </dd>
 <dt class="hdlist1">gen_jump_tab(S, Fail, Size, Rest)</dt>
 <dd>
-<p>calls the
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_load.c#L3692">gen_jump_tab</a>
-C function in <code>beam_load.c</code> that takes care of generating the appropriate instruction.</p>
+<p>调用 <code>beam_load.c</code> 中的 C 函数 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/beam_load.c#L4039">gen_jump_tab</a>，该函数负责生成适当的指令。</p>
 </dd>
 </dl>
 </div>
@@ -5460,8 +5431,7 @@ C function in <code>beam_load.c</code> that takes care of generating the appropr
 <div class="sect3">
 <h4 id="_特定指令"><a class="link" href="#_特定指令">9.2.2. 特定指令</a></h4>
 <div class="paragraph">
-<p>When all transformations are done, we have to decide how the specifc instruction should
-look like. Let&#8217;s continue to look at <code>move_return</code>:</p>
+<p>完成所有转换后，我们必须决定特定指令应该是什么样子。让我们继续看看 <code>move_return</code>：</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -5472,18 +5442,17 @@ move_return n</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This will generate three different instructions that will use the
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L636"><code>MoveReturn</code></a>
-macro in <code>beam_emu.c</code> to do the work.</p>
+<p>这将生成三条不同的指令，它们将使用 <code>beam_emu.c</code> 中的 <a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L636"><code>MoveReturn</code></a> (译注，在 OTP 最新的 master 分支代码中，<code>MoveReturn</code> 已经被移出 <code>beam_emu.c</code> 在 <a href="https://github.com/erlang/otp/blob/master/erts/emulator/beam/emu/instrs.tab#L697"><code>instra.tab</code></a>文件中增加了宏来处理 <code>move_return</code> ) 宏来完成这项工作。</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">%macro: move_return</dt>
 <dd>
-<p>this tells <code>ops.tab</code> to generate the code for <code>move_return</code>. If there
-is no <code>%macro</code> line, the instruction has to be implemented by hand in beam_emu.c. The code
-for the instruction will be places in <code>beam_hot.h</code> or <code>beam_cold.h</code> depending on if the
-<code>%hot</code> or <code>%cold</code> directive is active.</p>
+<p>告诉  <code>ops.tab</code>  为  <code>move_return</code> 生成代码。如果没有 <code>%macro</code> 这行，指令就需要在beam_emu.c 手工实现。该指令的代码将位于 <code>beam_hot.h</code> 或 <code>beam_cold.h</code> 中，具体取决于 <code>%hot</code> 或 <code>%cold</code> 哪个开关是激活的。（译注：推荐继续阅读资料：https://github.com/erlang/otp/blob/master/erts/emulator/internal_doc/beam_makeops.md[The beam_makeops script]）。</p>
+</dd>
+<dt class="hdlist1">MoveReturn</dt>
+<dd>
+<p>告诉代码生成器，move_return 在 beam_emu.c 中使用的 C macro 的名称是 MoveReturn。这个宏必须手动实现。（译注：这是 OTP 19.3 的情况，最新的实现方式参考 OTP 源码和文档）</p>
 </dd>
 <dt class="hdlist1">MoveReturn</dt>
 <dd>
@@ -5492,20 +5461,16 @@ is MoveReturn. This macro has to be implemented manually.</p>
 </dd>
 <dt class="hdlist1">-nonext</dt>
 <dd>
-<p>tells the code generator that it should not generate a dispatch to the next
-instruction, the <code>MoveReturn</code> macro will take care of that.</p>
+<p>告诉代码生成器不应该生成下一条指令的分派 ( dispatch )， <code>MoveReturn</code> 宏会处理这个问题。</p>
 </dd>
 <dt class="hdlist1">move_return x</dt>
 <dd>
-<p>tells the code generator to generate a specific instruction for when the
-instruction argument is an x register. <code>c</code> for when it is a constant, <code>n</code> when it is <code>NIL</code>.
-No instructions are in this case generated for when the argument is a y register as the
-compiler will never generate such code.</p>
+<p>告诉代码生成器在指令参数为 x 寄存器时生成特定的指令。 <code>c</code> 是常数， <code>n</code> 是 <code>NIL</code>。在这种情况下，当参数是 y 寄存器时不会生成任何指令，因为编译器永远不会生成这样的代码。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The resulting code in <code>beam_hot.h</code> will look like this:</p>
+<p>生成的 <code>beam_hot.h</code> 代码看起来像是这样：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5526,22 +5491,23 @@ OpCase(move_return_x):
 </div>
 </div>
 <div class="paragraph">
-<p>All the implementor has to do is to define the <code>MoveReturn</code> macro in <code>beam_emu.c</code> and
-the instruction is complete.</p>
+<p>实现者所要做的就是在 <code>beam_emu.c</code> 中定义 <code>MoveReturn</code> 宏，这样指令就完成了。</p>
 </div>
 <div id="macro_arguments" class="paragraph">
 <div class="title">Macro flags</div>
-<p>The <code>%macro</code> rules can take multiple different flags to modify the code that
-gets generated.</p>
+<p><code>%macro</code> 规则可以采用多个不同的标志来修改生成的代码。</p>
 </div>
 <div class="paragraph">
-<p>The examples below assume that there is a specific instructions looking like this:</p>
+<p>下面的例子假设有一个类似这样的特定指令：</p>
 </div>
 <div class="literalblock">
 <div class="content">
 <pre>%macro move_call MoveCall
 move_call x f</pre>
 </div>
+</div>
+<div class="paragraph">
+<p>如果没有任何标志的 <code>%macro</code> ，将生成以下代码:</p>
 </div>
 <div class="paragraph">
 <p>without any flags to the <code>%macro</code> we the following code will be generated:</p>
@@ -5561,10 +5527,7 @@ NextPF(2, next);</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The <a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L519-L523">PreFetch and NextPF</a>
-macros make sure to load the address to jump to next before the instruction is executed.
-This trick increases performance on all architectures by a variying amount depending on
-cache architecture and super scalar properties of the CPU.
+<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L519-L523">PreFetch and NextPF</a> 宏确保在执行指令之前加载要跳转到的地址。根据 CPU 的缓存体系结构和超级标量属性，这个技巧在所有体系结构上都有不同程度的性能提升。(译注：目前，此特性也已经被移出 beam_emu.c，详细资料和介绍可以参考 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/internal_doc/beam_makeops.md#L1263">Code generation directives</a> )
 </td>
 </tr>
 </table>
@@ -5573,8 +5536,7 @@ cache architecture and super scalar properties of the CPU.
 <dl>
 <dt class="hdlist1">-nonext</dt>
 <dd>
-<p>Don&#8217;t emit a dispatch for this instructions. This is used for instructions
-that are known to not continue with the next instructions, i.e. return, call, jump.</p>
+<p>不要为此指令产生 dispatch。它用于已知不能继续执行下一个指令的指令，如 return，call，jump。</p>
 </dd>
 </dl>
 </div>
@@ -5590,10 +5552,7 @@ that are known to not continue with the next instructions, i.e. return, call, ju
 <dl>
 <dt class="hdlist1">-arg_*</dt>
 <dd>
-<p>Include the arguments of type * as arguments to the c-macro. Not all argument
-types are included by default in the c-macro. For instance the type <code>f</code> used for fail
-labels and local function calls is not included. So giving the option <code>-arg_f</code> will
-include that as an argument to the c-macro.</p>
+<p>包括 * 类型的参数作为 C macro 的参数。默认情况下，C macro 中并不包括所有的参数类型。例如，用于失败标签和本地函数调用的类型 <code>f</code> 不包括在内。因此，提供选项 <code>-arg_f</code> 将包括它作为 C macro 的参数。</p>
 </dd>
 </dl>
 </div>
@@ -5609,7 +5568,7 @@ include that as an argument to the c-macro.</p>
 <dl>
 <dt class="hdlist1">-size</dt>
 <dd>
-<p>Include the size of the instruction as an argument to the c-macro.</p>
+<p>将指令的大小作为参数包含到 C macro 中。</p>
 </dd>
 </dl>
 </div>
@@ -5625,21 +5584,12 @@ include that as an argument to the c-macro.</p>
 <dl>
 <dt class="hdlist1">-pack</dt>
 <dd>
-<p>Pack any arguments if possible. This places multiple register arguments in
-the same word if possible. As register arguments can only be 0-1024, we only need
-10 bits to store them + 2 for tagging. So on a 32-bit system we can put 2 registers
-in one word, while on a 64-bit we can put 4 registers in one word. Packing instruction
-can greatly decrease the memory used for a single instruction. However there is
-also a small cost to unpack the instruction, which is why it is not enabled
-for all instructions.</p>
+<p>如果可能的话，打包任何参数。如果可能的话，将多个寄存器参数放在同一个单词中。由于寄存器参数只能是 0-1024，所以我们只需要 10 位来存储它们，再加上 2 位来做标记。因此，在 32 位系统中，我们可以将 2 个寄存器放在一个机器字中，而在64位系统中，我们可以将 4 个寄存器放在一个机器字中。封装指令可以大大减少单个指令所使用的内存。然而，解包指令也会有一点成本，这就是为什么没有对所有指令启用它的原因。</p>
 </dd>
 </dl>
 </div>
 <div class="paragraph">
-<p>The example with the call cannot do any packing as <code>f</code> cannot be packed and only one
-other argument exists. So let&#8217;s look at the
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/ops.tab#L539">put_list</a>
-instruction as an example instead.</p>
+<p>这个调用的例子不能进行任何打包，因为 <code>f</code> 不能打包，而且只存在一个另外的参数。因此，让我们以 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/ops.tab#L553">put_list</a> 指令为例（译注：请同时关注这个文件中 L535-L537 的注释）。</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -5660,18 +5610,13 @@ NextPF(1, next);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This packs the 3 arguments into 1 machine word, which halves the required memory
-for this instruction.</p>
+<p>这将 3 个参数打包到 1 个机器字中，从而将该指令所需的内存减半。</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">-fail_action</dt>
 <dd>
-<p>Include a fail action as an argument to the c-macro. Note that the
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L2996-L2998"><code>ClauseFail()</code></a>
-macro assumes the fail label is in the first argument of the instructions,
-so in order to use this in the above example we should transform
-the <code>move_call x f</code> to <code>move_call f x</code>.</p>
+<p>包括一个失败操作作为 C macro 的参数。请注意，https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L2996-L2998[<code>ClauseFail()</code>] 宏假设失败标签在指令的第一个参数中，因此，为了在上面的示例中使用它，我们应该将 <code>move_call x f</code> 变换为 <code>move_call f x</code>。</p>
 </dd>
 </dl>
 </div>
@@ -5687,9 +5632,7 @@ the <code>move_call x f</code> to <code>move_call f x</code>.</p>
 <dl>
 <dt class="hdlist1">-gen_dest</dt>
 <dd>
-<p>Include a
-<a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L166-L174">store function</a>
-as an argument to the c-macro.</p>
+<p>包括一个 <a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/beam_emu.c#L166-L174">store function</a> 作为 C macro 的参数。</p>
 </dd>
 </dl>
 </div>
@@ -5705,7 +5648,7 @@ as an argument to the c-macro.</p>
 <dl>
 <dt class="hdlist1">-goto</dt>
 <dd>
-<p>Replace the normal next dispatch with a jump to a c-label inside beam_emu.c</p>
+<p>用跳到 beam_emu.c 中的 c-label 替换正常的下一个分派</p>
 </dd>
 </dl>
 </div>
@@ -5764,33 +5707,25 @@ goto do_call;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The values in the condition are only allowed to be either integers
-or atoms. If the value is of any other type the compiler will not emit a
-<code>select_val</code> instruction. The loader uses a couple of hearistics to figure
-out what type algorithm to use when doing the <code>select_val</code>.</p>
+<p>条件中的值只能是整数或原子。如果值是任何其他类型的，编译器将不会生成 <code>select_val</code>  指令。加载器使用两个侦听器来确定在执行 <code>select_val</code> 时使用什么类型的算法。</p>
 </div>
 <div class="dlist">
 <dl>
 <dt class="hdlist1">jump_on_val</dt>
 <dd>
-<p>Create a jump table and use the value as the index. This if very
-efficient and happens when a group of close together integers are used as the
-value to select on. If not all values are present, the jump table is padded with
-extra fail label slots.</p>
+<p>创建一个跳转表并使用该值作为索引。在使用一组相近的整数作为选择值时是非常有效的。如果不是所有的值都存在，则用额外的失败标签槽填充跳转表。</p>
 </dd>
 <dt class="hdlist1">select_val2</dt>
 <dd>
-<p>Used when only two values are to be selected upon and they to not
-fit in a jump table.</p>
+<p>当只有两个值被选中时，他们不适合跳表时使用。</p>
 </dd>
 <dt class="hdlist1">select_val_lins</dt>
 <dd>
-<p>Do a linear search of the sorted atoms or integers. This is
-used when a small amount of atoms or integers are to be selected from.</p>
+<p>对已排序的原子或整数进行线性搜索。当需要从少量的原子或整数中选择时使用。</p>
 </dd>
 <dt class="hdlist1">select_val_bins</dt>
 <dd>
-<p>Do a binary search of the sorted atoms or integers.</p>
+<p>对已排序的原子或整数进行二分搜索。</p>
 </dd>
 </dl>
 </div>
@@ -13794,7 +13729,7 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-07 01:54:38 +0800
+Last updated 2020-10-07 20:40:10 +0800
 </div>
 </div>
 <style>
