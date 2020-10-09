@@ -1,46 +1,19 @@
 [[CH-Scheduling]]
-== Scheduling
-To fully understand where time in an ERTS system is spent you need
-to understand how the system decides which Erlang code to run
-and when to run it. These decisions are made by the Scheduler.
+== 调度
 
-The scheduler is responsible for the real-time guarantees of the
-system. In a strict Computer Science definition of the word
-real-time, a real-time system has to be able to guarantee a response
-within a specified time. That is, there are real deadlines
-and each task has to complete before its deadline. In Erlang there are
-no such guarantees, a _timeout_ in Erlang is only guaranteed to *not*
-trigger *before* the given deadline.
+要完全理解在 ERTS 系统中时间花在何处，您需要理解系统如何决定运行哪个 Erlang 代码以及何时运行它。这些决定是由调度器做出的。
 
+调度程序负责系统的实时性保证。在计算机科学对 “*实时*” 一词的严格定义中，实时系统必须能够保证在指定的时间内作出响应。也就是说，有真正的截止日期，每个任务都必须在最终期限之前完成。在 Erlang 中没有这样的保证，只保证超时*不会* 在给定的最终期限 *之前* 触发。
 
-In a general system like Erlang where we want to be able to handle all
-sorts of programs and loads, the scheduler will have to make some
-compromises. There will always be corner cases where a generic
-scheduler will behave badly. After reading this chapter
-you will have a deeper understanding of how
-the Erlang scheduler works and especially when it might not work
-optimally. You should be able to design your system to avoid the corner
-cases and you should also be able to analyze a misbehaving system.
+在像 Erlang 这样的通用系统中，我们希望能够处理各种程序和负载，所以调度器将不得不做出一些妥协。总会有一些极端情况，在这些情况下，通用的调度器的行为会变得很糟糕。阅读完本章后，您将对 Erlang 调度器的工作方式有更深的理解，特别是当它可能不在最佳状态工作时。你应该能够设计你的系统以避免极端情况，还应该能够分析行为不正常的系统。
 
-=== Concurrency, Parallelism, and Preemptive Multitasking
+=== 并发、并行，抢占式多任务
 
-Erlang is a concurrent language. When we say that processes run
-concurrently we mean that for an outside observer it looks like two
-processes are executing at the same time. In a single core system this
-is achieved by preemptive multitasking. This means that one process
-will run for a while, and then the scheduler of the virtual machine
-will suspend it and let another process run.
+Erlang 是一种并发语言。当我们说进程并发运行时，我们的意思是：对于一个外部观察者来说，它看起来像是两个（译注：或多个）进程同时在执行。在单核系统中，这是通过抢占式多任务实现的。这意味着一个进程将运行一段时间，然后虚拟机的调度器将挂起它，让另一个进程运行。
 
-In a multicore or a distributed system we can achieve true
-parallelism, that is, two or more processes actually executing at the
-exact same time. In an SMP enabled emulator the system uses several
-OS threads to indirectly execute Erlang processes by running one
-scheduler and emulator per thread. In a system using the default
-settings for ERTS there will be one thread per enabled core (physical
-or hyper threaded).
+在多核或分布式系统中，我们可以实现真正的并行性，即两个或多个进程实际上同时执行。在启用SMP的仿真器中，系统使用几个操作系统线程来间接地执行Erlang进程，每个线程运行一个调度程序和仿真器。在使用ERTS默认设置的系统中，每个启用的核心 (物理核心或超线程) 将有一个线程。
 
-We can check that we have a system capable of parallel execution,
-by checking if SMP support is enabled:
+通过检查是否启用了 SMP 支持，我们可以检查我们有一个能够支持并行执行的系统：
 
 ----
 iex(1)> :erlang.system_info :smp_support
@@ -54,14 +27,22 @@ system:
 iex(2)> :erlang.system_info :schedulers_online
 4
 ----
-We can see this information in the Observer as shown
-in the figure below.
+（译注：上边的两个例子使用了 Elixir Shell，其实在 Erlang Shell 操作应该更简单直接，在译者机器上的运行情况如下：）
+----
+bash> erl
 
-If we spawn more processes than schedulers we have and
-let them do some busy work we can see that there are a number
-of processes _running_ in parallel and some processes that
-are _runnable_ but not currently running. We can see this
-with the function `erlang:process_info/2`.
+Erlang/OTP 23 [erts-11.0.3] [source] [64-bit] [smp:8:8] [ds:8:8:10] [async-threads:1] [hipe] [dtrace]
+
+Eshell V11.0.3  (abort with ^G)
+1> erlang:system_info(smp_support).
+true
+2> erlang:system_info(schedulers_online).
+8
+----
+
+我们可以在 Observer 中看到如下图所示的信息。
+
+如果我们生成了比现有的调度器更多的进程，并让它们做一些繁忙的工作，我们可以看到有许多进程在并行运行 ( _running_ )，还有一些进程是可运行 ( _runnable_ ) 的，但目前没有运行。我们可以通过函数 `erlang:process_info/2` 看到这一点。
 
 ----
 
@@ -88,119 +69,56 @@ with the function `erlang:process_info/2`.
 ...
 ----
 
-We will look closer at the different statuses that a process
-can have later in this chapter, but for now all we need
-to know is that a process that is _running_ or _garbage_collecting_
-is actually running in on a scheduler.
-Since the machine in the example has four cores and four schedulers
-there are four process running in parallel (the shell process and
-three of the _busy processes_). There are also five busy processes
-waiting to run in the state _runnable_.
+在本章的后面，我们将进一步研究进程可能具有的各种状态，但现在我们需要知道的是正在运行或垃圾收集 ( _running_ 或 _garbage_collecting_ ) 的进程，实际上正在调度器中运行。由于示例中的机器有 4 个核和 4 个调度器，因此有 4 个进程并行运行 ( shell 进程和 3 个繁忙的进程 )。还有 5 个忙碌的进程以 runnable 状态等待运行。
 
-By using the _Load Charts_ tab in the Observer we can see that all
-four schedulers are fully loaded while the busy processes execute.
+通过使用 Observer 中的 _Load Charts_ 选项卡，我们可以看到在繁忙的进程执行时，所有 4 个调度器都已满负载。
 
 ----
 observer:start().
 ok
+
 3> RunThem(8).
 ----
 
 image::../images/observer_load.jpg[Observer]
 
-=== Preemptive Multitasking in ERTS Cooperating in C
+=== 在 C 层面上的协作的 ERTS 抢占式多任务
 
+Erlang 级别的抢占式多任务，是通过 C 语言级别的协作多任务来实现的。Erlang 语言、编译器和虚拟机一起工作，以确保 Erlang 进程的执行将在有限的时间内完成，并让下一个进程运行。用于测量和限制允许执行时间的技术称为规约值计数，我们接下来将看到有关规约值计数的所有细节。
 
-The preemptive multitasking on the Erlang level is achieved by
-cooperative multitasking on the C level. The Erlang language, the
-compiler and the virtual machine works together to ensure that the
-execution of an Erlang process will yield within a limited time and
-let the next process run. The technique used to measure and limit the
-allowed execution time is called reduction counting, we will look at
-all the details of reduction counting soon.
+=== 规约值
 
-=== Reductions
+人们可以将 BEAM 中的调度描述为：在协同调度之上的抢占式调度。进程只能在执行的某些时刻被挂起，例如在 receive 或函数调用时。这样，调度是协作的---进程必须执行允许挂起的代码。Erlang 代码的特性使得进程在不执行函数调用时，几乎不可能长时间运行。有一些内建函数 ( BIFs ) 仍然可能花费很长时间而不会让步。另外，如果调用实现糟糕的本地实现函数 (NIF, Native Implemented Function) 中的 C 代码，也可能会长时间阻塞一个调度器。我们将在 xref:CH-C[] 中看到如何编写表现良好的NIFs。
 
-One can describe the scheduling in BEAM as preemptive scheduling on top
-of cooperative scheduling.
-A process can only be suspended at certain
-points of the execution, such as at a receive or a function call. In
-that way the scheduling is cooperative---a process has to execute code
-which allows for suspension. The nature of Erlang code makes it
-almost impossible for a process to run for a long time without doing a
-function call. There are a few Built In Functions (BIFs) that still
-can take too long without yielding. Also, if you call C code in a
-badly implemented Native Implemented Function (NIF) you might block
-one scheduler for a long time.
-We will look at how to write well behaved NIFs in xref:CH-C[].
-
-Since there are no other loop constructs than recursion and
-list comprehensions,
-there is no way to loop forever without doing a function call.
-Each function call is counted as a `reduction`; when the reduction
-limit for the process is reached it is suspended.
+由于除了递归和列表解析式 ( list comprehension ) 之外没有其他的循环结构，因此不进行函数调用就不可能永远循环。每个函数调用都被算作一次 `规约`；当进程的规约值减少达到下限时，它将被挂起。
 
 [VERSION]
-.Version Info
+.版本信息
 ====
-Prior to OTP-20.0, the value of `CONTEXT_REDS` was 2000.
+在 OTP-20.0之前的版本，`CONTEXT_REDS` 的值曾经被设置为 2000.
 ====
 
 [NOTE]
-.Reductions
+.规约 ( Reductions )
 ====
-The term reduction comes from the Prolog ancestry of Erlang.
-In Prolog each execution step is a goal-reduction, where each
-step reduces a logic problem into its constituent parts, and
-then tries to solve each part.
+规约这个术语来自 Erlang 的祖先 Prolog。在 Prolog 中，每个执行步骤都是一个目标规约 (goal-reduction)，每个步骤都将一个逻辑问题简化为它的组成部分，然后尝试解决每个部分。
 ====
 
-==== How Many Reductions Will You Get?
+==== 你能得到多少规约值？
 
-When a process is scheduled it will get a number of reductions defined
-by `CONTEXT_REDS` (defined in
-link:https://github.com/erlang/otp/blob/OTP-20.0/erts/emulator/beam/erl_vm.h[erl_vm.h],
-currently as 4000). After using up its reductions or when doing a
-receive without a matching message in the inbox, the process will be
-suspended and a new processes will be scheduled.
+当进程被调度时，它将获得 `CONTEXT_REDS` (在 https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_vm.h#L39[erl_vm.h] 中定义，当前值为4000) 定义的一个规约值。在用尽规约值，执行 receive 并且在收件箱中没有匹配的消息时，该进程将被挂起，另一个进程将被调度。
 
-If the VM has executed as many reductions as defined by
-`INPUT_REDUCTIONS` (currently `2*CONTEXT_REDS`, also defined in
-+erl_vm.h+) or if there is no process ready to run
-the scheduler will do system-level activities. That is, basically,
-check for IO; we will cover the details soon.
+如果 VM 已经执行了 `INPUT_REDUCTIONS` 定义的规约次数(当前是 `2*CONTEXT_REDS`，也在 +erl_vm.h+ 中定义)，或者没有进程 ready，调度器将执行系统级活动。也就是检查IO；我们稍后会详细了解。
 
-==== What is a Reduction Really?
+==== 规约值究竟是啥？
 
-It is not completely defined what a reduction is, but at least each
-function call should be counted as a reduction. Things get a bit more
-complicated when talking about BIFs and NIFs. A process should not be
-able to run for "a long time" without using a reduction and yielding.
-A function written in C can not yield in the middle, it has to make
-sure it is in a clean state and return. In order to be re-entrant it
-has to save its internal state somehow before it returns and then set
-up the state again on re-entry. This can be very costly, especially
-for a function that sometimes only does little work and sometimes lot.
-The reason for writing a function in C instead of Erlang is usually to
-achieve performance and to not do unnecessary book keeping work.
-Since there is no clear definition of what one reduction is, other
-than a function call on the Erlang level, there is a risk that a
-function implemented in C takes many more clock cycles per reduction
-than a normal Erlang function. This can lead to an imbalance in
-the scheduler, and even starvation.
+规约是什么还没有完全定义，但至少每个函数调用都应该算作规约。当谈到 BIFs 和 NIFs 时，事情变得有点复杂。如果不使用规约值和让步 ( yield )，进程不应该能够运行“很长时间”。用 C 编写的函数不能在中间产生让步，它必须确保它处于干净的状态并返回。为了可重入，它必须在返回之前保存它的内部状态，然后在再次进入时再次设置状态。这样做的代价会非常大，特别是对于一个有时只做少量工作，有时做大量工作的函数来说。用 C 而不是 Erlang 编写函数的原因通常是为了获得性能收益，并且不需要做不必要的簿记工作。由于除了 Erlang 级别上的函数调用之外，对于什么是一次 规约 没有明确的定义，因此存在这样的风险：用 C 实现的函数在每次规约时比普通的 Erlang 函数花费更多的时钟周期。这可能会导致调度器不平衡，甚至导致资源饥饿。
 
-For example in Erlang versions prior to R16, the BIFs
-`binary_to_term/1` and `term_to_binary/1` were non yielding and only
-counted as one reduction. This meant that a process calling these
-functions on large terms could starve other processes. This can even
-happen in a SMP system because of the way processes are balanced
-between schedulers, which we will get to soon.
+例如，在 R16 之前的 Erlang 版本中，BIFs 的 `binary_to_term/1` 和 `term_to_binary/1` 是不让步的，并且只算一次规约。这意味着以特大项式 (为参数) 调用这些函数的进程可能会饿死其他进程。因为调度器之间的进程平衡方式，这种情况甚至可能发生在 SMP 系统中，我们很快就会讲到。
 
-While a process is running the emulator keeps the number of reductions
-left to execute in the (register mapped) variable `FCALLS` (see
-+beam_emu.c+).
+当进程运行时，仿真器在 (寄存器映射) 变量 `FCALLS` 中保留要执行的规约数 (参见 +beam_emu.c+)。
 
-We can examine this value with `hipe_bifs:show_pcb/1`:
+在 Elixir 中，我们可以用  `hipe_bifs:show_pcb/1` 检查这个值：
 
 ----
 iex(13)> :hipe_bifs.show_pcb self
@@ -219,34 +137,21 @@ iex(13)> :hipe_bifs.show_pcb self
    320 | fcalls        | 0x00000000000004a3 |                    |
 ----
 
-The field `reds` keep track of the total number of reductions a
-process has done up until it was last suspended. By monitoring this
-number you can see which processes do the most work.
+[NOTE]
 
-You can see the total number of reductions for a process (the reds
-field) by calling `erlang:process_info/2` with the atom `reductions`
-as the second argument. You can also see this number in the process
-tab in the observer or with the i/0 command in the Erlang shell.
+译注：如果以上命令无法执行，可以使用 erlang:process_info(self()). 查看 reductions 的值
 
-As noted earlier, each time a process starts the field `fcalls` is set to
-the value of `CONTEXT_REDS` and for each function call the
-process executes `fcalls` is reduced by 1. When the process is
-suspended the field reds is increased by the number of executed
-reductions. In some C like code something like:
- `p->reds += (CONTEXT_REDS - p->fcalls)`.
+`reds` 字段会追踪进程在最后一次挂起之前所完成的规约总数。通过监视这个数字，您可以看到哪些进程做了最多的工作。
 
-Normally a process would do all its allotted reductions and `fcalls`
-would be 0 at this point, but if the process suspends in a receive
-waiting for a message it will have some reductions left.
+你可以通过调用 `erlang:process_info/2` 并将第二个参数设置为 reductions 原子，来查看进程的规约值总数。你还可以在 observer 的 process 选项卡中，或在 Erlang shell 中的 i/0 命令中看到这个数字。
 
-When a process uses up all its reductions it will yield to
-let another process run, it will go from the process state
-_running_ to the state _runnable_, if it yields in a receive
-it will instead go into the state _waiting_ (for a message).
-In the next section we will take a look at all the different
-states a process can be in.
+如前所述，每当进程启动时，字段 `fcalls` 被设置为 `CONTEXT_REDS` 的值，并且进程执行每个函数调用的时候， `fcalls` 将减少1。当进程被挂起时，reds 字段会随着执行的减少数量而增加。用类似 C 的代码描述，类似： `p -> reds += (CONTEXT_REDS - p -> fcalls)`。
 
-=== The Process State (or _status_)
+通常进程会执行所有分配的规约数，此时 `fcalls` 为0，但是如果进程在 receive 中挂起等待消息，那么它还会留下一些规约数未用尽。
+
+当一个进程用尽它的所有规约数，他会让步给另一个进程运行，这时，它将从进程状态 _running_ 变为状态 _runnalbe_ ，如果它在执行 receive 时让步，它将进入 _waiting_ 状态(等待消息)。在下一节中，我们将查看进程可能处于的所有不同状态。
+
+=== 进程状态
 
 The field `status` in the PCB contains the process state. It can be one
 of _free_, _runnable_, _waiting_, _running_, _exiting_, _garbing_,
@@ -338,7 +243,7 @@ the processes in a queue.
 
 
 
-=== Process Queues
+=== 进程队列
 The main job of the scheduler is to keep track of work queues,
 that is, queues of processes and ports.
 
@@ -351,7 +256,7 @@ state. If the receive statement has a timeout the scheduler has to
 trigger the state transition to runnable when the timeout triggers.
 We will cover this mechanism later in this chapter.
 
-==== The Ready Queue
+==== Ready 队列
 Processes in the runnable state are placed in a FIFO (first in first
 out) queue handled by the scheduler, called the _ready queue_. The
 queue is implemented by a first and a last pointer and by the next
@@ -611,8 +516,7 @@ left to execute in the (register mapped) variable FCALLS (see
 
 // |====
 
-
-=== The Scheduler Loop
+=== 调度循环
 
 Conceptually you can look at the scheduler as the driver of program
 execution in the Erlang VM. In reality, that is, the way the C code
@@ -638,7 +542,7 @@ Looking at it that way, the scheduler loop looks like this:
 
 // TODO: Expand on these bullets
 
-=== Load Balancing
+=== 负载均衡
 
 The current strategy of the load balancer is to use as few schedulers
 as possible without overloading any CPU. The idea is that you will get
