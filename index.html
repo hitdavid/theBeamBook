@@ -642,18 +642,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_waiting_timeouts_and_the_timing_wheel">11.5.2. Waiting, Timeouts and the Timing Wheel</a></li>
 </ul>
 </li>
-<li><a href="#_ports">11.6. Ports</a></li>
-<li><a href="#_reductions">11.7. Reductions</a></li>
-<li><a href="#_调度循环">11.8. 调度循环</a></li>
+<li><a href="#_端口_ports">11.6. 端口 ( Ports )</a></li>
+<li><a href="#_规约可以跳过">11.7. 规约（可以跳过）</a></li>
+<li><a href="#SEC-Scheduler_loop">11.8. 调度器循环（原书未完成）</a></li>
 <li><a href="#_负载均衡">11.9. 负载均衡</a>
 <ul class="sectlevel3">
-<li><a href="#_task_stealing">11.9.1. Task Stealing</a></li>
-<li><a href="#_migration">11.9.2. Migration</a></li>
+<li><a href="#_任务窃取_task_stealing">11.9.1. 任务窃取 ( <em>task stealing</em> )</a></li>
+<li><a href="#_迁移">11.9.2. 迁移</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-Memory">12. The Memory Subsystem: Stacks, Heaps and Garbage Collection</a>
+<li><a href="#CH-Memory">12. 内存子系统: 栈、堆以及垃圾收集</a>
 <ul class="sectlevel2">
 <li><a href="#_the_memory_subsystem">12.1. The memory subsystem</a></li>
 <li><a href="#SS-Memory_Allocators">12.2. Different type of memory allocators</a>
@@ -688,11 +688,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#CH-DataStructures">13. Advanced data structures (ETS, DETS, Mnesia)</a></li>
-<li><a href="#CH-IO">14. IO, Ports and Networking (10p)</a>
+<li><a href="#CH-DataStructures">13. 高级数据结构 (ETS, DETS, Mnesia)（原书未完成）</a></li>
+<li><a href="#CH-IO">14. IO、端口和网络</a>
 <ul class="sectlevel2">
 <li><a href="#_standard_io">14.1. Standard IO</a></li>
-<li><a href="#_ports_2">14.2. Ports</a>
+<li><a href="#_ports">14.2. Ports</a>
 <ul class="sectlevel3">
 <li><a href="#_different_types_of_ports">14.2.1. Different types of Ports</a></li>
 </ul>
@@ -701,7 +701,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_sockets_udp_and_tcp">14.4. Sockets, UDP and TCP</a></li>
 </ul>
 </li>
-<li><a href="#CH-Distribution">15. Distribution</a></li>
+<li><a href="#CH-Distribution">15. Distribution（原书未完成）</a></li>
 <li><a href="#CH-C">16. Interfacing C&#8201;&#8212;&#8201;BIFs NIFs and Linked in Drivers</a></li>
 <li><a href="#CH-Native">17. Native Code</a></li>
 </ul>
@@ -5973,93 +5973,46 @@ ok
 <div class="sect2">
 <h3 id="_进程状态"><a class="link" href="#_进程状态">11.4. 进程状态</a></h3>
 <div class="paragraph">
-<p>The field <code>status</code> in the PCB contains the process state. It can be one
-of <em>free</em>, <em>runnable</em>, <em>waiting</em>, <em>running</em>, <em>exiting</em>, <em>garbing</em>,
-and <em>suspended</em>. When a process exits it is marked as
-free---you should never be able to see a process in this state,
-it is a short lived state where the process no longer exist as
-far as the rest of the system is concerned but there is still
-some clean up to be done (freeing memory and other resources).</p>
+<p>PCB 中的 <code>status</code> 字段包含进程状态。它可以是  <em>free</em>, <em>runnable</em>, <em>waiting</em>, <em>running</em>, <em>exiting</em>, <em>garbing</em>,
+和 <em>suspended</em> 中的一种。当进程退出时,它被标记为 <em>free</em> ---你不应该能够看到一个在这种状态下的进程，对于系统的其他部分而言，这是一种短暂的状态，进程不再存在，但仍有一些清理工作要做 (释放内存和其他资源)。</p>
 </div>
 <div class="paragraph">
-<p>Each process status represents a state in the Process State
-Machine. Events such as a timeout or a delivered
-message triggers transitions along the edges in the state machine.
-The <em>Process State Machine</em> looks like this:</p>
+<p>每个进程状态都是在进程状态机中的一个状态。超时或传递的消息等事件会沿着状态机的边缘触发转换。进程状态机是这样的：</p>
 </div>
 <div id="process_state_machine" class="imageblock">
 <div class="content">
-<img src="images/diag-d9990d3386e3968f85e983a5ff027c71.png" alt="Diagram" width="670" height="462">
+<img src="images/diag-35ca202a8bca22e40e884fb6cf86aaa3.png" alt="Diagram" width="690" height="448">
 </div>
-<div class="title">Figure 23. Process State Machine</div>
-</div>
-<div class="paragraph">
-<p>The normal states for a process are <em>runnable</em>, <em>waiting</em>, and <em>running</em>.
-A running process is currently executing code in one of the schedulers.
-When a process enters a receive and there is no matching message in
-the message queue, the process will become waiting until a message
-arrives or a timeout occurs. If a process uses up all its reductions,
-it will become runnable and wait for a scheduler to pick it up again.
-A waiting process receiving a message or a timeout will become
-runnable.</p>
+<div class="title">Figure 23. 进程状态机</div>
 </div>
 <div class="paragraph">
-<p>Whenever a process needs to do garbage collection, it will go into
-the <em>garbing</em>
-state until the GC is done. While it is doing GC
-it saves the old state in the field <code>gcstatus</code> and when it is done
-it sets the state back to the old state using <code>gcstatus</code>.</p>
+<p>进程的正常状态是 <em>runnable</em>，<em>waiting</em>，和 <em>running</em>。 处于 <em>running</em> 状态的进程当前正在某一个调度器中执行代码。当进程进入 receive 时，如果消息队列中没有匹配的消息，进程将开始 <em>waiting</em> ，直到消息到达或发生超时。如果一个进程用尽了它所有的规约值，它将变成  <em>runnable</em> 状态，并等待调度程序再次将其拾取。接收到消息或超时的等待进程将变为 <em>runnable</em> 的。</p>
 </div>
 <div class="paragraph">
-<p>The suspended state is only supposed to be used for debugging
-purposes. You can call <code>erlang:suspend_process/2</code> on another process
-to force it into the suspended state. Each time a process calls
-<code>suspend_process</code> on another process, the <em>suspend count</em> is increased.
-This is recorded in the field <code>rcount</code>.
-A call to (<code>erlang:resume_process/1</code>) by the suspending process will
-decrease the suspend count. A process in the suspend state will not
-leave the suspend state until the suspend count reaches zero.</p>
+<p>每当一个进程需要进行垃圾收集时，它就会进入 <em>garbing</em> 状态，直到 GC 完成。在执行 GC 时，它将旧状态保存在 <code>gcstatus</code> 字段中，并在执行 GC 完成时将进程状态设置为使用保存的 <code>gcstatus</code> 旧状态。</p>
 </div>
 <div class="paragraph">
-<p>The field <code>rstatus</code> (resume status) is used to keep track of the
-state the process was in before a suspend. If it was <em>running</em>
-or <em>runnable</em> it will start up as <em>runnable</em>, and if it was <em>waiting</em>
-it will go back to the wait queue. If a suspended waiting process
-receives a timeout <code>rstatus</code> is set to <em>runnable</em> so it will resume
-as <em>runnable</em>.</p>
+<p><em>suspended</em> 状态仅用于调试目的。您可以在一个进程上调用 <code>erlang:suspend_process/2</code> ，强制另一个进程进入挂起状态。每当一个进程在另一个进程上调用 <code>suspend_process</code> 时，挂起计数 ( <em>suspend count</em> ) 就会增加。这被记录在字段 <code>rcount</code> 中。挂起的进程调用 <code>erlang:resume_process/1</code> 将减少挂起计数。处于挂起状态的进程将在挂起计数为零时离开挂起状态。</p>
 </div>
 <div class="paragraph">
-<p>To keep track of which process to run next the scheduler keeps
-the processes in a queue.</p>
+<p>字段 <code>rstatus</code> (resume status) 用于跟踪进程在挂起之前的状态。如果它正在 <em>running</em> 或 <em>runnable</em> ，它将作为  <em>runnable</em> 启动，如果它正在 <em>waiting</em> 状态，它将返回到等待队列。如果一个挂起的等待进程接收到超时，则将 <code>rstatus</code> 设置为 <em>runnable</em>，因此它将恢复为 <em>runnable</em>。</p>
+</div>
+<div class="paragraph">
+<p>为了跟踪下一个要运行的进程，调度器将进程保存在一个队列中。</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_进程队列"><a class="link" href="#_进程队列">11.5. 进程队列</a></h3>
 <div class="paragraph">
-<p>The main job of the scheduler is to keep track of work queues,
-that is, queues of processes and ports.</p>
+<p>调度器的主要工作是跟踪工作队列，工作队列即进程和端口 ( ports ) 的队列。</p>
 </div>
 <div class="paragraph">
-<p>There are two process states that the scheduler has to handle,
-<em>runnable</em>, and <em>waiting</em>.
-Processes waiting to receive a message are in
-the waiting state. When a waiting process receives a message the send
-operations triggers a move of the receiving process into the runnable
-state. If the receive statement has a timeout the scheduler has to
-trigger the state transition to runnable when the timeout triggers.
-We will cover this mechanism later in this chapter.</p>
+<p>调度程序必须处理两种进程状态：<em>runnable</em> 和 <em>waiting</em>。等待接收消息的进程处于 waiting 状态。当等待进程收到消息时，发送 ( send ) 操作将触发接收进程进入 runnable 状态。如果 receive 语句有超时，调度程序必须在超时被触发时，触发将进程状态变为 runnable 的转换。我们将在本章后面介绍这种机制。</p>
 </div>
 <div class="sect3">
 <h4 id="_ready_队列"><a class="link" href="#_ready_队列">11.5.1. Ready 队列</a></h4>
 <div class="paragraph">
-<p>Processes in the runnable state are placed in a FIFO (first in first
-out) queue handled by the scheduler, called the <em>ready queue</em>. The
-queue is implemented by a first and a last pointer and by the next
-pointer in the PCB of each participating process.
-When a new process is added to the queue the
-<em>last</em> pointer is followed and the process is added to the end of the
-queue in an O(1) operation. When a new process is scheduled it is
-just popped from the head (the <em>first</em> pointer) of the queue.</p>
+<p>处于 runnable 状态的进程被放在由调度器处理的 FIFO (先入先出) 队列中，称为就绪队列 ( <em>ready queue</em> )。队列由第一个和最后一个指针以及每个参与进程 PCB 中的下一个指针实现。当一个新进程被添加到队列中时，该进程将跟随最后一个指针，并被添加到队列的末尾，时间复杂度为 O(1)。当调度一个新的进程时，该进程从队列的头部 (第一个指针) 弹出。</p>
 </div>
 <div id="the_ready_queue" class="listingblock">
 <div class="content">
@@ -6072,8 +6025,7 @@ just popped from the head (the <em>first</em> pointer) of the queue.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>In a SMP system, where you have several scheduler threads,
-there is one queue per scheduler.</p>
+<p>在有多个调度器线程的 SMP 系统中，每个调度器有一个队列。</p>
 </div>
 <div id="the_smp_ready_queues" class="listingblock">
 <div class="content">
@@ -6085,10 +6037,7 @@ there is one queue per scheduler.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The reality is slightly more complicated since Erlang processes have
-priorities. Each scheduler actually has three queues. One queue for
-<em>max priority</em> tasks, one for <em>high priority</em> tasks and one queue
-containing both <em>normal</em> and <em>low priority</em> tasks.</p>
+<p>实际情况稍微复杂一些，因为 Erlang 进程有优先级。每个调度器实际上有三个队列。一个队列用于最大优先级 ( <em>max priority</em> ) 任务，一个用于高优先级 ( <em>high priority</em> ) 任务，还有一个队列同时包含普通和低优先级 ( <em>normal</em> 和 <em>low priority</em> ) 任务。</p>
 </div>
 <div id="priority_ready_queues" class="listingblock">
 <div class="content">
@@ -6102,57 +6051,28 @@ containing both <em>normal</em> and <em>low priority</em> tasks.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>If there are any processes in the max queue the scheduler will
-pick these processes for execution. If there are no processes
-in the max queue but there are processes in the high priority
-queue the scheduler will pick those processes. Only if there
-are no processes in the max and the high priority queues will
-the scheduler pick the first process from the normal and low
-queue.</p>
+<p>如果在最大优先级队列中有任何进程，调度器将选择这些进程执行。如果最大优先级队列中没有进程，但高优先级队列中有进程，调度器将选择这些进程。只有当最大优先级队列和高优先级队列中没有进程时，调度器才会从普通和低优先级队列中选择第一个进程。</p>
 </div>
 <div class="paragraph">
-<p>When a normal process is inserted into the queue it gets a <em>schedule
-count</em> of 1 and a low priority process gets a schedule count of 8.
-When a process is picked from the front of the
-queue its schedule count is reduced by one, if the count reaches zero
-the process is scheduled, otherwise it is inserted at the end of the
-queue. This means that low priority processes will go through the
-queue seven times before they are scheduled.</p>
+<p>当一个普通进程被插入到队列中时，它的调度计数 ( <em>schedule count</em> ) 为 1，而一个低优先级进程的调度计数为 8。当从队列前端挑选一个进程时，它的调度计数将减少 1，如果该计数达到 0，则该进程将被调度，否则它将被插入到队列的末尾。这意味着低优先级进程在被调度之前将经过队列 7 次。</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_waiting_timeouts_and_the_timing_wheel"><a class="link" href="#_waiting_timeouts_and_the_timing_wheel">11.5.2. Waiting, Timeouts and the Timing Wheel</a></h4>
 <div class="paragraph">
-<p>A processs trying to do a receive on an empty mailbox or on
-a mailbox with no matching messages will yield and go into the
-waiting state.</p>
+<p>尝试在空邮箱或没有匹配消息的邮箱上进行接收的进程，将会让步 ( yield ) 并进入 waiting 状态。</p>
 </div>
 <div class="paragraph">
-<p>When a message is delivered to an inbox the sending process will check
-whether the receiver is <em>sleeping</em> in the waiting state, and in that
-case it will <em>wake</em> the process, change its state to runable, and put
-it at the end of the appropriate ready queue.</p>
+<p>当消息被发送到收件箱时，发送进程将检查接收者是否在 waiting 状态睡眠 ( <em>sleeping</em> )，在这种情况下，它将唤醒 ( <em>wake</em> ) 进程，将其状态更改为 runable，并将其放在适当的就绪队列的末尾。</p>
 </div>
 <div class="paragraph">
-<p>If the receive statement has a timeout clause a timer will be
-created for the process which will trigger after the specified timeout
-time. The only guarantee the runtime system gives on a timeout is that
-it will not trigger before the set time, it might be some time after
-the intended time before the process is scheduled and gets to execute.</p>
+<p>如果 receive 语句有一个 timeout 子句，那么将为进程创建一个计时器，该计时器将在指定的超时时间之后触发。运行时系统对超时的唯一保证是：它不会在设置的时间之前触发，也就是说，它可能会在进程被调度并执行之前的预期时间之后一段时间被触发。</p>
 </div>
 <div class="paragraph">
-<p>Timers are handled in the VM by a <em>timing wheel</em>. That is, an array of
-time slots which wraps around. Prior to Erlang 18 the timing wheel was
-a global resource and there could be some contention for the write
-lock if you had many processes inserting timers into the wheel. Make
-sure you are using a later version of Erlang if you use many timers.</p>
+<p>在 VM 中，计时器由一个计时器轮 ( <em>timing wheel</em> ) 处理。也就是说，一个环形的时间槽数组。在 Erlang 18 之前，计时器轮是一个全局资源，如果有很多进程将计时器插入到计时器轮中，那么可能会争用写锁。如果使用多个定时器，请确保使用的是 Erlang 的新版本。</p>
 </div>
 <div class="paragraph">
-<p>The default size (TIW_SIZE) of the timing wheel is 65536 slots (or
-8192 slots if you have built the system for a small memory
-footprint). The current time is indicated by an index into the array
-(tiw_pos). When a timer is inserted into the wheel with a timeout of
-T the timer is inserted into the slot at (tiw_pos+T)%TIW_SIZE.</p>
+<p>计时器轮的默认大小 ( TIW_SIZE ) 是 65536 个槽 ( 如果以small memory footprint构建的系统，则为8192个槽 )。当前时间由数组的索引 ( tiw_pos ) 表示。当超时时间为 T 计时器插入到轮中时，计时器被插入到位置为 ( tiw_pos + T ) % TIW_SIZE 的槽中。</p>
 </div>
 <div id="the_timing_wheel" class="listingblock">
 <div class="content">
@@ -6166,11 +6086,7 @@ T the timer is inserted into the slot at (tiw_pos+T)%TIW_SIZE.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The timer stored in the timing wheel is a pointer to an ErlTimer
-struct. See <a href="https://github.com/erlang/otp/blob/OTP-19.1/erts/emulator/beam/erl_time.h">erl_time.h</a>. If several timers are
-inserted into the same slot they are linked together in a linked list
-by the prev and next fields. The count field is set to
-T/TIW_SIZE</p>
+<p>存储在计时器轮中的计时器是一个指向 ErlTimer 结构体的指针。参见 <a href="https://github.com/erlang/otp/blob/OTP-19.1/erts/emulator/beam/erl_time.h#L421">erl_time.h</a> (译注：该文件变动比较大，在 OTP-19.1 和 OTP-23.1 中有所不同，下文已附源码，请读者对比阅读)。如果多个定时器被插入到同一个插槽中 (译注：当超时时间相同时)，它们被 prev 和 next 字段链接在一个链表中。count 字段被设置为 T/TIW_SIZE</p>
 </div>
 <div id="ErlTimer" class="listingblock">
 <div class="content">
@@ -6191,230 +6107,195 @@ T/TIW_SIZE</p>
 <span class="p">}</span> <span class="n">ErlTimer</span><span class="p">;</span></code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>(译注：OTP-19.1 的 erl_timer 结构定义在 erl_time.h L421，其定义如下：)</p>
+</div>
+<div id="ErlTimer-OTP-19.1" class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c"><span class="cm">/*
+** Timer entry:
+*/</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">erl_timer</span> <span class="p">{</span>
+    <span class="k">struct</span> <span class="n">erl_timer</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span>	<span class="cm">/* next entry tiw slot or chain */</span>
+    <span class="k">struct</span> <span class="n">erl_timer</span><span class="o">*</span> <span class="n">prev</span><span class="p">;</span>	<span class="cm">/* prev entry tiw slot or chain */</span>
+    <span class="k">union</span> <span class="p">{</span>
+	<span class="k">struct</span> <span class="p">{</span>
+	    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">timeout</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">);</span> <span class="cm">/* called when timeout */</span>
+	    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">cancel</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">);</span>  <span class="cm">/* called when cancel (may be NULL) */</span>
+	    <span class="kt">void</span><span class="o">*</span> <span class="n">arg</span><span class="p">;</span>              <span class="cm">/* argument to timeout/cancel procs */</span>
+	<span class="p">}</span> <span class="n">func</span><span class="p">;</span>
+	<span class="n">ErtsThrPrgrLaterOp</span> <span class="n">cleanup</span><span class="p">;</span>
+    <span class="p">}</span> <span class="n">u</span><span class="p">;</span>
+    <span class="n">ErtsMonotonicTime</span> <span class="n">timeout_pos</span><span class="p">;</span> <span class="cm">/* Timeout in absolute clock ticks */</span>
+    <span class="kt">int</span> <span class="n">slot</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">ErtsTWheelTimer</span><span class="p">;</span></code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>(译注：OTP-23.1 的 erl_timer 结构定义在 erl_time.h L462，其定义如下：)</p>
+</div>
+<div id="ErlTimer-OTP-23.1" class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="c"><span class="cm">/*
+** Timer entry:
+*/</span>
+<span class="k">typedef</span> <span class="k">struct</span> <span class="n">erl_timer</span> <span class="p">{</span>
+    <span class="n">ErtsMonotonicTime</span> <span class="n">timeout_pos</span><span class="p">;</span> <span class="cm">/* Timeout in absolute clock ticks */</span>
+    <span class="k">struct</span> <span class="n">erl_timer</span><span class="o">*</span> <span class="n">next</span><span class="p">;</span>     <span class="cm">/* next entry tiw slot or chain */</span>
+    <span class="k">struct</span> <span class="n">erl_timer</span><span class="o">*</span> <span class="n">prev</span><span class="p">;</span>	<span class="cm">/* prev entry tiw slot or chain */</span>
+    <span class="kt">void</span> <span class="p">(</span><span class="o">*</span><span class="n">timeout</span><span class="p">)(</span><span class="kt">void</span><span class="o">*</span><span class="p">);</span> <span class="cm">/* called when timeout */</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">arg</span><span class="p">;</span>              <span class="cm">/* argument to timeout/cancel procs */</span>
+    <span class="kt">int</span> <span class="n">slot</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">ErtsTWheelTimer</span><span class="p">;</span></code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ports"><a class="link" href="#_ports">11.6. Ports</a></h3>
+<h3 id="_端口_ports"><a class="link" href="#_端口_ports">11.6. 端口 ( Ports )</a></h3>
 <div class="paragraph">
-<p>A port is an Erlang abstraction for a communication point with the
-world outside of the Erlang VM. Communications with sockets, pipes,
-and file IO are all done through ports on the Erlang side.</p>
+<p>端口是 Erlang 中，对于与 Erlang 虚拟机外部的通信点的抽象。在 Erlang 中，与套接字、管道和文件 IO 的通信都是通过端口完成的。</p>
 </div>
 <div class="paragraph">
-<p>A port, like a process, is created on the same scheduler as the
-creating process. Also like processes ports use reductions to decide
-when to yield, and they also get to run for 4000 reductions. But
-since ports don&#8217;t run Erlang code there are no Erlang function calls
-to count as reductions, instead each <em>port task</em> is counted as a
-number of reductions. Currently a task uses a little more than 200
-reductions per task, and a number of reductions relative to one
-thousands of the size of transmitted data.</p>
+<p>与进程一样，端口是在与创建进程相同的调度程序上创建的。同样像进程一样，端口使用规约值来决定何时让步 ( yield )，他们也运行 4000 次规约值。但是由于端口不运行 Erlang 代码，所以没有 Erlang 函数调用来计算规约值，而是将每个端口任务 ( <em>port task</em> ) 计算为减少的数量。目前，每个任务使用 200+ 的规约值，以及相对于传输数据的千分之一的规约值数量。</p>
 </div>
 <div class="paragraph">
-<p>A port task is one operation on a port, like opening, closing, sending
-a number of bytes or receiving data. In order to execute a port task
-the executing thread takes a lock on the port.</p>
+<p>端口任务是端口上的一个操作，如打开、关闭、发送或接收数据。为了执行端口任务，正在执行的线程对端口进行锁定。</p>
 </div>
 <div class="paragraph">
-<p>Port tasks are scheduled and executed in each iteration in the
-scheduler loop (see below) before a new process is selected for
-execution.</p>
+<p>端口任务在调度器循环 (见下面 <a href="#SEC-Scheduler_loop">Section 11.8</a> ) 的每次迭代中，在选择要执行的新进程之前，被调度和执行。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_reductions"><a class="link" href="#_reductions">11.7. Reductions</a></h3>
+<h3 id="_规约可以跳过"><a class="link" href="#_规约可以跳过">11.7. 规约（可以跳过）</a></h3>
 <div class="paragraph">
-<p>When a process is scheduled it will get a number of reductions defined
-by <code>CONTEXT_REDS</code> (defined in
-<a href="https://github.com/erlang/otp/blob/OTP-20.0/erts/emulator/beam/erl_vm.h">erl_vm.h</a>,
-currently as 4000). After using up its reductions or when doing a
-up its reductions or when doing a receive without a matching message
-in the inbox, the process will be suspended and a new processes will
-be scheduled.</p>
+<p>当进程被调度时，它将获得 <code>CONTEXT_REDS</code> (在 <a href="https://github.com/erlang/otp/blob/OTP-20.0/erts/emulator/beam/erl_vm.h">erl_vm.h</a> 中定义，目前是 4000) 定义的规约值。在使用尽它的规约值后，或者在执行增加它的规约值时，或者在收件箱中执行没有匹配消息的接收时，该进程将被挂起 ( suspended )，一个新的进程会被调度。</p>
 </div>
 <div class="paragraph">
-<p>If the VM has executed as many reductions as defined by
-<code>INPUT_REDUCTIONS</code> (currently <code>2*CONTEXT_REDS</code>, also defined in
-erl_vm.h) or if there is no process ready to run the scheduler will
-do system-level activities. That is, basically, check for IO; we will
-cover the details soon.</p>
+<p>如果 VM 已经执行了 <code>INPUT_REDUCTIONS</code> 定义的规约值 (当前是 <code>2*CONTEXT_REDS</code>，也在 erl_vm.h 中定义)，或者没有准备运行的进程，调度器将执行系统级活动。也就是检查 IO；我们稍后会详细说明。</p>
 </div>
 <div class="paragraph">
-<p>It is not completely defined what a reduction is, but at least each
-function call should be counted as a reduction. Things get a bit more
-complicated when talking about BIFs and NIFs. A process should not be
-able to run for "a long time" without using a reduction and yielding.
-A function written in C can usually not yield at any time, and the
-reason for writing it in C is usually to achieve performance. In such
-functions a reduction might take longer which can lead to imbalance in
-the scheduler.</p>
+<p>规约是什么还没有完全定义，但至少每个函数调用都应该算作规约。当谈到 BIFs 和 NIFs 时，事情变得有点复杂。如果不使用规约值和让步 ( yield )，进程不应该能够运行“很长时间”。用 C 编写的函数不能在中间产生让步，用 C 编写函数的原因通常是为了获得性能收益。在这类函数中，规约可能需要更长的时间，这可能导致调度器中的不平衡。</p>
 </div>
 <div class="paragraph">
-<p>For example in Erlang versions prior to R16 the BIFs
-binary_to_term/1 and term_to_binary/1 where non yielding and only
-counted as one reduction. This meant that a process calling theses
-functions on large terms could starve other processes. This can even
-happen in a SMP system because of the way processes are balanced
-between schedulers, which we will get to soon.</p>
+<p>例如，在 R16 之前的 Erlang 版本中，BIFs 的 <code>binary_to_term/1</code> 和 <code>term_to_binary/1</code> 是不让步的，并且只算一次规约。这意味着以特大项式 (为参数) 调用这些函数的进程可能会饿死其他进程。因为调度器之间的进程平衡方式，这种情况甚至可能发生在 SMP 系统中，我们很快就会讲到。</p>
 </div>
 <div class="paragraph">
-<p>While a process is running the emulator keeps the number of reductions
-left to execute in the (register mapped) variable FCALLS (see
-beam_emu.c).</p>
+<p>当进程运行时，仿真器在 (寄存器映射) 变量 <code>FCALLS</code> 中保留要执行的规约数 (参见 beam_emu.c)。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_调度循环"><a class="link" href="#_调度循环">11.8. 调度循环</a></h3>
+<h3 id="SEC-Scheduler_loop"><a class="link" href="#SEC-Scheduler_loop">11.8. 调度器循环（原书未完成）</a></h3>
 <div class="paragraph">
-<p>Conceptually you can look at the scheduler as the driver of program
-execution in the Erlang VM. In reality, that is, the way the C code
-is structured, it is the emulator (process_main in beam_emu.c) that
-drives the execution and it calls the scheduler as a subroutine to find
-the next process to execute.</p>
+<p>从概念上讲，在 Erlang VM 中，可以看作是调度器来驱动程序执行的 。但实际上，在 C 代码中的结构是：模拟器 (beam_emu.c 中的 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/beam_emu.c#L482">process_main</a>) 驱动程序执行，它以子程序调用的方式调用调度器，来查找下一个要执行的进程。</p>
 </div>
 <div class="paragraph">
-<p>Still, we will pretend that it is the other way around, since it makes
-a nice conceptual model for the scheduler loop. That is, we see it
-as the scheduler picking a process to execute and then handing over
-the execution to the emulator.</p>
+<p>不过，我们将假设它使用前一种模型，因为它为调度器循环提供了一个很好的概念模型。也就是说，我们将这个过程 <em>当做</em> ：调度器选择一个要执行的进程，然后将执行过程移交给模拟器。</p>
 </div>
 <div class="paragraph">
-<p>Looking at it that way, the scheduler loop looks like this:</p>
+<p>如果以概念模型来看，调度器循环看起来是：</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p>Update reduction counters.</p>
+<p>更新规约值计数器</p>
 </li>
 <li>
-<p>Check timers</p>
+<p>检查计时器</p>
 </li>
 <li>
-<p>If needed check balance</p>
+<p>如果需要，校验平衡</p>
 </li>
 <li>
-<p>If needed migrate processes and ports</p>
+<p>如果需要，迁移进程和端口</p>
 </li>
 <li>
-<p>Do auxiliary scheduler work</p>
+<p>进行调度器附加工作</p>
 </li>
 <li>
-<p>If needed check IO and update time</p>
+<p>如果需要，检查 IO ，更新时间</p>
 </li>
 <li>
-<p>While needed pick a port task to execute</p>
+<p>如果需要，选择要执行的端口任务</p>
 </li>
 <li>
-<p>Pick a process to execute</p>
+<p>选择要执行的进程</p>
 </li>
-</ol>
+</ul>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+TODO: 扩展以上内容
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_负载均衡"><a class="link" href="#_负载均衡">11.9. 负载均衡</a></h3>
 <div class="paragraph">
-<p>The current strategy of the load balancer is to use as few schedulers
-as possible without overloading any CPU. The idea is that you will get
-better performance through better memory locality when processes share
-the same CPU.</p>
+<p>负载均衡器的当前策略是：在不超载任何 CPU 的情况下，使用尽可能少的调度器。其思想是，当进程共享相同的 CPU 时，您将通过更好的内存局部性获得更好的性能。</p>
 </div>
 <div class="paragraph">
-<p>One thing to note though is that the load balancing done in the
-scheduler is between scheduler threads and not necessarily between
-CPUs or cores. When you start the runtime system you can specify how
-schedulers should be allocated to cores. The default behaviour is that
-it is up to the OS to allocated scheduler threads to cores, but you
-can also choose to bind schedulers to cores.</p>
+<p>但是需要注意的是，调度器中的负载平衡是在调度器线程之间进行的，而不一定是在cpu或核心之间进行的。在启动运行时系统时，可以指定应该如何将调度器分配给核心。默认的行为是：由操作系统向核心分配调度器线程，但是您也可以选择将调度器绑定到核心。</p>
 </div>
 <div class="paragraph">
-<p>The load balancer assumes that there is one scheduler running on each
-core so that moving a process from a overloaded scheduler to an under
-utilized scheduler will give you more parallel processing power. If
-you have changed how schedulers are allocated to cores, or if your OS
-is overloaded or bad at assigning threads to cores, the load balancing
-might actually work against you.</p>
+<p>负载均衡器假设每个核心上都运行一个调度器，因此将一个进程从过载的调度器移动到未被使用的调度器将为您提供更多并行处理能力。如果您已经改变了调度器分配给核心的方式，或者如果您的操作系统已经过载，或者调度器不擅长给多个核心分配线程，那么负载平衡实际上可能对您不利。</p>
 </div>
 <div class="paragraph">
-<p>The load balancer uses two techniques to balance the load, <em>task
-stealing</em> and <em>migration</em>. Task stealing is used every time a
-scheduler runs out of work, this technique will result in the work
-becoming more spread out between schedulers. Migration is more
-complicated and tries to compact the load to the right number of
-schedulers.</p>
+<p>负载均衡器使用两种技术来平衡负载：任务窃取 ( <em>task stealing</em> ) 和迁移 ( <em>migration</em> )。任务窃取是在调度器每次把进程队列中的进程都执行完时 ( 译注：换言之，此时调度器已经无活可干了 ) 使用的，这种技术将导致工作负载在调度器之间更加分散。迁移更为复杂，它试图将负载压缩到适当数量的调度器。</p>
 </div>
 <div class="sect3">
-<h4 id="_task_stealing"><a class="link" href="#_task_stealing">11.9.1. Task Stealing</a></h4>
+<h4 id="_任务窃取_task_stealing"><a class="link" href="#_任务窃取_task_stealing">11.9.1. 任务窃取 ( <em>task stealing</em> )</a></h4>
 <div class="paragraph">
-<p>If a scheduler run queue is empty when it should pick a new process
-to schedule the scheduler will try to steal work from another
-scheduler.</p>
+<p>当调度器在试图获取运行队列中的进程来调度时，如果队列为空，此时这个调度器将尝试从其他调度器那里窃取工作任务。</p>
 </div>
 <div class="paragraph">
-<p>First the scheduler takes a lock on itself to prevent other schedulers
-to try to steal work from the current scheduler. Then it checks if
-there are any inactive schedulers that it can steal a task from. If
-there are no inactive schedulers with stealable tasks then it will
-look at active schedulers, starting with schedulers having a higher id
-than itself, trying to find a stealable task.</p>
+<p>首先，调度器对自身进行锁定，以防止其他调度器试图窃取当前调度器的工作。然后检查是否有任何不活动的，以便它可以从中窃取任务的调度器。如果没有具有可窃取任务的非活动调度器，那么它将查看活动调度器，从 id 比自身更高的调度器开始，尝试寻找可窃取任务。</p>
 </div>
 <div class="paragraph">
-<p>The task stealing will look at one scheduler at a time and try to
-steal the highest priority task of that scheduler. Since this is done
-per scheduler there might actually be higher priority tasks that are
-stealable on another scheduler which will not be taken.</p>
+<p>任务窃取每次查看一个调度器，并尝试窃取该调度程序中优先级最高的任务。因为这是每个调度器分别完成的，所以实际上可能会有更高优先级的可窃取任务在另一个调度器上，但不会被成功窃取。</p>
 </div>
 <div class="paragraph">
-<p>The task stealing tries to move tasks towards schedulers with lower
-numbers by trying to steal from schedulers with higher numbers,
-but since the stealing also will wrap around and steal from schedulers
-with lower numbers the result is that processes are spread out on all
-active schedulers.</p>
+<p>任务窃取试图通过窃取具有较高 id 的调度器来将任务转移到具有较低 id 的调度程序，但由于窃取也会回绕并窃取具有较低 id 的调度器，结果是进程分散到所有活动调度器上。</p>
 </div>
 <div class="paragraph">
-<p>Task stealing is quite fast and can be done on every iteration of
-the scheduler loop when a scheduler has run out of tasks.</p>
+<p>任务窃取非常快，当调度器的任务执行完时，可以在调度器循环的每次迭代中完成。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_migration"><a class="link" href="#_migration">11.9.2. Migration</a></h4>
+<h4 id="_迁移"><a class="link" href="#_迁移">11.9.2. 迁移</a></h4>
 <div class="paragraph">
-<p>To really utilize the schedulers optimally a more elaborate migration
-strategy is used. The current strategy is to compact the load to as
-few schedulers as possible, while at the same time spread it out so
-that no scheduler is overloaded.</p>
+<p>要真正最优地利用调度器，需要使用更精细的迁移策略。当前的策略是将负载压缩到尽可能少的调度器中，同时将其分散开来，以便没有调度器超载。</p>
 </div>
 <div class="paragraph">
-<p>This is done by the function <em>check_balance</em> in <em>erl_process.c</em>.</p>
+<p>这是由 <em>erl_process.c</em> 中的 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_process.c#L4700"><em>check_balance</em></a> (译注：这是个600行的大函数) 函数完成的：</p>
 </div>
 <div class="paragraph">
-<p>The migration is done by first setting up a migration plan and then
-letting schedulers execute on that plan until a new plan is set up.
-Every 2000*CONTEXT_REDS reductions a scheduler calculates
-a migration path per priority per scheduler by looking at the workload
-of all schedulers. The migration path can have three different types of
-values: 1) cleared 2) migrate to scheduler # 3) immigrate from
-scheduler #</p>
+<p>迁移是这样完成的:首先设置一个迁移计划，然后让调度器在该计划上执行，直到一个新计划被设置。每减少 <code>2000*CONTEXT_REDS</code>，调度器就会查看所有调度器的工作负载，计算每个调度器上的每个优先级的迁移路径。迁移路径可以有三种不同类型的值：</p>
 </div>
 <div class="paragraph">
-<p>When a process becomes ready (for example by receiving a message or
-triggering a timeout) it will normally be scheduled on the last
-scheduler it ran on (S1). That is, if the migration path of that
-scheduler (S1), at that priority, is cleared. If the migration path of
-the scheduler is set to emigrate (to S2) the process will be handed over
-to that scheduler if both S1 and S2 have unbalanced run-queues. We will
-get back to what that means.</p>
+<p>1) 已清除</p>
 </div>
 <div class="paragraph">
-<p>When a scheduler (S1) is to pick a new process to execute it checks to
-see if it has an immigration path from (S2) set. If the two involved
-schedulers have unbalanced run-queues S1 will steal a process from S2.</p>
+<p>2) 迁出到某调度器</p>
 </div>
 <div class="paragraph">
-<p>The migration path is calculated by comparing the maximum run-queues
-for each scheduler for a certain priority. Each scheduler will update
-a counter in each iteration of its scheduler loop keeping track of
-the maximal queue length. This information is then used to calculate
-an average (max) queue length (<em>AMQL</em>).</p>
+<p>3) 从某调度器迁入</p>
+</div>
+<div class="paragraph">
+<p>当一个进程进入 ready 队列 (例如，通过接收消息或触发超时) 时，通常会在它上次运行的调度器 (S1) 上调度它。如果该调度器 (S1) 在这个优先级队列的迁移路径被清除，那么 ( 在它上次运行的调度器 (S1) 上调度它 ) 就成立 。如果调度器 (S1) 的迁移路径被设置为迁出到 (S2)，那么如果 (S1) 和 (S2) 都具有不平衡的运行队列，那么进程将被移交给该调度器。详细说来：</p>
+</div>
+<div class="paragraph">
+<p>当调度器 (S1) 选择要执行的新进程时，它会检查它是否有一个来自调度器 (S2) 的迁移路径。如果两个相关的调度器有不平衡的运行队列，调度器 (S1) 会从调度器 (S2) 偷取一个进程。</p>
+</div>
+<div class="paragraph">
+<p>迁移路径的计算是通过比较每个调度器在某个优先级下的最大运行队列长度来达成的。每个调度器将在其调度器循环的每次迭代中更新一个计数器，以跟踪最大队列长度。然后该信息被用作计算平均 (最大) 队列长度 AMQL ( average (max) queue length )。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6432,7 +6313,7 @@ scheduler S1 S2 S3 S4</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then the schedulers are sorted on their max queue lengths.</p>
+<p>然后，调度器被按照它的最大队列长度排序。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6454,60 +6335,55 @@ scheduler S3 S4 S1 S2
 </div>
 </div>
 <div class="paragraph">
-<p>Any scheduler with a longer run queue than average (S1, S2) will be
-marked for emigration and any scheduler with a shorter max run queue
-than average (S3, S4) will be targeted for immigration.</p>
+<p>任何比平均队列长度长的最大运行队列 (S1, S2)，其调度器将被标记为移出，任何比平均队列长度短的最大运行队列 (S3, S4)，其调度器将被标记为迁入。</p>
 </div>
 <div class="paragraph">
-<p>This is done by looping over the ordered set of schedulers with two
-indices (immigrate from (fix)) and (emigrate to (tix)). In each
-iteration of the a loop the immigration path of S[tix] is set to S[fix]
-and the emigration path of S[fix] is set to S[tix]. Then tix is increased
-and fix decreased till they both pass the balance point. If one index
-reaches the balance point first it wraps.</p>
+<p>这是通过在有两个索引 ( 迁入 (fix) ) 和 ( 移出 (tix) ) 的有序的调度器集合做循环来实现的。在循环的每次迭代中，S[tix] 的迁移路径被设置为 S[fix]， S[fix] 的迁移路径被设置为 S[tix]。然后 tix 增加，fix减少，直到两者都超过平衡点。如果一个索引首先到达平衡点，它就会折返。</p>
 </div>
 <div class="paragraph">
-<p>In the example:
- * Iteration 1: S2.emigrate_to = S3 and S3.immigrate_from = S2
- * Iteration 2: S1.emigrate_to = S4 and S4.immigrate_from = S1</p>
+<p>在示例中：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>迭代 1：S2.emigrate_to = S3 and S3.immigrate_from = S2</p>
+</li>
+<li>
+<p>迭代 2：S1.emigrate_to = S4 and S4.immigrate_from = S1</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>Then we are done.</p>
+<p>这样就做完了。</p>
 </div>
 <div class="paragraph">
-<p>In reality things are a bit more complicated since schedulers can be
-taken offline. The migration planning is only done for online
-schedulers. Also, as mentioned before, this is done per priority
-level.</p>
+<p>实际上，由于调度程序可以离线，所以事情要复杂一些。迁移计划只针对在线调度程序。此外，如前 ( 只讨论某一个优先级 ) 所述，真实的迁移过程每个优先级分别进行。</p>
 </div>
 <div class="paragraph">
-<p>When a process is to be inserted into a ready queue and there is a
-migration path set from S1 to S2 the scheduler first checks that the
-run queue of S1 is larger than AMQL and that the run queue of S2 is
-smaller than the average. This way the migration is only allowed if
-both queues are still unbalanced.</p>
+<p>当一个进程要插入到一个就绪队列中，并且有一条从 S1 到 S2 的迁移路径时，调度器首先检查 S1 的运行队列是否大于平均队列长度，而 S2 的运行队列是否小于平均队列长度。这样，只有在两个队列仍然不平衡时才允许迁移。</p>
 </div>
 <div class="paragraph">
-<p>There are two exceptions though where a migration is forced even
-when the queues are balanced or even imbalanced in the wrong way.
-In both these cases a special evacuation flag is set which overrides
-the balance test.</p>
+<p>但是有两个例外，即在队列已经达到平衡甚至以错误的方式不平衡时，还会进行强制迁移。在这两种情况下，都设置了一个特殊的疏散标志，该标志将覆盖平衡测试。</p>
 </div>
 <div class="paragraph">
-<p>The evacuation flag is set when a scheduler is taken offline to
-ensure that no new processes are scheduled on an offline scheduler.
-The flag is also set when the scheduler detects that no progress is
-made on some priority. That is, if there for example is a max priority
-process which always is ready to run so that no normal priority processes
-ever are scheduled. Then the evacuation flag will be set for the normal
-priority queue for that scheduler.</p>
+<p>疏散标志在调度程序脱机时设置，以确保没有新进程在脱机调度程序上调度。当调度器检测到某个优先级没有进展时，也会设置该标志。也就是说，如果有一个最大优先级进程，它总是准备运行，所以没有正常的优先级进程被调度。然后，该调度器的正常优先级队列将被设置疏散标志。</p>
+</div>
+<div class="paragraph">
+<p>译注：建议阅读材料：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://erlang.org/doc/apps/erts/ProcessManagementOptimizations.html" class="bare">https://erlang.org/doc/apps/erts/ProcessManagementOptimizations.html</a></p>
+</li>
+</ul>
 </div>
 </div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Memory"><a class="link" href="#CH-Memory">12. The Memory Subsystem: Stacks, Heaps and Garbage Collection</a></h2>
+<h2 id="CH-Memory"><a class="link" href="#CH-Memory">12. 内存子系统: 栈、堆以及垃圾收集</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Before we dive into the memory subsystem of ERTS, we need to have some
@@ -7983,13 +7859,15 @@ TODO</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-DataStructures"><a class="link" href="#CH-DataStructures">13. Advanced data structures (ETS, DETS, Mnesia)</a></h2>
+<h2 id="CH-DataStructures"><a class="link" href="#CH-DataStructures">13. 高级数据结构 (ETS, DETS, Mnesia)（原书未完成）</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-IO"><a class="link" href="#CH-IO">14. IO, Ports and Networking (10p)</a></h2>
+<h2 id="CH-IO"><a class="link" href="#CH-IO">14. IO、端口和网络</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Within Erlang, all communication is done by asynchronous signaling.
@@ -8032,7 +7910,7 @@ at how standard IO works on a higher level.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ports_2"><a class="link" href="#_ports_2">14.2. Ports</a></h3>
+<h3 id="_ports"><a class="link" href="#_ports">14.2. Ports</a></h3>
 <div class="paragraph">
 <p>A port is the process like interface between Erlang processes and
 everything that is not Erlang processes. The programmer can to
@@ -8182,7 +8060,7 @@ linked in driver.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Distribution"><a class="link" href="#CH-Distribution">15. Distribution</a></h2>
+<h2 id="CH-Distribution"><a class="link" href="#CH-Distribution">15. Distribution（原书未完成）</a></h2>
 <div class="sectionbody">
 
 </div>
@@ -13646,7 +13524,7 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-09 09:52:16 +0800
+Last updated 2020-10-12 10:11:00 +0800
 </div>
 </div>
 <style>
