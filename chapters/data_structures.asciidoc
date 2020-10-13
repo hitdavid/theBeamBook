@@ -1,2 +1,4 @@
 [[CH-DataStructures]]
-== Advanced data structures (ETS, DETS, Mnesia)
+== 高级数据结构 (ETS, DETS, Mnesia)（原书未完成）
+
+原书未完成

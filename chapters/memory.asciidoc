@@ -1,5 +1,5 @@
 [[CH-Memory]]
-== The Memory Subsystem: Stacks, Heaps and Garbage Collection
+== 内存子系统: 栈、堆以及垃圾收集
 
 Before we dive into the memory subsystem of ERTS, we need to have some
 basic vocabulary and understanding of the general memory layout of a

@@ -1,5 +1,5 @@
 [[CH-IO]]
-== IO, Ports and Networking (10p)
+== IO、端口和网络
 
 Within Erlang, all communication is done by asynchronous signaling.
 The communication between an Erlang node and the outside world is done
