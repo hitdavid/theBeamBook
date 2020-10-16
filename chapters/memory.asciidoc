@@ -290,9 +290,9 @@ allocator, see erl_alloc.types
 
 这可能是您作为 Erlang 开发人员或调优 Erlang 系统时最感兴趣的内存区域。在后面关于垃圾收集和进程内存的部分中，我们将更多地讨论如何管理这些区域。在这里，我们还将介绍什么是堆片段。
 
-==== Binary  分配器：binary_alloc
+==== 二进制数据分配器：binary_alloc
 
-你猜对了，Binary 分配器用于分配 Binary 类型项式。Binary 可以有相当不同的大小和不同的生命周期。默认情况下，这个分配器使用  _best fit_  分配策略。
+你猜对了，二进制数据 (Binary) 分配器用于分配二进制类型的项式。二进制数据可以有相当不同的大小和不同的生命周期。默认情况下，这个分配器使用  _best fit_  分配策略。
 
 ==== ETS 分配器：ets_alloc
 
@@ -300,7 +300,7 @@ ETS 分配器用于大多数 ETS 相关的数据，除了一些短生存期 ( sh
 
 ==== 驱动 (Driver) 分配器：driver_alloc
 
-驱动分配器用于端口，链接驱动 ( linked in driver ) 和NIF。
+驱动分配器用于端口，内联驱动 ( linked in driver ) 和NIF。
 
 ==== 短生存期分配器：sl_alloc
 
@@ -410,11 +410,10 @@ ADR VALUE                            DESCRIPTION
 这样做很好，因为这样做很节省，而且只占用很少的空间。但如果您将元组发送到另一个进程或执行任何其他类型的IO，或任何导致所谓深拷贝 ( _deep copy_) 的操作，则数据结构将被扩展。因此，如果我们将元组 +T+ 发送到另一个进程 P2 ( +pass:[P2 ! T]+ ) 则 T2 的堆为:
 
 ----
- ..
+ .. TODO
 ----
 
-You can quickly bring down your Erlang node by expanding a highly shared term,
-see <<listing-share,share.erl>>.
+通过扩展高度共享的项式，可以很快使 Erlang 节点宕机，请参阅 <<listing-share,share.erl>>。
 
 [source,erlang]
 ----
@@ -444,9 +443,7 @@ size() ->
 
 ----
 
-You can calculate the memory size of a shared term and the size of the
-expanded size of the term with the functions +erts_debug:size/1+ and
-+erts_debug:flat_size/1+.
+可以使用函数 +erts_debug:size/1+ 和 +erts_debug:flat_size/1+ 计算共享项式的内存大小和项式的扩展大小。
 
 [source,erlang]
 ----
@@ -455,21 +452,15 @@ expanded size of the term with the functions +erts_debug:size/1+ and
 
 ----
 
-For most applications this is not a problem, but you should be aware
-of the problem, which can come up in many situations. A deep copy is
-used for IO, ETS tables, binary_to_term, and message passing.
+对于大多数应用程序来说，这不是问题，但是您应该意识到这个问题，它可能在许多情况下出现。深拷贝用于 IO、ETS 表、binary_to_term 和 消息传递。
 
-Let us look in more detail how message passing works.
+让我们更详细地了解消息传递是如何工作的。
 
-==== Message passing
+==== 消息传递
 
-When a process P1 sends a message M to another (local) process P2, the
-process P1 first calculates the flat size of M. Then it allocates a
-new message buffer of that size by doing a heap_alloc of a heap_frag in
-the local scheduler context.
+当进程 P1 向另一个 (本地) 进程 P2 发送消息 M 时，进程 P1 首先计算 M 的扩展大小，然后通过在本地调度器上下文中对 heap_frag 执行 heap_alloc 来分配该大小的新消息缓冲区。
 
-Given the code in <<listing-send,send.erl>> the state of the system could
-look like this just before the send in p1/1:
+给出 <<listing-send,send.erl>> 中的代码。在 p1/1 send 之前，系统的状态可能是这样的：
 
 
 [ditaa]
@@ -508,18 +499,9 @@ P2
 
 ----
 
-Then P1 start sending the message M to P2. It (through the code in
-erl_message.c) first calculates the flat size of M (which in our example is
-23 words)footnote:[We ignore tracing here which will add a trace token
-to the size of the message, and always use a heap fragment.]. 
-Then (in a SMP system) if it can take a lock on P2 and there is enough
-room on the heap of P2 it will copy the message to the heap of P2.
+然后 P1 开始向 P2 发送消息 M。它 (通过 erl_message.c 中的代码) 首先计算 M (在我们的示例中是 23 个字长) footnote:[在这里，我们忽略 tracing，它会在消息大小上增加跟踪标记的空间，并且会使用堆片段] 的平面大小。然后(在SMP系统中)，如果它可以锁定 P2，并且 P2 的堆中有足够的空间，它就会将消息复制到 P2 的堆中。
 
-If P2 is running (or exiting) or there isn't enough space on the heap,
-then a new heap fragment is allocated
-(of sizeof ErlHeapFragment - sizeof(Eterm) + 23*sizeof(Eterm))
-footnote:[The -sizeof(Eterm) comes from mem in ErlHeapFragment already
-having the size of 1 Eterm] which after initialization will look like:
+如果 P2 正在运行 (或退出) 或者堆上没有足够的空间，那么分配一个新的堆片段 (大小为：sizeof ErlHeapFragment - sizeof(Eterm) + 23*sizeof(Eterm)) footnote:[减去一个 sizeof(Eterm) 的原因是，ErlHeapFragment 的内存中已经包含了一个 Eterm 的大小]，初始化后的样子是：
 
 ----
 erl_heap_fragment:
@@ -533,7 +515,7 @@ erl_heap_fragment:
       ... 22 free words
 ----
 
-Then the message is copied into the heap fragment:
+然后，消息被复制到堆片段中：
 
 ----
 erl_heap_fragment:
@@ -565,12 +547,10 @@ erl_heap_fragment:
                                   (l*16)+15    <--+
                                   &amp;mem+21*WS+1 ----+
                                   (o*16)+15    <---+
-                                  NIL</pre>
+                                  NIL
 ----
 
-In either case a new mbox (+ErlMessage+) is allocated, a lock
- (+ERTS_PROC_LOCK_MSGQ+) is taken on the receiver and the message
- on the heap or in the new heap fragment is linked into the mbox.
+在这两种情况下，都分配了一个新的mbox (+ErlMessage+)，接收端加一个锁 (+ERTS_PROC_LOCK_MSGQ+)，堆上或新堆片段中的消息链接到 mbox 中。
 
 ----
  erl_mesg {
@@ -581,15 +561,10 @@ In either case a new mbox (+ErlMessage+) is allocated, a lock
 
 ----
 
-Then the mbox is linked into the in message queue (+msg_inq+) of the
-receiver, and the lock is released. Note that +msg_inq.last+ points to
-the +next+ field of the last message in the queue. When a new mbox is
-linked in this next pointer is updated to point to the new mbox, and
-the last pointer is updated to point to the next field of the new
-mbox.
+然后 mbox 被链接到接收方的 in message queue (+msg_inq+) 中，锁被释放。注意 +msg_inq.last+ 指向队列中最后一条消息的 +next+ 字段。当一个新的 mbox 被链接时，下一个指针被更新为指向新的 mbox，最后一个指针被更新为指向新的 mbox 的 next 字段。
 
 [[SS-Binaries]]
-==== Binaries
+==== 二进制数据
 
 As we saw in xref:CH-TypeSystem[] there are four types of binaries
 internally. Three of these types, _heap binaries_, _sub binaries_ and
@@ -597,8 +572,7 @@ _match contexts_ are stored on the local heap and handled by the
 garbage collector and message passing as any other object, copied as
 needed.
 
-
-===== Reference Counting
+===== 引用计数
 
 The fourth type.  large binaries or _refc binaries_ on the other hand
 are partially stored outside of the process heap and they are
@@ -1175,13 +1149,20 @@ Generations..
 
 // Hibernation. 
 
-=== Other interesting memory areas
+=== 其他有趣的内存区域（原书未完成）
 
-==== The atom table.
-TODO
-==== Code
-TODO
-==== Constants
-TODO
+原书未完成
+
+==== 原子表（原书未完成）
+
+原书未完成
+
+==== 代码 （原书未完成）
+
+原书未完成
+
+==== 常量（原书未完成）
+
+原书未完成
 
 
