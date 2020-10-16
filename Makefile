@@ -6,7 +6,7 @@ chapters/contributors.txt: .git
 	./bin/gitlog.sh $@
 
 beam-book.pdf:  chapters/opcodes_doc.asciidoc book.asciidoc chapters/contributors.txt $(ASSET_CHAPTERS)
-	asciidoctor-pdf  -r ./style/custom-pdf-converter.rb -r asciidoctor-diagram -r ./style/custom-admonition-block.rb  -a config=./style/ditaa.cfg --doctype=book -a pdf-style=./style/pdf-theme.yml book.asciidoc -o $@
+	asciidoctor-pdf  -r ./style/custom-pdf-converter.rb -r asciidoctor-diagram -r ./style/custom-admonition-block.rb  -a config=./style/ditaa.cfg --doctype=book -a pdf-style=./style/pdf-theme.yml book.asciidoc -a scripts=cjk -a pdf-theme=default-with-fallback-font -o $@  --trace
 
 index.html: $(ASSET_CHAPTERS)
 	cp -r images site

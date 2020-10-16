@@ -1,7 +1,7 @@
 = Erlang 运行时系统（The Erlang Runtime System）
 :author: Erik Stenman (杜宇 翻译)
 :encoding: utf-8
-:lang: en
+:lang: zh_CN
 :toc: left
 :toclevels: 3
 :experimental:
@@ -9,7 +9,7 @@
 :partnums:
 :sectnums:
 :sectlinks:
-:!compat-mode:
+:compat-mode:
 :source-highlighter: rouge
 :imagesdir: images
 :ditaa-shadows: false
