@@ -491,15 +491,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_产生中间结果输出">2.2. 产生中间结果输出</a></li>
 <li><a href="#_编译器的遍pass">2.3. 编译器的遍（Pass）</a>
 <ul class="sectlevel3">
-<li><a href="#_编译器_pass_erlang_预处理器_epp">2.3.1. 编译器 Pass: Erlang 预处理器 (epp)</a></li>
+<li><a href="#_编译器_passerlang_预处理器_epp">2.3.1. 编译器 Pass：Erlang 预处理器 (epp)</a></li>
 <li><a href="#SEC-parse_transform">2.3.2. 编译器 Pass: 解析转换（Parse Transformations)</a></li>
-<li><a href="#_编译器_pass_linter">2.3.3. 编译器 Pass: Linter</a></li>
-<li><a href="#_编译器_pass_保存抽象语法树ast">2.3.4. 编译器 Pass: 保存抽象语法树（AST）</a></li>
-<li><a href="#_编译器_pass_expand">2.3.5. 编译器 Pass: Expand</a></li>
-<li><a href="#_编译器_pass_core_erlang">2.3.6. 编译器 Pass: Core Erlang</a></li>
-<li><a href="#_编译器_pass_kernel_erlang">2.3.7. 编译器 Pass: Kernel Erlang</a></li>
-<li><a href="#_编译器_pass_beam_代码">2.3.8. 编译器 Pass: BEAM 代码</a></li>
-<li><a href="#_编译器_pass_本地native码">2.3.9. 编译器 Pass: 本地（Native）码</a></li>
+<li><a href="#_编译器_passlinter">2.3.3. 编译器 Pass：Linter</a></li>
+<li><a href="#_编译器_pass保存抽象语法树ast">2.3.4. 编译器 Pass：保存抽象语法树（AST）</a></li>
+<li><a href="#_编译器_passexpand">2.3.5. 编译器 Pass：Expand</a></li>
+<li><a href="#_编译器_passcore_erlang">2.3.6. 编译器 Pass：Core Erlang</a></li>
+<li><a href="#_编译器_passkernel_erlang">2.3.7. 编译器 Pass：Kernel Erlang</a></li>
+<li><a href="#_编译器_passbeam_代码">2.3.8. 编译器 Pass：BEAM 代码</a></li>
+<li><a href="#_编译器_pass原生_native_代码">2.3.9. 编译器 Pass：原生 (Native) 代码</a></li>
 </ul>
 </li>
 <li><a href="#_其他编译器工具">2.4. 其他编译器工具</a>
@@ -655,27 +655,27 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#CH-Memory">12. 内存子系统: 栈、堆以及垃圾收集</a>
 <ul class="sectlevel2">
-<li><a href="#_the_memory_subsystem">12.1. The memory subsystem</a></li>
-<li><a href="#SS-Memory_Allocators">12.2. Different type of memory allocators</a>
+<li><a href="#_内存子系统">12.1. 内存子系统</a></li>
+<li><a href="#SS-Memory_Allocators">12.2. 不同类型的内存分配器</a>
 <ul class="sectlevel3">
-<li><a href="#_the_basic_allocator_sys_alloc">12.2.1. The basic allocator: sys_alloc</a></li>
-<li><a href="#_the_memory_segment_allocator_mseg_alloc">12.2.2. The memory segment allocator: mseg_alloc</a></li>
-<li><a href="#_the_memory_allocator_framework_alloc_util">12.2.3. The memory allocator framework: alloc_util</a></li>
-<li><a href="#_the_temporary_allocator_temp_alloc">12.2.4. The temporary allocator: temp_alloc</a></li>
-<li><a href="#_the_heap_allocator_eheap_alloc">12.2.5. The heap allocator: eheap_alloc</a></li>
-<li><a href="#_the_binary_allocator_binary_alloc">12.2.6. The binary allocator: binary_alloc</a></li>
-<li><a href="#_the_ets_allocator_ets_alloc">12.2.7. The ETS allocator: ets_alloc</a></li>
-<li><a href="#_the_driver_allocator_driver_alloc">12.2.8. The driver allocator: driver_alloc</a></li>
-<li><a href="#_the_short_lived_allocator_sl_alloc">12.2.9. The short lived allocator: sl_alloc</a></li>
-<li><a href="#_the_long_lived_allocator_ll_alloc">12.2.10. The long lived allocator: ll_alloc</a></li>
-<li><a href="#_the_fixed_size_allocator_fix_alloc">12.2.11. The fixed size allocator: fix_alloc</a></li>
-<li><a href="#_the_standard_allocator_std_alloc">12.2.12. The standard allocator: std_alloc</a></li>
+<li><a href="#_基础分配器sys_alloc">12.2.1. 基础分配器：sys_alloc</a></li>
+<li><a href="#_内存段分配器mseg_alloc">12.2.2. 内存段分配器：mseg_alloc</a></li>
+<li><a href="#_内存分配器框架alloc_util">12.2.3. 内存分配器框架：alloc_util</a></li>
+<li><a href="#_临时分配器temp_alloc">12.2.4. 临时分配器：temp_alloc</a></li>
+<li><a href="#_堆分配器eheap_alloc">12.2.5. 堆分配器：eheap_alloc</a></li>
+<li><a href="#_binary_分配器binary_alloc">12.2.6. Binary  分配器：binary_alloc</a></li>
+<li><a href="#_ets_分配器ets_alloc">12.2.7. ETS 分配器：ets_alloc</a></li>
+<li><a href="#_驱动_driver_分配器driver_alloc">12.2.8. 驱动 (Driver) 分配器：driver_alloc</a></li>
+<li><a href="#_短生存期分配器sl_alloc">12.2.9. 短生存期分配器：sl_alloc</a></li>
+<li><a href="#_长生存期分配器ll_alloc">12.2.10. 长生存期分配器：ll_alloc</a></li>
+<li><a href="#_定长分配器fix_alloc">12.2.11. 定长分配器：fix_alloc</a></li>
+<li><a href="#_标准分配器std_alloc">12.2.12. 标准分配器：std_alloc</a></li>
 </ul>
 </li>
-<li><a href="#_todo_system_flags_for_memory">12.3. TODO: system flags for memory</a></li>
-<li><a href="#_process_memory">12.4. Process Memory</a>
+<li><a href="#_system_flags_for_memory原书未完成">12.3. system flags for memory（原书未完成）</a></li>
+<li><a href="#_进程内存">12.4. 进程内存</a>
 <ul class="sectlevel3">
-<li><a href="#_term_sharing">12.4.1. Term sharing</a></li>
+<li><a href="#_项式共享">12.4.1. 项式共享</a></li>
 <li><a href="#_message_passing">12.4.2. Message passing</a></li>
 <li><a href="#SS-Binaries">12.4.3. Binaries</a></li>
 <li><a href="#_garbage_collection">12.4.4. Garbage Collection</a></li>
@@ -702,8 +702,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#CH-Distribution">15. Distribution（原书未完成）</a></li>
-<li><a href="#CH-C">16. Interfacing C&#8201;&#8212;&#8201;BIFs NIFs and Linked in Drivers</a></li>
-<li><a href="#CH-Native">17. Native Code</a></li>
+<li><a href="#CH-C">16. Interfacing C, BIFs NIFs and Linked in Drivers (原书未完成)</a></li>
+<li><a href="#CH-Native">17. Native Code（原书未完成）</a></li>
 </ul>
 </li>
 <li><a href="#P-Running">II: 运行 ERTS</a>
@@ -987,8 +987,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <pre>Yoshihiro Tanaka
 Roberto Aloi
 Dmytro Lytovchenko
-Anthony Molinaro
 hitdavid
+Anthony Molinaro
 Alexandre Rodrigues
 Yoshihiro TANAKA
 Ken Causey
@@ -1571,7 +1571,7 @@ transforms），Core Erlang，BEAM 码等不同方法你可以做什么，以及
 在调优 Erlang 代码时，通过查看优化前后的生成代码，来了解何种优化在何时，以何种方式起作用是非常有效的。</p>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_erlang_预处理器_epp"><a class="link" href="#_编译器_pass_erlang_预处理器_epp">2.3.1. 编译器 Pass: Erlang 预处理器 (epp)</a></h4>
+<h4 id="_编译器_passerlang_预处理器_epp"><a class="link" href="#_编译器_passerlang_预处理器_epp">2.3.1. 编译器 Pass：Erlang 预处理器 (epp)</a></h4>
 <div class="paragraph">
 <p>编译过程起始于一个组合的分词器（或者扫描器）和预处理器。预处理器驱动分词器运行。这意味着宏被以符号的方式展开，而不纯粹是字符串替换（不像是 m4 或 cpp）。你不能够使用 Erlang 宏来定义自己的语法，宏像一个与周围字符独立的符号一样被展开。所以你也不能将一个宏与（它前后连续的）字符连接为新的符号：</p>
 </div>
@@ -1850,13 +1850,13 @@ error</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_linter"><a class="link" href="#_编译器_pass_linter">2.3.3. 编译器 Pass: Linter</a></h4>
+<h4 id="_编译器_passlinter"><a class="link" href="#_编译器_passlinter">2.3.3. 编译器 Pass：Linter</a></h4>
 <div class="paragraph">
 <p>Linter 为句法正确但是不好的代码生成警告，类似"export_all flag enabled"</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_保存抽象语法树ast"><a class="link" href="#_编译器_pass_保存抽象语法树ast">2.3.4. 编译器 Pass: 保存抽象语法树（AST）</a></h4>
+<h4 id="_编译器_pass保存抽象语法树ast"><a class="link" href="#_编译器_pass保存抽象语法树ast">2.3.4. 编译器 Pass：保存抽象语法树（AST）</a></h4>
 <div class="paragraph">
 <p>为了启用对某模块的调试，您可以“调试编译”该模块，即将选项 debug_info 传递给编译器。抽象语法树将被“Save AST”保存，直到编译结束时，它将被写入.beam文件。</p>
 </div>
@@ -1865,13 +1865,13 @@ error</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_expand"><a class="link" href="#_编译器_pass_expand">2.3.5. 编译器 Pass: Expand</a></h4>
+<h4 id="_编译器_passexpand"><a class="link" href="#_编译器_passexpand">2.3.5. 编译器 Pass：Expand</a></h4>
 <div class="paragraph">
 <p>在扩展（Expand）阶段，诸如 record 等源 erlang 结构将被扩展为底层的 erlang 结构。编译器选项 "-compile(...)" 也会被 <em>扩展</em> 为元数据。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_core_erlang"><a class="link" href="#_编译器_pass_core_erlang">2.3.6. 编译器 Pass: Core Erlang</a></h4>
+<h4 id="_编译器_passcore_erlang"><a class="link" href="#_编译器_passcore_erlang">2.3.6. 编译器 Pass：Core Erlang</a></h4>
 <div class="paragraph">
 <p>Core Erlang 是一种适用于编译器优化的严格函数式语言。通过减少表示同一操作的方法的数量，使代码转换更容易。其中一种方法是通过引入 let 和 letrec 表达式来使作用域更明确。</p>
 </div>
@@ -1898,13 +1898,13 @@ ok
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_kernel_erlang"><a class="link" href="#_编译器_pass_kernel_erlang">2.3.7. 编译器 Pass: Kernel Erlang</a></h4>
+<h4 id="_编译器_passkernel_erlang"><a class="link" href="#_编译器_passkernel_erlang">2.3.7. 编译器 Pass：Kernel Erlang</a></h4>
 <div class="paragraph">
 <p>Kernel Erlang 是 Core Erlang 的一个扁平版本，它们有一些不同之处。例如，每个变量在一个完整的函数作用域中都是唯一的。模式匹配被编译成更原始的操作。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_beam_代码"><a class="link" href="#_编译器_pass_beam_代码">2.3.8. 编译器 Pass: BEAM 代码</a></h4>
+<h4 id="_编译器_passbeam_代码"><a class="link" href="#_编译器_passbeam_代码">2.3.8. 编译器 Pass：BEAM 代码</a></h4>
 <div class="paragraph">
 <p>正常编译的最后一步是外部 beam 代码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。</p>
 </div>
@@ -1913,7 +1913,7 @@ ok
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass_本地native码"><a class="link" href="#_编译器_pass_本地native码">2.3.9. 编译器 Pass: 本地（Native）码</a></h4>
+<h4 id="_编译器_pass原生_native_代码"><a class="link" href="#_编译器_pass原生_native_代码">2.3.9. 编译器 Pass：原生 (Native) 代码</a></h4>
 <div class="paragraph">
 <p>如果您在编译中添加了 native 标志，并且您有一个启用了 HiPE (High Performance <strong>Erlang</strong> ，译者注：类似 JIT )  的运行时系统，那么编译器将为您的模块生成本机代码，并将本地代码与 beam 代码一起存储在 .beam 文件中。</p>
 </div>
@@ -6386,16 +6386,10 @@ scheduler S3 S4 S1 S2
 <h2 id="CH-Memory"><a class="link" href="#CH-Memory">12. 内存子系统: 栈、堆以及垃圾收集</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Before we dive into the memory subsystem of ERTS, we need to have some
-basic vocabulary and understanding of the general memory layout of a
-program in a modern operating system. In this review section I will
-assume the program is compiled to an ELF executable and running on
-Linux on something like an IA-32/AMD64 architecture. The layout and
-terminology is basically the same for all operating systems that ERTS
-compile on.</p>
+<p>在深入研究 ERTS 的内存子系统之前，我们需要有一些基本的词汇表，并了解现代操作系统中程序内存布局的一般情形。在这个回顾部分中，我将假设程序被编译成一个 ELF 可执行文件，并运行在类似 IA-32 / AMD64 架构的 Linux 上。布局和术语对于编译ERTS的所有操作系统基本上是相同的。</p>
 </div>
 <div class="paragraph">
-<p>A program&#8217;s memory layout looks something like this:</p>
+<p>一个程序的内存布局看起来像这样：</p>
 </div>
 <div id="program_memory_layout" class="imageblock">
 <div class="content">
@@ -6404,90 +6398,46 @@ compile on.</p>
 <div class="title">Figure 24. Program Memory Layout</div>
 </div>
 <div class="paragraph">
-<p>Even though this picture might look daunting it is still a
-simplification. (For a full understanding of the memory subsystem read
-a book like "Understanding the Linux Kernel" or "Linux System
-Programming") What I want you to take away from this is that there are
-two types of dynamically allocatable memory: the heap and memory
-mapped segments. I will try to call this heap the <em>C-heap</em> from now
-on, to distinguish it from an Erlang process heap. I will call a
-memory mapped segment for just a <em>segment</em>, and any of the stacks in
-this picture for the <em>C-stack</em>.</p>
+<p>尽管这幅图看起来令人生畏，但它仍然是一种简化。(要想全面理解内存子系统，请阅读《深入理解Linux内核》或《Linux系统编程》之类的书) 我想让您了解的是，有两种类型的动态分配内存：堆和内存映射段 ( memory mapped segments ) 。从现在开始，我将尝试将这个堆称为 C-堆，以区别于 Erlang 进程堆。我会将一个内存映射段称为“段”，而这张图中的任何栈为 C-栈。</p>
 </div>
 <div class="paragraph">
-<p>The C-heap is allocated through malloc and a segment is allocated with
-mmap.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>A note on pictures of memory</p>
-</li>
-</ol>
+<p>C-堆通过 malloc 分配，段通过mmap分配。</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
 <div class="paragraph">
-<p><strong>Note</strong> When drawing overview pictures of system memory and stacks we
-will follow the convention that memory addresses grows upward. That is
-low memory addresses on the bottom of the page and high memory
-addresses on the top of the page. (Stacks most often grow downward
-starting at high addresses, so that new elements are pushed at the
-lowest address.)</p>
+<p>关于内存图示</p>
 </div>
 <div class="paragraph">
-<p>However when we draw a c-structure we will draw the fields from the
-top and down, even though the first field of the structure will be
-at the lowest address and the following fields at higher addresses.
-So pictures of structures have low address at the top of the page
-and high address at the bottom of the page.</p>
+<p>在绘制系统内存和堆栈的概览图示时，我们将遵循内存地址向上增长的惯例。即页面底部的低内存地址和页面顶部的高内存地址。(栈通常从高地址开始向下增长，因此新元素被压栈到最低地址。)</p>
 </div>
 <div class="paragraph">
-<p>This means that a picture of a c-structure and a picture of a memory
-area will have their address positions on the page mirrored. This becomes
-somewhat confusing when we try to picture structures and heaps in the
-same picture.</p>
+<p>但是，当我们绘制 c-结构体 ( structure ) 时，我们将从上往下绘制字段，尽管结构的第一个字段位于最低地址，而下面的字段位于更高地址。所以包含结构体的图示中，低地址的结构体在页面的顶部，高地址的结构体在页面的底部。</p>
+</div>
+<div class="paragraph">
+<p>这意味着 c-结构体的图示和内存区域的图示将在页面的地址位置上呈镜像。当我们试图在同一幅图中描绘结构体和堆时，就有点令人困惑。</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_memory_subsystem"><a class="link" href="#_the_memory_subsystem">12.1. The memory subsystem</a></h3>
+<h3 id="_内存子系统"><a class="link" href="#_内存子系统">12.1. 内存子系统</a></h3>
 <div class="paragraph">
-<p>Now that we dive into the memory subsystem it will once again
-be apparent that ERTS is more like an operating system than just a
-programming language environment. Not only does ERTS provide a garbage
-collector for Erlang terms on the Erlang process level, but it also
-provides a plethora of low level memory allocators and memory
-allocation strategies.</p>
+<p>当我们深入到内存子系统中时，我们就可以再次清楚地看到，ERTS 更像是一个操作系统，而不仅仅是一个编程语言环境。ERTS 不仅为 Erlang 进程级别上的 Erlang 项式提供了一个垃圾收集器，而且还提供了大量的低级别内存分配器和内存分配策略。</p>
 </div>
 <div class="paragraph">
-<p>For an overview of memory allocators see the erts_alloc documentation
-at: <a href="http://www.erlang.org/doc/man/erts_alloc.html" class="bare">http://www.erlang.org/doc/man/erts_alloc.html</a></p>
+<p>有关内存分配器的概述，请参阅 erts_alloc 文档：http://www.erlang.org/doc/man/erts_alloc.html</p>
 </div>
 <div class="paragraph">
-<p>All these allocators also comes with a number of parameters that
-can be used to tweak their behavior, and this is probably one
-of the most important areas from an operational point of view.
-This is where we can configure the system behavior to fit anything
-from a small embedded control system (like a Raspberry Pi) to an
-Internet scale 2TB database server.</p>
+<p>所有这些分配器都带有一些参数，可以用来调整它们的行为，从操作的角度来看，这可能是它最重要的方面之一。在这里，我们可以配置系统行为，以适应从小型嵌入式控制系统 (如 Raspberry Pi)到 Internet 规模的 2TB 的数据库服务器的任何设备。</p>
 </div>
 <div class="paragraph">
-<p>There are currently eleven different allocators, six different
-allocation strategies, and more than 18 other different settings,
-some of which are taking arbitrary numerical values. This
-means that there basically is an infinite number of possible
-configurations. (OK, strictly speaking it is not infinite, since
-each number is bounded, but there are more configurations
-than you can shake a stick at.)</p>
+<p>目前有 11 种不同的分配器，6 种不同的分配策略，以及超过 18 种其他设置，其中一些采用任意的数值输入。这意味着可能的配置有无限多。(好吧，严格地说，它不是无限的，因为每个数字都是有界的，但比你想象的要多。)</p>
 </div>
 <div class="paragraph">
-<p>In order to be able to use these settings in any meaningful way
-we will have to understand how these allocators work and
-how each setting impacts the performance of the allocator.</p>
+<p>为了能够以有意义的方式使用这些设置，我们必须了解这些分配器是如何工作的，以及每个设置如何影响分配器的性能。</p>
 </div>
 <div class="paragraph">
-<p>The erts_alloc manual goes as far as to give the following warning:</p>
+<p>erts_alloc 手册给出了以下警告：</p>
 </div>
 <div class="quoteblock">
 <blockquote>
@@ -6498,9 +6448,7 @@ how each setting impacts the performance of the allocator.</p>
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Only use these flags if you are absolutely sure what you are
-doing. Unsuitable settings may cause serious performance degradation
-and even a system crash at any time during operation.
+只在你绝对清楚自己在做什么的时候使用这些标记。不适当的设置可能导致严重的性能降级甚至操作中的系统崩溃。
 </td>
 </tr>
 </table>
@@ -6512,8 +6460,10 @@ and even a system crash at any time during operation.
 </div>
 </div>
 <div class="paragraph">
-<p>Making you absolutely sure that you know what you are doing, that is
-what this chapter is about.</p>
+<p>让你绝对确信你知道自己在做什么，这就是本章要讲的。</p>
+</div>
+<div class="paragraph">
+<p>当然，我们还将详细介绍垃圾收集器的工作原理。</p>
 </div>
 <div class="paragraph">
 <p>Oh yes, we will also go into details of how the garbage collector
@@ -6521,59 +6471,33 @@ works.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="SS-Memory_Allocators"><a class="link" href="#SS-Memory_Allocators">12.2. Different type of memory allocators</a></h3>
+<h3 id="SS-Memory_Allocators"><a class="link" href="#SS-Memory_Allocators">12.2. 不同类型的内存分配器</a></h3>
 <div class="paragraph">
-<p>The Erlang run-time system is trying its best to handle memory
-in all situations and under all types of loads, but there are
-always corner cases. In this chapter we will look at the details
-of how memory is allocated and how the different allocators work.
-With this knoweledge and some tools that we will look at later
-you should be able to detect and fix problems if your system
-ends up in one of these corner cases.</p>
+<p>Erlang 运行时系统正在尽最大努力处理所有情况和所有类型的负载下的内存，但是总会有一些极端情况。在本章中，我们将详细了解内存是如何分配的，以及不同的分配器是如何工作的。有了这个知识和我们稍后将介绍的一些工具，如果您的系统最终出现这些情况，您应该能够检测并修复这些问题。</p>
 </div>
 <div class="paragraph">
-<p>For a nice story about the troubles the system might get into
-and how to analyze and correct the behavior read
-Fred Hébert’s essay <a href="https://blog.heroku.com/archives/2013/11/7/logplex-down-the-rabbit-hole">"Troubleshooting Down the Logplex Rabbit Hole"</a>.</p>
+<p>这里有一个关于系统可能遇到的问题以及如何分析和纠正这种行为的好故事，请阅读 Fred Hébert 的文章 <a href="https://blog.heroku.com/archives/2013/11/7/logplex-down-the-rabbit-hole">"Troubleshooting Down the Logplex Rabbit Hole"</a>。</p>
 </div>
 <div class="paragraph">
-<p>When we are talking about a memory allocator in this book we
-have a specific meaning in mind. Each memory allocator manage
-allocations and deallocations of memory of a certain type.
-Each allocator is intended for a specific type of data and is
-often specialized for one size of data.</p>
+<p>当我们在本书中讨论内存分配器时，它在我们脑海中有一个特定的含义。每个内存分配器管理特定类型的内存的分配和释放。每个分配器用于特定类型的数据，通常专门用于一种大小的数据。</p>
 </div>
 <div class="paragraph">
-<p>Each memory allocator implements the allocator interface that
-can use different algorithms and settings for the actual
-memory allocation.</p>
+<p>每个内存分配器实现了可以为实际内存分配使用不同算法和设置的分配器接口。</p>
 </div>
 <div class="paragraph">
-<p>The goal with having different allocators is to reduce
-fragmentation, by grouping allocations of the same size,
-and to increase performance, by making frequent allocations
-cheap.</p>
+<p>使用不同的分配器的目的是通过分组相同大小的内存分配来减少碎片，并通过降低频繁分配的操作成本来提高性能。</p>
 </div>
 <div class="paragraph">
-<p>There are two special, fundamental or generic, memory allocator types
-<em>sys_alloc</em> and <em>mseg_alloc</em>, and nine specific allocators implemented
-through the <em>alloc_util</em> framework.</p>
+<p>有两种特别的，基本的或通用的内存分配器类型 sys_alloc 和 mseg_alloc，以及通过 alloc_util 框架实现的 9 种特定的分配器。</p>
 </div>
 <div class="paragraph">
-<p>In the following sections we will go though the different allocators,
-with a little detour into the general framework for allocators
-(alloc_util).</p>
+<p>在下面的小节中，我们将介绍不同的分配器，并稍微介绍一下分配器的通用框架 ( alloc_util )。</p>
 </div>
 <div class="paragraph">
-<p>Each allocator has several names used in the documentation and in the
-C code. See <a href="#table-allocators">Table 1</a> for a short list of all allocators
-and their names. The C-name is used in the C-code to refer to the
-allocator. The Type-name is used in erl_alloc.types to bind allocation
-types to an allocator. The Flag is the letter used for setting
-parameters of that allocator when starting Erlang.</p>
+<p>每个分配器都有在文档和 C 代码中使用的几个名称。<a href="#table-allocators">Table 1</a> 列出了所有分配器及其名称。在 C 代码中使用 C-name 来引用分配器。在 erl_alloc.types 中使用了 Type-name，以将分配类型绑定到分配器。Flag 是在启动 Erlang 时用于设置分配器参数的字母。</p>
 </div>
 <table id="table-allocators" class="tableblock frame-all grid-all stretch">
-<caption class="title">Table 1. List of memory allocators.</caption>
+<caption class="title">Table 1. 内存分配器列表</caption>
 <colgroup>
 <col style="width: 20%;">
 <col style="width: 20%;">
@@ -6671,175 +6595,105 @@ parameters of that allocator when starting Erlang.</p>
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_the_basic_allocator_sys_alloc"><a class="link" href="#_the_basic_allocator_sys_alloc">12.2.1. The basic allocator: sys_alloc</a></h4>
+<h4 id="_基础分配器sys_alloc"><a class="link" href="#_基础分配器sys_alloc">12.2.1. 基础分配器：sys_alloc</a></h4>
 <div class="paragraph">
-<p>The allocator sys_alloc can not be disabled, and is basically a
-straight mapping to the underlying OS malloc implementation in
-libc.</p>
+<p>分配器 sys_alloc 不能被禁用，它基本上是直接映射到底层 OS 的 libc 中的 malloc 实现。</p>
 </div>
 <div class="paragraph">
-<p>If a specific allocator is disabled then sys_alloc is used instead.</p>
+<p>如果禁用其他某个特定的分配器，在分配内存时就使用 sys_alloc 作为替代。</p>
 </div>
 <div class="paragraph">
-<p>All specific allocators uses either sys_alloc or mseg_alloc to
-allocate memory from the operating system as needed.</p>
+<p>所有特定的分配器都根据需要，使用 sys_alloc 或 mseg_alloc 从操作系统分配内存。</p>
 </div>
 <div class="paragraph">
-<p>When memory is allocated from the OS sys_alloc can add (pad) a fixed
-number of kilobytes to the requested number. This can reduce the
-number of system calls by over allocating memory. The default padding
-is zero.</p>
+<p>当从 OS 分配内存时，sys_alloc 可以在请求的分配数目基础上，添加某个固定数目的额外大小 ( 可能为KB级 ) 作为填充。这样做可以通过过度分配内存来减少系统调用的数量。默认填充大小为 0。</p>
 </div>
 <div class="paragraph">
-<p>When memory is freed, sys_alloc will keep some free memory allocated
-in the process. The size of this free memory is called the trim
-threshold, and the default is 128 kilobytes. This also reduces the
-number of system calls at the cost of a higher memory footprint.
-This means that if you are running the system with the default
-settings you can experience that the Beam process does not give
-memory back to the OS directly as memory is freed up.</p>
+<p>当内存被释放时，sys_alloc 将在释放内存时，在进程中保留一些已经分配的一些空闲内存。这个空闲内存的大小称为对齐阈值，默认为128 KB。这也减少了系统调用的数量，但代价是占用更多的内存。这意味着，如果您使用默认设置运行系统，您可以体验到，当内存被释放时，Beam 进程不会将内存直接返回给操作系统。</p>
 </div>
 <div class="paragraph">
-<p>Memory areas allocated by sys_alloc are stored in the C-heap of the
-beam process which will grow as needed through system calls to brk.</p>
+<p>sys_alloc 分配的内存区域存储在 beam 进程的 C-堆 中，堆将根据需要通过 brk() 系统调用 (译注：可以参考 link: <a href="https://man7.org/linux/man-pages/man2/brk.2.html">brk(2) — Linux manual page</a> ) 增长 (译注：回顾一下图：<a href="#program_memory_layout">program_memory_layout</a> )。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_memory_segment_allocator_mseg_alloc"><a class="link" href="#_the_memory_segment_allocator_mseg_alloc">12.2.2. The memory segment allocator: mseg_alloc</a></h4>
+<h4 id="_内存段分配器mseg_alloc"><a class="link" href="#_内存段分配器mseg_alloc">12.2.2. 内存段分配器：mseg_alloc</a></h4>
 <div class="paragraph">
-<p>If the underlying operating system supports mmap a specific memory
-allocator can use mseg_alloc instead of sys_alloc to allocate
-memory from the operating system.</p>
+<p>如果底层操作系统支持 mmap，那么某些特定的内存分配器可以使用 mseg_alloc 而不是 sys_alloc 来从操作系统分配内存。</p>
 </div>
 <div class="paragraph">
-<p>Memory areas allocated through mseg_alloc are called segments. When a
-segment is freed it is not immediately returned to the OS, instead it
-is kept in a segment cache.</p>
+<p>通过 mseg_alloc 分配的内存区域称为段。当一个段被释放时，它不会立即返回到操作系统，而是保存在段缓存中。</p>
 </div>
 <div class="paragraph">
-<p>When a new segment is allocated a cached segment is reused if
-possible, i.e. if it is the same size or larger than the requested
-size but not too large. The value of <em>absolute max cache bad fit</em>
-determines the number of kilobytes of extra size which is considered
-not too large. The default is 4096 kilobytes.</p>
+<p>当分配一个新的段时，如果可能的话，缓存的段将被重用，就是说重用的一个条件是：如果某个被缓存的段与所请求分配的段的大小相同或缓存段大于请求分配段的大小，但又“不太大”。不太大的含义是 <em>absolute max cache bad fit</em> 的值与差值的比较结果，差值小于这个值将被认为差值“不太大”。这个默认值是 4096 KB。</p>
 </div>
 <div class="paragraph">
-<p>In order not to reuse a 4096 kilobyte segment for really small
-allocations there is also a <em>relative_max_cache_bad_fit</em> value which
-states that a cached segment may not be used if it is more than
-that many percent larger. The default value is 20 percent. That
-is a 12 KB segment may be used when asked for a 10 KB segment.</p>
+<p>为了不重用一个 4096 KB 的段来进行一次非常小内存的重用分配，还有一个 <em>relative_max_cache_bad_fit</em> 值，该值表示如果缓存的段大小比请求分配的段大，它们大小的差值如果大于这个百分比，那么它可能不会被使用。它默认值是20%。举例来说，当需要一个10 KB 的段时，最大可以使用一个12 KB 的段。</p>
 </div>
 <div class="paragraph">
-<p>The number of entries in the cache defaults to 10 but can be
-set to any value from zero to thirty.</p>
+<p>段缓存中的条目数默认为10，但是可以设置为 0 到 30 之间的任何值。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_memory_allocator_framework_alloc_util"><a class="link" href="#_the_memory_allocator_framework_alloc_util">12.2.3. The memory allocator framework: alloc_util</a></h4>
+<h4 id="_内存分配器框架alloc_util"><a class="link" href="#_内存分配器框架alloc_util">12.2.3. 内存分配器框架：alloc_util</a></h4>
 <div class="paragraph">
-<p>Building on top of the two generic allocators (sys_alloc and mseg_alloc)
-is a framework called <em>alloc_util</em> which is used to implement specific
-memory allocators for different types of usage and data.</p>
+<p>在这两个通用分配器 ( sys_alloc 和 mseg_alloc ) 之上构建的是一个名为 <em>alloc_util</em> 的框架，它用于为不同类型的用法和数据来实现特定的内存分配器。</p>
 </div>
 <div class="paragraph">
-<p>The framework is implemented in <em>erl_alloc_util.[ch]</em> and the different
-allocators used by ERTS are defined in erl_alloc.types in
-the directory "erts/emulator/beam/".</p>
+<p>框架是在 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_alloc_util.h"><em>erl_alloc_util.h</em></a> 和 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_alloc_util.c"><em>erl_alloc_util.c</em></a> 中实现的。ERTS 所使用的各种不同的分配器是在 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_alloc.types">erl_alloc.types</a> 中定义的。</p>
 </div>
 <div class="paragraph">
-<p>In a SMP system there is usually one allocator of each type per
-scheduler thread.</p>
+<p>在SMP系统中，通常为每个调度器线程分别提供一套每种类型的分配器。</p>
 </div>
 <div class="paragraph">
-<p>The smallest unit of memory that an allocator can work with is called a
-<em>block</em>. When you call an allocator to allocate a certain amount of
-memory what you get back is a block. It is also blocks that you give
-as an argument to the allocator when you want to deallocate memory.</p>
+<p>分配器可以操作的最小内存单位称为块 ( <em>block</em> )。当您调用一个分配器来分配一定数量的内存时，得到的返回是一个块。当你希望释放内存时，块也作为参数提供给分配器。</p>
 </div>
 <div class="paragraph">
-<p>The allocator does not allocate blocks from the operating system
-directly though. Instead the allocator allocates a <em>carrier</em> from the
-operating system, either through sys_alloc or through mseg_alloc,
-which in turn uses malloc or mmap. If sys_alloc is used the carrier
-is placed on the C-heap and if mseg_alloc is used the carrier
-is placed in a segment.</p>
+<p>然而，分配器并不直接从操作系统分配块。相反，分配器通过 sys_alloc 或 mseg_alloc ( 使用 malloc 或者 mmap 实现 ) 从操作系统分配一个载体 ( <em>carrier</em> )。如果使用 sys_alloc，则载体被放在 C-堆上，如果使用 mseg_alloc，则载体被放在一个段中。</p>
 </div>
 <div class="paragraph">
-<p>Small blocks are placed in a multiblock carrier. A multiblock carrier
-can as the name suggests contain many blocks. Larger blocks are placed
-in a singleblock carrier, which as the name implies on contains one
-block.</p>
+<p>小块被放置在多块载体 ( multiblock carrier ) 中。多块载体可以像它的名字一样包含许多块。更大的块放在单块载体 ( singleblock carrier ) 中，就像他的名字意味着只包含一个块一样。</p>
 </div>
 <div class="paragraph">
-<p>What&#8217;s considered a small and a large block is determined by the
-parameter <em>singleblock carrier threshold</em> (sbct), see the list
-of system flags below.</p>
+<p>什么是小块，什么是大块是由参数 <em>singleblock carrier threshold</em> (sbct) 决定的，请参阅下面的系统标志列表。</p>
 </div>
 <div class="paragraph">
-<p>Most allocators also have one "main multiblock carrier" which is never
-deallocated.</p>
+<p>大多数分配器也有一个“主多块载体” ( main multiblock carrier )，它永远不会被释放。</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/diag-95b349af82fb7686593bb43498201092.png" alt="Diagram" width="620" height="476">
+<img src="images/diag-b02937b5f7c511e0f63d9f9e405c1b02.png" alt="Diagram" width="620" height="476">
 </div>
 </div>
 <div class="sect4">
-<h5 id="_memory_allocation_strategies"><a class="link" href="#_memory_allocation_strategies">Memory allocation strategies</a></h5>
+<h5 id="_内存分配策略"><a class="link" href="#_内存分配策略">内存分配策略</a></h5>
 <!--
 Are you intending for readers to take advantage of these allocation strategies in their code? If so, this section needs to be much more prominent, and not a subheading in a reference section.  - bmacdonald
 -->
 <div class="paragraph">
-<p>To find a free block of memory in a multi block carrier an
-allocation strategy is used. Each type of allocator has
-a default allocation strategy, but you can also set the
-allocation strategy with the as flag.</p>
+<p>内存分配策略被使用，以在多块载体中找到一个空闲的内存块。每种类型的分配器都有一个默认的分配策略，但也可以使用  as  标志设置它的分配策略。</p>
 </div>
 <div class="paragraph">
-<p>The Erlang Run-Time System Application Reference Manual lists
-the following allocation strategies:</p>
+<p>Erlang 运行时系统应用程序参考手册列出了以下分配策略:</p>
 </div>
 <div class="quoteblock">
 <blockquote>
 <div class="paragraph">
-<p><em>Best fit</em>: Find the smallest block that satisfies the requested block size.
-(bf)</p>
+<p><em>Best fit</em>：找到满足请求快大小要求的最小块。(bf)</p>
 </div>
 <div class="paragraph">
-<p><em>Address order best fit</em>: Find the smallest block that satisfies the
-requested block size. If multiple blocks are found, choose the one
-with the lowest address.
-(aobf)</p>
+<p><em>Address order best fit</em>：找到满足请求快大小要求的最小块。如果找到多个块，选最低地址的块。(aobf)</p>
 </div>
 <div class="paragraph">
-<p><em>Address order first fit</em>: Find the block with the lowest address that
-satisfies the requested block size.
-(aoff)</p>
+<p><em>Address order first fit carrier best fit</em>：找到能满足请求块大小的最低地址的载体，然后使用 "best fit" 策略在该载波中找到一个块。 (aoffcbf)</p>
 </div>
 <div class="paragraph">
-<p><em>Address order first fit carrier best fit</em> :
-Find the carrier with the lowest address that can satisfy the
-requested block size, then find a block within that carrier using the
-"best fit" strategy.  (aoffcbf)</p>
+<p><em>Address order first fit carrier address order best fit</em>：找到能满足请求块大小的最低地址的载体，然后使用 "address order best fit" 策略在该载体内找到一个块。 (aoffcaobf)</p>
 </div>
 <div class="paragraph">
-<p><em>Address order first fit carrier address order best fit</em>: Find the
-carrier with the lowest address that can satisfy the requested block
-size, then find a block within that carrier using the "address order
-best fit" strategy.
- aoffcaobf (address order first fit carrier address order best fit)</p>
+<p><em>Good fit</em>：试着找到最适合的，但是只在有限的搜索中找到。(gf)</p>
 </div>
 <div class="paragraph">
-<p><em>Good fit</em>: Try to find the best fit, but settle for the best fit found
-during a limited search.
-(gf)</p>
-</div>
-<div class="paragraph">
-<p><em>A fit</em>: Do not search for a fit, inspect only one free block to see if
-it satisfies the request. This strategy is only intended to be used
-for temporary allocations.
-(af)</p>
+<p><em>A fit</em>: 不搜索某个合适的，只检查某空闲块看看是否它满足了要求。这个策略只是意在临时分配时被使用。(af)</p>
 </div>
 </blockquote>
 <div class="attribution">
@@ -6849,33 +6703,27 @@ for temporary allocations.
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_temporary_allocator_temp_alloc"><a class="link" href="#_the_temporary_allocator_temp_alloc">12.2.4. The temporary allocator: temp_alloc</a></h4>
+<h4 id="_临时分配器temp_alloc"><a class="link" href="#_临时分配器temp_alloc">12.2.4. 临时分配器：temp_alloc</a></h4>
 <div class="paragraph">
-<p>The allocator <em>temp_alloc</em>, is used for temporary
-allocations. That is very short lived allocations. Memory allocated
-by temp_alloc may not be allocated over a Erlang process context
-switch.</p>
+<p>分配器 <em>temp_alloc</em> 用于临时内存分配。这是非常短暂的分配。temp_alloc 分配的内存，生存期不能超过 Erlang 进程上下文切换。</p>
 </div>
 <div class="paragraph">
-<p>You can use temp_alloc as a small scratch or working area while doing
-some work within a function. Look at it as an extension of the C-stack
-and free it in the same way. That is, to be on the safe side, free
-memory allocated by temp_alloc before returning from the function that
-did the allocation. There is a note in erl_alloc.types saying that
-you should free a temp_alloc block before the emulator starts
-executing Erlang code.</p>
+<p>在函数内执行某些工作时，可以使用 temp_alloc 作为一个临时工作区。把它看作是 C-stack 的扩展，并以同样的方式释放它。也就是说，为了安全起见，从执行分配的函数返回之前，需要释放通过 temp_alloc 分配的内存。在 erl_alloc.types 中有一个注释 (译注，见链接：https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_alloc.types#L109[erl_alloc.types])，说明在模拟器重新开始执行 Erlang 代码之前应该释放 temp_alloc 块。</p>
 </div>
 <div class="paragraph">
-<p>Note that no Erlang process running on the same scheduler as the
-allocator may start executing Erlang code before the block is freed.
-This means that you can not use a temporary allocation over a BIF
-or NIF trap (yield).</p>
+<p>注意，与分配器运行在同一调度程序上的 Erlang 进程不可能在释放块之前开始执行 Erlang 代码。这意味着您不能在 BIF 或 NIF 陷阱(yield) 上使用临时分配。</p>
 </div>
 <div class="paragraph">
-<p>In a default R16 SMP system there is N+1 temp_alloc allocators where N
-is the number of schedulers. The temp_alloc uses the "A fit" (af)
-strategy. Since the allocation pattern of the temp_alloc basically is
-that of a stack (mostly of size 0 or 1), this strategy works fine.</p>
+<p>在默认的 R16 SMP 系统中，有N+1 个 temp_alloc 分配器，其中 N 是调度器的数量。temp_alloc 使用 “A fit”(af) 策略。由于 temp_alloc的分配模式基本上是栈分配模式 (大部分大小为0或1)，因此该策略可以很好地工作。</p>
+</div>
+<div class="paragraph">
+<p>临时分配器在 R16 中用于以下类型的数据：TMP_HEAP、MSG_ROOTS、ROOTSET、LOADER_TEMP、NC_TMP、TMP、DCTRL_BUF、TMP_DIST_BUF、ESTACK、DB_TMP、DB_MC_STK、DB_MS_CMPL_HEAP、LOGGER_DSBUF、TMP_DSBUF、DDLL_TMP_BUF、TEMP_TERM、SYS_READ_BUF、ENVIRONMENT、CON_VPRINT_BUF。</p>
+</div>
+<div class="paragraph">
+<p>有关每个分配器分配的最新分配类型列表，请参阅erl_alloc.types。( 例如：grep TEMPORARY erts/emulator/beam/erl_allocation .types )。</p>
+</div>
+<div class="paragraph">
+<p>我不会逐一介绍这些不同的类型，但一般来说，正如通过它们的名称猜测的那样，它们是临时缓冲区或工作堆栈。</p>
 </div>
 <div class="paragraph">
 <p>The temporary allocator is, in R16, used by the following types of
@@ -6889,125 +6737,84 @@ ENVIRONMENT, CON_VPRINT_BUF.</p>
 allocator, see erl_alloc.types
 (e.g. grep TEMPORARY erts/emulator/beam/erl_alloc.types).</p>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_堆分配器eheap_alloc"><a class="link" href="#_堆分配器eheap_alloc">12.2.5. 堆分配器：eheap_alloc</a></h4>
 <div class="paragraph">
-<p>I will not go through each of these different types, but in
-general as you can guess by their names, they are temporary
-buffers or work stacks.</p>
+<p>堆分配器用于分配存储 tagged Erlang 项式的内存块，如 Erlang 进程堆(所有代)、堆碎片和 beam_registers。</p>
+</div>
+<div class="paragraph">
+<p>这可能是您作为 Erlang 开发人员或调优 Erlang 系统时最感兴趣的内存区域。在后面关于垃圾收集和进程内存的部分中，我们将更多地讨论如何管理这些区域。在这里，我们还将介绍什么是堆片段。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_heap_allocator_eheap_alloc"><a class="link" href="#_the_heap_allocator_eheap_alloc">12.2.5. The heap allocator: eheap_alloc</a></h4>
+<h4 id="_binary_分配器binary_alloc"><a class="link" href="#_binary_分配器binary_alloc">12.2.6. Binary  分配器：binary_alloc</a></h4>
 <div class="paragraph">
-<p>The heap allocator, is used for allocating memory blocks
-where tagged Erlang terms are stored, such as Erlang process heaps
-(all generations), heap fragments, and the beam_registers.</p>
-</div>
-<div class="paragraph">
-<p>This is probably the memory areas you are most interested in as an
-Erlang developer or when tuning an Erlang system. We will talk more
-about how these areas are managed in the upcoming sections on garbage
-collection and process memory. There we will also cover what a heap
-fragment is.</p>
+<p>你猜对了，Binary 分配器用于分配 Binary 类型项式。Binary 可以有相当不同的大小和不同的生命周期。默认情况下，这个分配器使用  <em>best fit</em>  分配策略。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_binary_allocator_binary_alloc"><a class="link" href="#_the_binary_allocator_binary_alloc">12.2.6. The binary allocator: binary_alloc</a></h4>
+<h4 id="_ets_分配器ets_alloc"><a class="link" href="#_ets_分配器ets_alloc">12.2.7. ETS 分配器：ets_alloc</a></h4>
 <div class="paragraph">
-<p>The binary allocator is used for, yes you guessed it, binaries.
-Binaries can be of quite varying sizes and have varying life spans.
-This allocator uses the <em>best fit</em> allocation strategy by default.</p>
+<p>ETS 分配器用于大多数 ETS 相关的数据，除了一些短生存期 ( short lived ) 项式或 ETS 表使用的临时数据</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_ets_allocator_ets_alloc"><a class="link" href="#_the_ets_allocator_ets_alloc">12.2.7. The ETS allocator: ets_alloc</a></h4>
+<h4 id="_驱动_driver_分配器driver_alloc"><a class="link" href="#_驱动_driver_分配器driver_alloc">12.2.8. 驱动 (Driver) 分配器：driver_alloc</a></h4>
 <div class="paragraph">
-<p>The ETS allocator is used for most ETS related data,
-except for some short lived or temporary data used by ETS tables-</p>
+<p>驱动分配器用于端口，链接驱动 ( linked in driver ) 和NIF。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_driver_allocator_driver_alloc"><a class="link" href="#_the_driver_allocator_driver_alloc">12.2.8. The driver allocator: driver_alloc</a></h4>
+<h4 id="_短生存期分配器sl_alloc"><a class="link" href="#_短生存期分配器sl_alloc">12.2.9. 短生存期分配器：sl_alloc</a></h4>
 <div class="paragraph">
-<p>The driver allocator is used for ports, linked in drivers and NIFs.</p>
+<p>短生存期分配器用于预期短生存期的列表和缓冲区。短生存期数据的寿命可能比临时数据长。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_short_lived_allocator_sl_alloc"><a class="link" href="#_the_short_lived_allocator_sl_alloc">12.2.9. The short lived allocator: sl_alloc</a></h4>
+<h4 id="_长生存期分配器ll_alloc"><a class="link" href="#_长生存期分配器ll_alloc">12.2.10. 长生存期分配器：ll_alloc</a></h4>
 <div class="paragraph">
-<p>The short lived allocator is used for lists and buffers that are
-expected to be short lived. Short lived data can live longer than
-temporary data.</p>
+<p>长生存期分配程序用于长生存期数据，如原子、模块、fun 和长生存期表</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_long_lived_allocator_ll_alloc"><a class="link" href="#_the_long_lived_allocator_ll_alloc">12.2.10. The long lived allocator: ll_alloc</a></h4>
+<h4 id="_定长分配器fix_alloc"><a class="link" href="#_定长分配器fix_alloc">12.2.11. 定长分配器：fix_alloc</a></h4>
 <div class="paragraph">
-<p>The long lived allocator is used for long lived data, such
-as atoms, modules, funs and long lived tables</p>
+<p>定长分配器用于固定大小的对象，如 PCB、消息引用和其他一些对象。固定大小分配器默认使用 <em>address order best fit</em> 分配策略。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_the_fixed_size_allocator_fix_alloc"><a class="link" href="#_the_fixed_size_allocator_fix_alloc">12.2.11. The fixed size allocator: fix_alloc</a></h4>
+<h4 id="_标准分配器std_alloc"><a class="link" href="#_标准分配器std_alloc">12.2.12. 标准分配器：std_alloc</a></h4>
 <div class="paragraph">
-<p>The fixed allocator is used for objects of a fixed size, such as PCBs,
-message refs and a few others. The fixed size allocator uses the
-<em>address order best fit</em> allocation strategy by default.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_the_standard_allocator_std_alloc"><a class="link" href="#_the_standard_allocator_std_alloc">12.2.12. The standard allocator: std_alloc</a></h4>
-<div class="paragraph">
-<p>The standard allocator is used by the other types of data.
-(active_procs alloc_info_request arg_reg bif_timer_ll bits_buf bpd
-calls_buf db_heir_data db_heir_data db_named_table_entry dcache
-ddll_handle ddll_processes ddll_processes dist_entry dist_tab
-driver_lock ethread_standard fd_entry_buf fun_tab gc_info_request
-io_queue line_buf link_lh module_refs monitor_lh monitor_lh monitor_sh
-nlink_lh nlink_lh nlink_sh node_entry node_tab nodes_monitor
-port_data_heap port_lock port_report_exit port_specific_data proc_dict
-process_specific_data ptimer_ll re_heap reg_proc reg_tab
-sched_wall_time_request stack suspend_monitor thr_q_element thr_queue
-zlib )</p>
+<p>其他类型的数据使用标准分配器。( active_procs alloc_info_request arg_reg bif_timer_ll bits_buf bpd calls_buf db_heir_data db_heir_data db_named_table_entry dcache ddll_handle ddll_processes ddll_processes dist_entry dist_tab driver_lock ethread_standard fd_entry_buf fun_tab gc_info_request io_queue line_buf link_lh module_refs monitor_lh monitor_lh monitor_sh
+nlink_lh nlink_lh nlink_sh node_entry node_tab nodes_monitor port_data_heap port_lock port_report_exit port_specific_data proc_dict process_specific_data ptimer_ll re_heap reg_proc reg_tab sched_wall_time_request stack suspend_monitor thr_q_element thr_queue zlib )</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_todo_system_flags_for_memory"><a class="link" href="#_todo_system_flags_for_memory">12.3. TODO: system flags for memory</a></h3>
+<h3 id="_system_flags_for_memory原书未完成"><a class="link" href="#_system_flags_for_memory原书未完成">12.3. system flags for memory（原书未完成）</a></h3>
 <div class="paragraph">
-<p>TODO</p>
+<p>原书未完成</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_process_memory"><a class="link" href="#_process_memory">12.4. Process Memory</a></h3>
+<h3 id="_进程内存"><a class="link" href="#_进程内存">12.4. 进程内存</a></h3>
 <div class="paragraph">
-<p>As we saw in <a href="#CH-Processes">Chapter 3</a> a process is really just a number
-of memory areas, in this chapter we will look a bit closer at how
-the stack, the heap and the mailbox are managed.</p>
+<p>正如我们在 <a href="#CH-Processes">Chapter 3</a> 中看到的那样，进程实际上只是一些内存区域，在本章中，我们将更深入地研究如何管理栈、堆和邮箱。</p>
 </div>
 <div class="paragraph">
-<p>The default size of the stack and heap is 233 words. This default
-size can be changed globally when starting Erlang through the
-+h flag. You can also set the minimum heap size when starting
-a process with spawn_opt by setting min_heap_size.</p>
+<p>栈和堆的默认大小是 233 个字。在启动 Erlang 时，可以通过 +h 标志对默认大小进行全局更改。在使用 spawn_opt 启动进程时，还可以通过设置 min_heap_size 来设置最小堆大小。</p>
 </div>
 <div class="paragraph">
-<p>Erlang terms are tagged as we saw in <a href="#CH-TypeSystem">Chapter 4</a>, and when
-they are stored on the heap they are either cons cells or boxed
-objects.</p>
+<p>正如我们在 <a href="#CH-TypeSystem">Chapter 4</a> 中看到的那样，Erlang 项式都是被标记的，当它们存储在堆上时，它们要么是 cons 单元 ( 列表单元 ) ，要么是装箱对象。</p>
 </div>
 <div class="sect3">
-<h4 id="_term_sharing"><a class="link" href="#_term_sharing">12.4.1. Term sharing</a></h4>
+<h4 id="_项式共享"><a class="link" href="#_项式共享">12.4.1. 项式共享</a></h4>
 <div class="paragraph">
-<p>Objects on the heap are passed by references within the context of one
-process. If you call one function with a tuple as an argument, then
-only a tagged reference to that tuple is passed to the called
-function. When you build new terms you will also only use references
-to sub terms.</p>
+<p>堆上的对象在一个进程的上下文中通过引用传递。如果使用元组作为参数调用一个函数，那么只有对该元组的标记引用传递给被调用的函数。在构建新项式时，将只使用对子项式的引用。</p>
 </div>
 <div class="paragraph">
-<p>For example if you have the string "hello" (which is the same as this
-list of integers: [104,101,108,108,111]) you would get a stack layout
-similar to:</p>
+<p>例如，如果你有字符串 “hello” (它与这个整数列表相同：[104,101,108,108,111])，你会得到一个类似于:</p>
 </div>
 <div id="fig-list_layout" class="imageblock">
 <div class="content">
@@ -7015,8 +6822,7 @@ similar to:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>If you then create a tuple with two instances of the list, all that is repeated is
-the tagged pointer to the list: 00000000000000000000000001000001. The code</p>
+<p>如果您随后创建了一个包含两个列表实例的元组，那么重复的内容就是指向该列表的带标签的指针：00000000000000000000000001000001。代码</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7025,9 +6831,7 @@ T = {L, L}.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>would result in a memory layout as seen below. That is,
-a boxed header saying that this is a tuple of size 2 and then two
-pointers to the same list.</p>
+<p>将导致如下所示的内存布局。也就是说，一个装箱头表示这是一个大小为 2 的元组，然后是两个指向同一个列表的指针。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7038,11 +6842,7 @@ pointers to the same list.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This is nice, since it is cheap to do and uses very little space. But if
-you send the tuple to another process or do any other type of IO, or any
-operations which results in something called a <em>deep copy</em>, then the
-data structure is expanded. So if we send out tuple T to another process
-P2 (P2 ! T) then the heap of T2 will look like in:</p>
+<p>这样做很好，因为这样做很节省，而且只占用很少的空间。但如果您将元组发送到另一个进程或执行任何其他类型的IO，或任何导致所谓深拷贝 ( <em>deep copy</em>) 的操作，则数据结构将被扩展。因此，如果我们将元组 T 发送到另一个进程 P2 ( P2 ! T ) 则 T2 的堆为:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -8062,19 +7862,53 @@ linked in driver.</p>
 <div class="sect1">
 <h2 id="CH-Distribution"><a class="link" href="#CH-Distribution">15. Distribution（原书未完成）</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>原书未完成</p>
 </div>
-</div>
-<div class="sect1">
-<h2 id="CH-C"><a class="link" href="#CH-C">16. Interfacing C&#8201;&#8212;&#8201;BIFs NIFs and Linked in Drivers</a></h2>
-<div class="sectionbody">
-
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Native"><a class="link" href="#CH-Native">17. Native Code</a></h2>
+<h2 id="CH-C"><a class="link" href="#CH-C">16. Interfacing C, BIFs NIFs and Linked in Drivers (原书未完成)</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>原书未完成，以下是内容提要：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>What is a bif</p>
+</li>
+<li>
+<p>difference between bifs and operators and library functions</p>
+</li>
+<li>
+<p>how are bifs implemented</p>
+</li>
+<li>
+<p>What is a nif</p>
+</li>
+<li>
+<p>how to implement a nif</p>
+</li>
+<li>
+<p>What is a linked in driver</p>
+</li>
+<li>
+<p>how to implement a linked in driver</p>
+</li>
+<li>
+<p>Why you shouldn&#8217;t do this.</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="CH-Native"><a class="link" href="#CH-Native">17. Native Code（原书未完成）</a></h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
 </div>
 </div>
 <h1 id="P-Running" class="sect0"><a class="link" href="#P-Running">II: 运行 ERTS</a></h1>
@@ -13524,7 +13358,7 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-12 10:11:00 +0800
+Last updated 2020-10-14 20:28:03 +0800
 </div>
 </div>
 <style>
