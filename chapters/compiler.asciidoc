@@ -250,7 +250,7 @@ include::../code/compiler_chapter/src/world.S[]
 transforms），Core Erlang，BEAM 码等不同方法你可以做什么，以及它们之间是如何相互依赖的。
 在调优 Erlang 代码时，通过查看优化前后的生成代码，来了解何种优化在何时，以何种方式起作用是非常有效的。
 
-==== 编译器 Pass: Erlang 预处理器 (epp)
+==== 编译器 Pass：Erlang 预处理器 (epp)
 
 编译过程起始于一个组合的分词器（或者扫描器）和预处理器。预处理器驱动分词器运行。这意味着宏被以符号的方式展开，而不纯粹是字符串替换（不像是 m4 或 cpp）。你不能够使用 Erlang 宏来定义自己的语法，宏像一个与周围字符独立的符号一样被展开。所以你也不能将一个宏与（它前后连续的）字符连接为新的符号：
 
@@ -491,21 +491,21 @@ str_to_bin(String, Line) ->
 
 由 +parse_transform/2+ 产生的 AST 必须是合法的 Erlang 代码，除非是你做多个解析转换。（译注：指多次解析转换的中间结果AST），代码的合法性检查是在下边的编译 pass 进行的。
 
-==== 编译器 Pass: Linter
+==== 编译器 Pass：Linter
 
 Linter 为句法正确但是不好的代码生成警告，类似"export_all flag enabled"
 
-==== 编译器 Pass: 保存抽象语法树（AST）
+==== 编译器 Pass：保存抽象语法树（AST）
 
 为了启用对某模块的调试，您可以“调试编译”该模块，即将选项 +debug_info+ 传递给编译器。抽象语法树将被“Save AST”保存，直到编译结束时，它将被写入.beam文件。
 
 重要的是，要注意代码是在任意优化被应用前保存的，所以如果编译器的优化 pass 有 bug，你将在调试器中运行代码时得到不同的行为。如果你正在实现你自己的编译器这可能会把你搞糊涂。
 
-==== 编译器 Pass: Expand
+==== 编译器 Pass：Expand
 
 在扩展（Expand）阶段，诸如 record 等源 erlang 结构将被扩展为底层的 erlang 结构。编译器选项 "+-compile(...)+" 也会被 _扩展_ 为元数据。
 
-==== 编译器 Pass: Core Erlang
+==== 编译器 Pass：Core Erlang
 
 Core Erlang 是一种适用于编译器优化的严格函数式语言。通过减少表示同一操作的方法的数量，使代码转换更容易。其中一种方法是通过引入 let 和 letrec 表达式来使作用域更明确。
 
@@ -525,17 +525,17 @@ ok
 
 注意 +.core+ 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加 +binary+ 选项。
 
-==== 编译器 Pass: Kernel Erlang
+==== 编译器 Pass：Kernel Erlang
 
 Kernel Erlang 是 Core Erlang 的一个扁平版本，它们有一些不同之处。例如，每个变量在一个完整的函数作用域中都是唯一的。模式匹配被编译成更原始的操作。
 
-==== 编译器 Pass: BEAM 代码
+==== 编译器 Pass：BEAM 代码
 
 正常编译的最后一步是外部 beam 代码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。
 
 BEAM 码在 xref:CH-Instructions[] 和 xref:AP-Instructions[] 中有详细描述。
 
-==== 编译器 Pass: 本地（Native）码
+==== 编译器 Pass：原生 (Native) 代码
 
 如果您在编译中添加了 +native+ 标志，并且您有一个启用了 HiPE (High Performance *Erlang* ，译者注：类似 JIT )  的运行时系统，那么编译器将为您的模块生成本机代码，并将本地代码与 beam 代码一起存储在 +.beam+ 文件中。
 
