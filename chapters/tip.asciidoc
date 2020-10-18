@@ -1,0 +1,20 @@
+[[CHChinese_Version]]
+
+== 中文版前言
+
+本书来自 Github，项目版权协议为：CC-BY-4.0 License。
+
+书籍的 Github Repository 为：https://github.com/happi/theBeamBook
+
+中文翻译工程，翻译人：杜宇（hitdavid），诚邀共同翻译者，可以邮件到 hitdavid@gmail.com 或者其他方式联系我。
+
+最新翻译版本预览：https://hitdavid.github.io/theBeamBook/[中文网页版]
+
+因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠，以下附比特币收款地址和支付宝二维码，谢谢。
+
+BitCoin Address: 12JdwAdCZugkrtiPwCGaT4qetbixvZM4Dg
+
+支付宝二维码:
+
+image::alipay.jpg[]
+
