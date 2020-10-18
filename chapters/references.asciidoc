@@ -1,5 +1,5 @@
 [[BIB-References]]
-[bibliography]
+
 == References
 
 - [[[warren]]] D. H. D. Warren. An Abstract Prolog Instruction Set:
