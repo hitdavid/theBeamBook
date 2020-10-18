@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh_CN">
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -663,7 +663,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_内存分配器框架alloc_util">12.2.3. 内存分配器框架：alloc_util</a></li>
 <li><a href="#_临时分配器temp_alloc">12.2.4. 临时分配器：temp_alloc</a></li>
 <li><a href="#_堆分配器eheap_alloc">12.2.5. 堆分配器：eheap_alloc</a></li>
-<li><a href="#_binary_分配器binary_alloc">12.2.6. Binary  分配器：binary_alloc</a></li>
+<li><a href="#_二进制数据分配器binary_alloc">12.2.6. 二进制数据分配器：binary_alloc</a></li>
 <li><a href="#_ets_分配器ets_alloc">12.2.7. ETS 分配器：ets_alloc</a></li>
 <li><a href="#_驱动_driver_分配器driver_alloc">12.2.8. 驱动 (Driver) 分配器：driver_alloc</a></li>
 <li><a href="#_短生存期分配器sl_alloc">12.2.9. 短生存期分配器：sl_alloc</a></li>
@@ -676,14 +676,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_进程内存">12.4. 进程内存</a>
 <ul class="sectlevel3">
 <li><a href="#_项式共享">12.4.1. 项式共享</a></li>
-<li><a href="#_message_passing">12.4.2. Message passing</a></li>
-<li><a href="#SS-Binaries">12.4.3. Binaries</a></li>
-<li><a href="#_garbage_collection">12.4.4. Garbage Collection</a></li>
+<li><a href="#_消息传递_2">12.4.2. 消息传递</a></li>
+<li><a href="#SS-Binaries">12.4.3. 二进制数据</a></li>
+<li><a href="#_垃圾收集">12.4.4. 垃圾收集</a></li>
 </ul>
 </li>
-<li><a href="#_other_interesting_memory_areas">12.5. Other interesting memory areas</a>
+<li><a href="#_其他有趣的内存区域原书未完成">12.5. 其他有趣的内存区域（原书未完成）</a>
 <ul class="sectlevel3">
-<li><a href="#_the_atom_table">12.5.1. The atom table.</a></li>
+<li><a href="#_原子表原书未完成">12.5.1. 原子表（原书未完成）</a></li>
+<li><a href="#_代码_原书未完成">12.5.2. 代码 （原书未完成）</a></li>
+<li><a href="#_常量原书未完成">12.5.3. 常量（原书未完成）</a></li>
 </ul>
 </li>
 </ul>
@@ -888,7 +890,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#AP-listings">Appendix C: 全部代码清单</a></li>
-<li><a href="#BIB-References">References</a></li>
+<li><a href="#BIB-References">22. References</a></li>
 </ul>
 </div>
 </div>
@@ -965,7 +967,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="paragraph">
-<p>Erlang VM 实现了许多 Erlang 内建函数 (<em>built in functions</em> 或 <em>BIFs</em>)，这样做有效率方面的原因，例如 lists:append 的实现（它也可以在 Erlang 实现），同时也有在实现一些底层功能时， Erlang 本身较难实现的原因，例如 list_to_atom。</p>
+<p>Erlang VM 实现了许多 Erlang 内建函数 (<em>built in functions</em> 或 <em>BIFs</em>)，这样做有效率方面的原因，例如 <code>lists:append</code> 的实现（它也可以在 Erlang 实现），同时也有在实现一些底层功能时， Erlang 本身较难实现的原因，例如 <code>list_to_atom</code>。</p>
 </div>
 <div class="paragraph">
 <p>从 Erlang/OTP R13B03 版本开始，你也可以使用 C 语言和 <em>Native Implemented Functions</em> (<em>NIF</em>) 接口来实现自己的函数实现。</p>
@@ -1263,7 +1265,7 @@ iex(3)&gt;</pre>
 <div class="sect3">
 <h4 id="_解释器和命令行接口"><a class="link" href="#_解释器和命令行接口">1.3.10. 解释器和命令行接口</a></h4>
 <div class="paragraph">
-<p>当你使用 erl 启动 Erlang 节点，可以得到一个命令行提示符。这就是 <em>Erlang read eval print loop</em> (REPL) 或者叫做 <em>command line
+<p>当你使用 <code>erl</code> 启动 Erlang 节点，可以得到一个命令行提示符。这就是 <em>Erlang read eval print loop</em> (REPL) 或者叫做 <em>command line
 interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 <div class="paragraph">
@@ -1297,7 +1299,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 <div class="sect3">
 <h4 id="_erjang"><a class="link" href="#_erjang">1.4.2. Erjang</a></h4>
 <div class="paragraph">
-<p>Erjang (链接: <a href="http://www.erjang.org" class="bare">http://www.erjang.org</a>，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载 .beam 文件后，将其重编译为 Java .class 文件。他与 BEAM 几乎 100% 二进制兼容。</p>
+<p>Erjang (链接: <a href="http://www.erjang.org" class="bare">http://www.erjang.org</a>，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载 <code>.beam</code> 文件后，将其重编译为 Java <code>.class</code> 文件。他与 BEAM 几乎 100% 二进制兼容。</p>
 </div>
 <div class="paragraph">
 <p>图 xref:the_erjang_stack 中可以看到 Erlang 的 Erjang 实现栈与 ERTS 的区别。需要注意的是，这个方案中 JVM 替代了 BEAM 作为虚拟机，Erjang 在虚拟机上使用 Java 实现 ERTS 提供的服务。</p>
@@ -1330,10 +1332,10 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 <div class="sect2">
 <h3 id="_编译_erlang"><a class="link" href="#_编译_erlang">2.1. 编译 Erlang</a></h3>
 <div class="paragraph">
-<p>Erlang 被从 .erl 格式文件的模块源代码，编译成二进制 .beam 文件</p>
+<p>Erlang 被从 <code>.erl</code> 格式文件的模块源代码，编译成二进制 <code>.beam</code> 文件</p>
 </div>
 <div class="paragraph">
-<p>编译器可以从操作系统终端，通过 erlc 启动：</p>
+<p>编译器可以从操作系统终端，通过 <code>erlc</code> 启动：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1341,7 +1343,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>编译器也可以在 Erlang 终端中，使用 c 或者调用  compile:file/{1,2} 来调用。</p>
+<p>编译器也可以在 Erlang 终端中，使用 <code>c</code> 或者调用  <code>compile:file/{1,2}</code> 来调用。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1357,10 +1359,10 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>compile:file 的第二个可选参数接受编译器选项 list。全部的可选参数清单可以在编译器模块的文档中找到，参见 <a href="http://www.erlang.org/doc/man/compile.html" class="bare">http://www.erlang.org/doc/man/compile.html</a> 。</p>
+<p><code>compile:file</code> 的第二个可选参数接受编译器选项 list。全部的可选参数清单可以在编译器模块的文档中找到，参见 <a href="http://www.erlang.org/doc/man/compile.html" class="bare">http://www.erlang.org/doc/man/compile.html</a> 。</p>
 </div>
 <div class="paragraph">
-<p>通常，编译器会将 Erlang 源代码从 .erl 格式文件，编译并写入到二进制 .beam 文件中。你也可以通过使用编译器的 binary 选项，将编译二进制结果作为Erlang 项式（Erlang term）直接输出。这个选项被重载以用来使用数据来返回中间格式结果，而不是将其写入文件。如果你期望编译器返回Core Erlang 代码，可以使用 [core, binary] 选项。</p>
+<p>通常，编译器会将 Erlang 源代码从 <code>.erl</code> 格式文件，编译并写入到二进制 <code>.beam</code> 文件中。你也可以通过使用编译器的 <code>binary</code> 选项，将编译二进制结果作为Erlang 项式（Erlang term）直接输出。这个选项被重载以用来使用数据来返回中间格式结果，而不是将其写入文件。如果你期望编译器返回Core Erlang 代码，可以使用 <code>[core, binary]</code> 选项。</p>
 </div>
 <div class="paragraph">
 <p>编译器的执行，包含由如图 <a href="#fig_compiler_passes">Figure 6</a> 中所示的若干“遍”（pass）。</p>
@@ -1372,7 +1374,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 <div class="title">Figure 6. Compiler Passes</div>
 </div>
 <div class="paragraph">
-<p>如果你想看到完整且最新的编译器的“遍”清单，可以在 Erlang 终端中运行 compile:options/0。当然，有关浏览器的最终信息来源来自于 <a href="https://github.com/erlang/otp/blob/maint/lib/compiler/src/compile.erl">compile.erl</a></p>
+<p>如果你想看到完整且最新的编译器的“遍”清单，可以在 Erlang 终端中运行 <code>compile:options/0</code>。当然，有关浏览器的最终信息来源来自于 <a href="https://github.com/erlang/otp/blob/maint/lib/compiler/src/compile.erl">compile.erl</a></p>
 </div>
 </div>
 <div class="sect2">
@@ -1432,7 +1434,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>如果此时使用 'P' 选项编译以得到解析后的文件，你会得到一个 "world.P" 文件。</p>
+<p>如果此时使用 <em>P</em> 选项编译以得到解析后的文件，你会得到一个 "world.P" 文件。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1442,7 +1444,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>在结果输出的 .P 文件中，你可以看到应用预处理器（解析转换）处理后的美化格式版本的代码：</p>
+<p>在结果输出的 <code>.P</code> 文件中，你可以看到应用预处理器（解析转换）处理后的美化格式版本的代码：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1461,7 +1463,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>要查看所有的源代码转换执行完毕后代码的样子，可以使用 'E' 选项。</p>
+<p>要查看所有的源代码转换执行完毕后代码的样子，可以使用 <code><em>E</em></code> 选项。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1471,7 +1473,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>这将输出一个 .E 文件，其中所有的编译器指令都被移除，并且内建函数 module_info/{1,2} 也被加入到源代码中。</p>
+<p>这将输出一个 <code>.E</code> 文件，其中所有的编译器指令都被移除，并且内建函数 <code>module_info/{1,2}</code> 也被加入到源代码中。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1494,7 +1496,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>我们将在观察 <a href="#SEC-parse_transform">Section 2.3.2</a> 解析转换时，使用 'P' 和 'E' 选项，但首先我们先来看看汇编器生成的 BEAM 码。使用编译器选项 'S' 可以得到一个内容为源代码对应的每条 BEAM 指令的 Erlang 项式的 .S 文件。</p>
+<p>我们将在观察 <a href="#SEC-parse_transform">Section 2.3.2</a> 解析转换时，使用 <em>P</em> 和 <em>E</em> 选项，但首先我们先来看看汇编器生成的 BEAM 码。使用编译器选项 <code><em>S</em></code> 可以得到一个内容为源代码对应的每条 BEAM 指令的 Erlang 项式的 <code>.S</code> 文件。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1504,7 +1506,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>world.S 文件看起来是这样的：</p>
+<p><code>world.S</code> 文件看起来是这样的：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1556,11 +1558,11 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>汇编码大部分按照原始的源代码格式布局。首条指令定义了代码模块的名称。注释中提到的版本(%% version = 0) 是 beam 操作码格式的版本(由 beam_opcodes 给出的 beam_opcodes:format_number/0)
+<p>汇编码大部分按照原始的源代码格式布局。首条指令定义了代码模块的名称。注释中提到的版本(<code>%% version = 0</code>) 是 beam 操作码格式的版本(由 beam_opcodes 给出的 <code>beam_opcodes:format_number/0</code>)
 接下来是一个导出清单以及编译器属性（本例中没有），这和 Erlang 源码模块中的差不多。
-第一条像是 beam 指令的是 {labels, 7} ，它告诉虚拟机代码中共有7个标签（label），使得对代码的一遍处理即可为所有的标签分配空间。
+第一条像是 beam 指令的是 <code>{labels, 7}</code> ，它告诉虚拟机代码中共有7个标签（label），使得对代码的一遍处理即可为所有的标签分配空间。
 接下来是每个函数的实际代码。第一条指令给出了函数名称，标签数表示的参数个数和入口点。
-你可以使用 'S' 选项来尽最大努力使你理解 BEAM 如何工作，我们也将在后续章节这么做。当你开发自己的编程语言，通过Core  Erlang 编译为 BEAM 码时，能看到生成的代码也是非常有价值的。</p>
+你可以使用 <code><em>S</em></code> 选项来尽最大努力使你理解 BEAM 如何工作，我们也将在后续章节这么做。当你开发自己的编程语言，通过Core  Erlang 编译为 BEAM 码时，能看到生成的代码也是非常有价值的。</p>
 </div>
 </div>
 <div class="sect2">
@@ -1638,7 +1640,7 @@ transformations and no support is offered for problems encountered.
 <p>这意味着您不能从根本上改变 Erlang 句法，但是您可以更改语义。举个例子，假如你想在 Erlang 代码中直接写json代码，你也很幸运，因为 json 和 Erlang 的标记是基本上是一样的。另外，由于 Erlang 编译器在解析转换后的 linter pass 才会做大部分的完整性检查工作，所以，可以允许一个不代表有效Erlang的 AST。</p>
 </div>
 <div class="paragraph">
-<p>要编写解析转换，您需要编写一个Erlang模块(让我们称它为_p_)，它导出函数 parse_transform/2。如果这个模块(我们称其为_m_)的编译过程包含 {parse_transform p} 编译器选项，这个函数就会在解析转换 pass 期间被编译器调用。函数的参数是模块 m 的 AST 和调用的编译器时的编译器选项。</p>
+<p>要编写解析转换，您需要编写一个Erlang模块(让我们称它为_p_)，它导出函数 <code>parse_transform/2</code>。如果这个模块(我们称其为_m_)的编译过程包含 <code>{parse_transform p}</code> 编译器选项，这个函数就会在解析转换 pass 期间被编译器调用。函数的参数是模块 m 的 AST 和调用的编译器时的编译器选项。</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1658,10 +1660,10 @@ transformations and no support is offered for problems encountered.
 </table>
 </div>
 <div class="paragraph">
-<p>抽象格式的文档确实有些密集，我们很难通过阅读来掌握抽象格式文档。我鼓励您使用句法工具（<em>syntax_tools</em>），特别是 erl_syntax_lib 用于处理AST上的任何重要工作。</p>
+<p>抽象格式的文档确实有些密集，我们很难通过阅读来掌握抽象格式文档。我鼓励您使用句法工具（<em>syntax_tools</em>），特别是 <code>erl_syntax_lib</code> 用于处理AST上的任何重要工作。</p>
 </div>
 <div class="paragraph">
-<p>在这里，为帮助我们理解，我们将开发一个简单的解析转换例子来理解AST。我们将直接在 AST 上工作，使用老的可靠的 io:format 方法来代替句法工具（syntax_tools）。</p>
+<p>在这里，为帮助我们理解，我们将开发一个简单的解析转换例子来理解AST。我们将直接在 AST 上工作，使用老的可靠的 <code>io:format</code> 方法来代替句法工具（syntax_tools）。</p>
 </div>
 <div class="paragraph">
 <p>首先，我们创建一个可以编译 json_test.erl 的例子：</p>
@@ -1686,7 +1688,7 @@ transformations and no support is offered for problems encountered.
 </div>
 </div>
 <div class="paragraph">
-<p>然后，我们创建一个最小化的解析转换模块 json_parser.erl ：</p>
+<p>然后，我们创建一个最小化的解析转换模块 <code>json_parser.erl</code> ：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1739,7 +1741,7 @@ error</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>因为模块包含无效的 Erlang 语法，故编译 json_test 失败，但是你可以看到AST是什么样子的。现在我们可以编写一些函数来遍历 AST 并将 json 代码回写到 Erlang 代码中。<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
+<p>因为模块包含无效的 Erlang 语法，故编译 <code>json_test</code> 失败，但是你可以看到AST是什么样子的。现在我们可以编写一些函数来遍历 AST 并将 json 代码回写到 Erlang 代码中。<sup class="footnote">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1827,7 +1829,7 @@ error</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>现在，我们可以无错的将 json_test 编译通过了：</p>
+<p>现在，我们可以无错的将 <code>json_test</code> 编译通过了：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1846,7 +1848,7 @@ error</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>由 parse_transform/2 产生的 AST 必须是合法的 Erlang 代码，除非是你做多个解析转换。（译注：指多次解析转换的中间结果AST），代码的合法性检查是在下边的编译 pass 进行的。</p>
+<p>由 <code>parse_transform/2</code> 产生的 AST 必须是合法的 Erlang 代码，除非是你做多个解析转换。（译注：指多次解析转换的中间结果AST），代码的合法性检查是在下边的编译 pass 进行的。</p>
 </div>
 </div>
 <div class="sect3">
@@ -1858,7 +1860,7 @@ error</pre>
 <div class="sect3">
 <h4 id="_编译器_pass保存抽象语法树ast"><a class="link" href="#_编译器_pass保存抽象语法树ast">2.3.4. 编译器 Pass：保存抽象语法树（AST）</a></h4>
 <div class="paragraph">
-<p>为了启用对某模块的调试，您可以“调试编译”该模块，即将选项 debug_info 传递给编译器。抽象语法树将被“Save AST”保存，直到编译结束时，它将被写入.beam文件。</p>
+<p>为了启用对某模块的调试，您可以“调试编译”该模块，即将选项 <code>debug_info</code> 传递给编译器。抽象语法树将被“Save AST”保存，直到编译结束时，它将被写入.beam文件。</p>
 </div>
 <div class="paragraph">
 <p>重要的是，要注意代码是在任意优化被应用前保存的，所以如果编译器的优化 pass 有 bug，你将在调试器中运行代码时得到不同的行为。如果你正在实现你自己的编译器这可能会把你搞糊涂。</p>
@@ -1867,7 +1869,7 @@ error</pre>
 <div class="sect3">
 <h4 id="_编译器_passexpand"><a class="link" href="#_编译器_passexpand">2.3.5. 编译器 Pass：Expand</a></h4>
 <div class="paragraph">
-<p>在扩展（Expand）阶段，诸如 record 等源 erlang 结构将被扩展为底层的 erlang 结构。编译器选项 "-compile(...)" 也会被 <em>扩展</em> 为元数据。</p>
+<p>在扩展（Expand）阶段，诸如 record 等源 erlang 结构将被扩展为底层的 erlang 结构。编译器选项 "<code>-compile(&#8230;&#8203;)</code>" 也会被 <em>扩展</em> 为元数据。</p>
 </div>
 </div>
 <div class="sect3">
@@ -1894,7 +1896,7 @@ ok
 </div>
 </div>
 <div class="paragraph">
-<p>注意 .core 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加 binary 选项。</p>
+<p>注意 <code>.core</code> 文件是用人类可读的 core 格式编写的文本文件。要获得作为 Erlang 项式的核心程序，可以在编译中添加 <code>binary</code> 选项。</p>
 </div>
 </div>
 <div class="sect3">
@@ -1915,7 +1917,7 @@ ok
 <div class="sect3">
 <h4 id="_编译器_pass原生_native_代码"><a class="link" href="#_编译器_pass原生_native_代码">2.3.9. 编译器 Pass：原生 (Native) 代码</a></h4>
 <div class="paragraph">
-<p>如果您在编译中添加了 native 标志，并且您有一个启用了 HiPE (High Performance <strong>Erlang</strong> ，译者注：类似 JIT )  的运行时系统，那么编译器将为您的模块生成本机代码，并将本地代码与 beam 代码一起存储在 .beam 文件中。</p>
+<p>如果您在编译中添加了 <code>native</code> 标志，并且您有一个启用了 HiPE (High Performance <strong>Erlang</strong> ，译者注：类似 JIT )  的运行时系统，那么编译器将为您的模块生成本机代码，并将本地代码与 beam 代码一起存储在 <code>.beam</code> 文件中。</p>
 </div>
 </div>
 </div>
@@ -1930,7 +1932,7 @@ ok
 <div class="sect3">
 <h4 id="_leex"><a class="link" href="#_leex">2.4.1. Leex</a></h4>
 <div class="paragraph">
-<p>Leex是Erlang 词法分析器生成器。词法分析器生成器从定义文件 xrl 获取 DFA （译注，DFA 是 Deterministic Finite Automaton 的简称，形式语言术语，译为 <em>确定有限自动机</em>）的描述，并生成一个与 DFA 描述的符号相匹配 Erlang 程序。</p>
+<p>Leex是Erlang 词法分析器生成器。词法分析器生成器从定义文件 <code>xrl</code> 获取 DFA （译注，DFA 是 Deterministic Finite Automaton 的简称，形式语言术语，译为 <em>确定有限自动机</em>）的描述，并生成一个与 DFA 描述的符号相匹配 Erlang 程序。</p>
 </div>
 <div class="paragraph">
 <p>关于如何为分词器编写 DFA 定义的细节已经超出了本书的范围。要得到详细的解释，我推荐 “龙书”。（是指 Aho, Sethi 和 Ullman合著的 《Compiler》)。其他好的资源包括激发了 leex 灵感的  “flex” 程序的手册，以及 leex 文档本身。如果你已经安装了 flex，你可以通过输入以下命令来阅读完整的手册：</p>
@@ -3205,7 +3207,7 @@ ok</code></pre>
 <p>从 Erlang 18 开始，当比较两个 Map 的顺序时，它们的比较如下：如果一个 Map 的元素少于另一个，则认为它更小。否则，按项顺序比较键，即认为所有整数都比所有浮点数小。如果所有的键都是相同的，那么每个值对 (按键的顺序) 将进行算术比较，即首先将它们转换为相同的精度。</p>
 </div>
 <div class="paragraph">
-<p>当比较相等时也是如此，因此 #{1 =&gt; 1.0}== #{1 =&gt; 1}，但是 #{1.0 =&gt; 1}/= #{1 =&gt; 1}。</p>
+<p>当比较相等时也是如此，因此 <code>#{1 &#8658; 1.0}== #{1 &#8658; 1}，但是 #{1.0 &#8658; 1}/= #{1 &#8658; 1}</code>。</p>
 </div>
 <div class="paragraph">
 <p>在 Erlang 18 之前的版本，key 的比较也是算术比较。</p>
@@ -3288,7 +3290,7 @@ ok</code></pre>
 <p>在 ERTS 中有两种类型的整数：小整数和大整数。小整数使用一个机器字减去四个标签位，即在 32位机和 64 位机上分别对应 28 位或 60 位。另一方面，大整数可以根据需要大小扩展 ( 仅受堆空间大小的限制 )，并作为装箱对象存储在堆中。</p>
 </div>
 <div class="paragraph">
-<p>小整数的所有 4 个标记位为 1，仿真器可以在进行整数运算时进行有效的测试，以查看两个参数是否都是即时类型的。 (is_both_small(x,y) 被定义为 (x &amp; y &amp; 1111) == 1111).</p>
+<p>小整数的所有 4 个标记位为 1，仿真器可以在进行整数运算时进行有效的测试，以查看两个参数是否都是即时类型的。 (<code>is_both_small(x,y)</code> 被定义为 <code>(x &amp; y &amp; 1111) == 1111</code>).</p>
 </div>
 <div class="paragraph">
 <p>Immediate 2 的标签被进一步划分如下:</p>
@@ -3330,7 +3332,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>由于 len 和 ord0 字段，只要两个原子不以相同的四个字母开头，它们的顺序可以高效地进行比较。</p>
+<p>由于 <code>len</code> 和 <code>ord0</code> 字段，只要两个原子不以相同的四个字母开头，它们的顺序可以高效地进行比较。</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -3356,7 +3358,7 @@ ok</code></pre>
 <p>Catch 即时类型只在堆栈上使用。它包含一个间接的指针，指向代码中的接续点(continuation point)，在异常发生后执行应该从接续点继续开始。在 <a href="#CH-Calls">Chapter 8</a> 中有更多的内容。</p>
 </div>
 <div class="paragraph">
-<p>Nil 标记用于空列表( Nil 或 [] )。机器字的其余部分都被 1 填充。</p>
+<p>Nil 标记用于空列表( Nil 或 <code>[]</code> )。机器字的其余部分都被 1 填充。</p>
 </div>
 </div>
 <div class="sect3">
@@ -3377,7 +3379,7 @@ ok</code></pre>
 <div class="title">Figure 19. Representation of the string "hello" on a 32 bit machine.</div>
 </div>
 <div class="paragraph">
-<p>所有其他装箱的项式的主标签都以 Header 00 开头。标头字使用 4 位标头标记和 2 位主标头标记(00)，它还具有一个 arity域，用来表示装箱类型的变量使用了多少个字存储。在32位计算机上，它看起来是这样的：aaaaaaaaaaaaaaaaaaaaaatttt00。</p>
+<p>所有其他装箱的项式的主标签都以 Header 00 开头。标头字使用 4 位标头标记和 2 位主标头标记(00)，它还具有一个 arity域，用来表示装箱类型的变量使用了多少个字存储。在32位计算机上，它看起来是这样的：<code>aaaaaaaaaaaaaaaaaaaaaatttt00</code>。</p>
 </div>
 <div class="paragraph">
 <p>标签如下：</p>
@@ -3503,7 +3505,7 @@ ok</code></pre>
 <p>如果一个整数不能装入小整数 (字长减 4 位) 空间，它将以 “bignums” (或者叫任意精度整数) 的形式存储在堆中。bignum 在内存中有一个 header，后面跟着许多编码的字。header 中 bignum 标记的符号部分 (<code>s</code>) 对数字的符号进行编码(对于正数，s=0，对于负数，s=1)。</p>
 </div>
 <div class="paragraph">
-<p>引用是一个“唯一的”( <em>"unique"</em>) 项式，通常用于标记消息，以便实现进程邮箱上的通道。引用被实现为 82 位的计数器。在调用  make_ref/0  9671406556917033397649407 次后，计数器将折返并再次以 ref 0 重新开始。在程序生命周期内，你需要一个非常快的机器来执行那么多次 make_ref 调用。重新启动该节点后 (在这种情况下，它也将再次从0开始) 所有旧的本地 refs 都会消失。如果您将 pid 发送到另一个节点，它将成为一个 external ref，见下面描述：</p>
+<p>引用是一个“唯一的”( <em>"unique"</em>) 项式，通常用于标记消息，以便实现进程邮箱上的通道。引用被实现为 82 位的计数器。在调用  <code>make_ref/0</code>  9671406556917033397649407 次后，计数器将折返并再次以 ref 0 重新开始。在程序生命周期内，你需要一个非常快的机器来执行那么多次 <code>make_ref</code> 调用。重新启动该节点后 (在这种情况下，它也将再次从0开始) 所有旧的本地 refs 都会消失。如果您将 pid 发送到另一个节点，它将成为一个 external ref，见下面描述：</p>
 </div>
 <div class="paragraph">
 <p>在32位系统上，local ref 在堆上占用 4 个 32 位字长。在 64 位系统上，ref 在堆上占用 3 个 64 位字长。</p>
@@ -3581,7 +3583,7 @@ add</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>此代码可以直接从表达式的解析树生成。通过使用 Erlang 表达式和 <a href="https://erlang.org/doc/man/erl_scan.html">erl_scan</a>  和 <a href="https://erlang.org/doc/man/erl_parse.html">erl_parse</a> 模块，我们可以构建世界上最简单的编译器。</p>
+<p>此代码可以直接从表达式的解析树生成。通过使用 Erlang 表达式和 <a href="https://erlang.org/doc/man/erl_scan.html"><code>erl_scan</code></a>  和 <a href="https://erlang.org/doc/man/erl_parse.html"><code>erl_parse</code></a> 模块，我们可以构建世界上最简单的编译器。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3798,7 +3800,7 @@ add</pre>
 <p>你看，用  C 语言写的虚拟机不需要非常复杂。这台机器只是一个循环，通过查看指令指针 ( <em>instruction pointer</em> , <code>ip</code>) 指向的值来检查每条指令的字节码。</p>
 </div>
 <div class="paragraph">
-<p>对于每个字节码指令，它将通过指令字节码分支跳转，跳到对应指令的 case 上执行指令。这需要对指令进行解码，然后跳转到正确的代码上。如果我们看一下vsm.c (gcc -S vsm.c) 的汇编指令，我们可以看到解码器的内部循环：</p>
+<p>对于每个字节码指令，它将通过指令字节码分支跳转，跳到对应指令的 case 上执行指令。这需要对指令进行解码，然后跳转到正确的代码上。如果我们看一下vsm.c (<code>gcc -S vsm.c</code>) 的汇编指令，我们可以看到解码器的内部循环：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3980,7 +3982,7 @@ void stop() { running = 0; }</code></pre>
 <p>这段代码首先将函数调用  (<code>x0</code>)  的返回值保存在一个新的寄存器 (<code>x1</code>) 中。然后，它将调用者保存寄存器 (<code>y0</code>)  移动到第一个参数寄存器 (<code>x0</code>)。最后，它将 x1 中保存的值移动到调用者保存寄存器 (<code>y0</code>) ，以便在下一个函数调用时依旧存活。</p>
 </div>
 <div class="paragraph">
-<p>假设我们要在 BEAM 中实现三条指令 move_xx, move_yx, 和 move_xy  ( 这些指令在 BEAM 中不存在，我们只是用它们来演示这个例子)：</p>
+<p>假设我们要在 BEAM 中实现三条指令 <code>move_xx</code>, <code>move_yx</code>, 和 <code>move_xy</code>  ( 这些指令在 BEAM 中不存在，我们只是用它们来演示这个例子)：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4011,10 +4013,10 @@ void stop() { running = 0; }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>注意，<code>goto *</code> 中的星号并不意味着解引用，该表达式意味着跳转到地址指针，我们实际上应该将其写为 <code>goto*</code>。</p>
+<p>注意，<code>+goto *+</code> 中的星号并不意味着解引用，该表达式意味着跳转到地址指针，我们实际上应该将其写为 <code>+goto*+</code>。</p>
 </div>
 <div class="paragraph">
-<p>现在假设这些指令的编译后的 C 代码最终被加载在内存地址 0x3000、0x3100 和 0x3200中。当 BEAM 码被加载时，三个移动指令中的代码将被执行指令的内存地址所取代。假设代码 (<code>{move,{x,0},{x,1}}, {move,{y,0},{x,0}}, {move,{x,1},{y,0}}</code>) 被加载到地址 0x1000：</p>
+<p>现在假设这些指令的编译后的 C 代码最终被加载在内存地址 0x3000、0x3100 和 0x3200中。当 BEAM 码被加载时，三个移动指令中的代码将被执行指令的内存地址所取代。假设代码 (<code>+{move,{x,0},{x,1}}, {move,{y,0},{x,0}}, {move,{x,1},{y,0}}+</code>) 被加载到地址 0x1000：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4030,7 +4032,7 @@ void stop() { running = 0; }</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>地址 0x1000 处的一个"字"指向 move_xx 指令的实现。如果寄存器 <code>I</code> 包含指向 0x1000 的指令指针，那么分派器将会去获取  <code>*I</code>( 即 0x3000 ) 并跳转到那个地址。 (<code>goto* *I</code>)</p>
+<p>地址 0x1000 处的一个"字"指向 move_xx 指令的实现。如果寄存器 <code>I</code> 包含指向 0x1000 的指令指针，那么分派器将会去获取  <code>+*I+</code>( 即 0x3000 ) 并跳转到那个地址。 (<code>+goto* *I+</code>)</p>
 </div>
 <div class="paragraph">
 <p>在 <a href="#CH-Instructions">Chapter 7</a> 中，我们将更深入地研究一些真实的 BEAM 指令以及它们是如何实现的。</p>
@@ -4067,7 +4069,7 @@ void stop() { running = 0; }</code></pre>
 </td>
 <td class="content">
 <div class="paragraph">
-<p>有些 BIFs 只使用 1 个规约计数就可以运行很长时间，比如 term_to_binary 和 binary_to_term。请确保调用这些BIFs时，只使用小项式或 binary，否则可能会将调度器锁定很长一段时间。</p>
+<p>有些 BIFs 只使用 1 个规约计数就可以运行很长时间，比如 <code>term_to_binary</code> 和 <code>binary_to_term</code>。请确保调用这些BIFs时，只使用小项式或 binary，否则可能会将调度器锁定很长一段时间。</p>
 </div>
 <div class="paragraph">
 <p>另外，如果您编写自己的 NIFs，请确保它们能够产生让步，并与运行时间成比例地使规约值减少。</p>
@@ -4086,7 +4088,7 @@ void stop() { running = 0; }</code></pre>
 <p>Erlang 支持垃圾回收；作为 Erlang 程序员，您不需要执行显式内存管理。在 BEAM 层面，代码负责检查栈和堆溢出，并在栈和堆上分配足够的空间。</p>
 </div>
 <div class="paragraph">
-<p>BEAM 指令 <a href="https://github.com/erlang/otp/blob/OTP-23.0/lib/compiler/src/genop.tab#L118">test_heap</a> 将确保堆上有足够的空间满足需求。如果需要，该指令将调用垃圾收集器来回收堆上的空间。垃圾收集器将依次调用内存子系统的更底层实现来根据需要分配或释放内存。我们将在 <a href="#CH-Memory">Chapter 12</a> 中详细介绍内存管理和垃圾收集。</p>
+<p>BEAM 指令 <a href="https://github.com/erlang/otp/blob/OTP-23.0/lib/compiler/src/genop.tab#L118"><code>test_heap</code></a> 将确保堆上有足够的空间满足需求。如果需要，该指令将调用垃圾收集器来回收堆上的空间。垃圾收集器将依次调用内存子系统的更底层实现来根据需要分配或释放内存。我们将在 <a href="#CH-Memory">Chapter 12</a> 中详细介绍内存管理和垃圾收集。</p>
 </div>
 </div>
 <div class="sect2">
@@ -4823,16 +4825,16 @@ p-mod调用的技巧
 <div class="sect2">
 <h3 id="_指令定义"><a class="link" href="#_指令定义">7.1. 指令定义</a></h3>
 <div class="paragraph">
-<p>通用指令的名称和操作码在 lib/compiler/src/genop.tab 中被定义。</p>
+<p>通用指令的名称和操作码在 <code>lib/compiler/src/genop.tab</code> 中被定义。</p>
 </div>
 <div class="paragraph">
-<p>该文件包含 Beam 指令格式的版本号，该版本号也被写入 .beam 文件中。这个数字到目前为止没有改变，仍然是版本0。如果外部格式将以非向后兼容的方式更改，则此数字将更改。</p>
+<p>该文件包含 Beam 指令格式的版本号，该版本号也被写入 <code>.beam</code> 文件中。这个数字到目前为止没有改变，仍然是版本0。如果外部格式将以非向后兼容的方式更改，则此数字将更改。</p>
 </div>
 <div class="paragraph">
-<p>beam_makeops 是一个从 ops tabs 生成代码的 perl 脚本，它使用 genop.tab 作为输入。生成器在为编译器生成 Erlang 代码 (beam_opcodes.hrl 和 beam_opcodes.erl)的同时，也为仿真器生成C代码(TODO: 是什么？？)。</p>
+<p><code>beam_makeops</code> 是一个从 ops tabs 生成代码的 perl 脚本，它使用 genop.tab 作为输入。生成器在为编译器生成 Erlang 代码 (beam_opcodes.hrl 和 beam_opcodes.erl)的同时，也为仿真器生成C代码(TODO: 是什么？？)。</p>
 </div>
 <div class="paragraph">
-<p>文件中任何以 "#" 开头的行都是注释，会被 beam_makeops 忽略。该文件可以包含以下形式的定义，这些定义在perl脚本中转换为绑定：</p>
+<p>文件中任何以 "#" 开头的行都是注释，会被 <code>beam_makeops</code> 忽略。该文件可以包含以下形式的定义，这些定义在perl脚本中转换为绑定：</p>
 </div>
 <div class="literalblock">
 <div class="content">
@@ -4848,7 +4850,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>“Beam 格式编号”与”外部 Beam 格式“中的 instructionset 字段相同。只有在对指令集进行向后不兼容的更改时才会发生改变。</p>
+<p>“Beam 格式编号”与”外部 Beam 格式“中的 <code>instructionset</code> 字段相同。只有在对指令集进行向后不兼容的更改时才会发生改变。</p>
 </div>
 <div class="paragraph">
 <p>文件的主要内容是如下形式的操作码定义：</p>
@@ -4879,7 +4881,7 @@ p-mod调用的技巧
 <div class="sect2">
 <h3 id="_beam_代码清单"><a class="link" href="#_beam_代码清单">7.2. BEAM 代码清单</a></h3>
 <div class="paragraph">
-<p>正如我们在 <a href="#CH-Compiler">Chapter 2</a> 中看到的那样，我们可以向 Erlang 编译器提供选项 'S'，以人为和机器可读的格式(实际上是以 Erlang 项式的形式) 获取带有模块 BEAM 代码的 .S 文件。</p>
+<p>正如我们在 <a href="#CH-Compiler">Chapter 2</a> 中看到的那样，我们可以向 Erlang 编译器提供选项 <em>S</em>，以人为和机器可读的格式(实际上是以 Erlang 项式的形式) 获取带有模块 BEAM 代码的 <code>.S</code> 文件。</p>
 </div>
 <div class="paragraph">
 <p>给定文件 beamexample1.erl：</p>
@@ -4941,7 +4943,7 @@ p-mod调用的技巧
 <p>实际的 beam 代码中，除了 id/1 函数，我们也得到一些元指令。</p>
 </div>
 <div class="paragraph">
-<p>第一行 {module, beamexample1}. %% version = 0 告诉我们模块名称是"beamexample1"，指令集的版本号为 "0"。</p>
+<p>第一行 <code>{module, beamexample1}. %% version = 0</code> 告诉我们模块名称是"beamexample1"，指令集的版本号为 "0"。</p>
 </div>
 <div class="paragraph">
 <p>然后我们得到一个导出函数的列表 "id/1, module_info/0, module_info/1"。我们可以看到，编译器向代码中添加了两个自动生成的函数。这两个函数只是通用模块信息 BIF ( erlang:module_info/1 和 erlang:module_info/2)的分派器，其中添加了模块的名称作为第一个参数。</p>
@@ -4950,34 +4952,34 @@ p-mod调用的技巧
 <p>行 {attributes, []} 列出了所有已定义的编译器属性，在我们的例子中没有。</p>
 </div>
 <div class="paragraph">
-<p>然后我们知道在模块中只有不到 7 个标签，{labels, 7} 这一行使得一次加载代码变得很容易。</p>
+<p>然后我们知道在模块中只有不到 7 个标签，<code>{labels, 7}</code> 这一行使得一次加载代码变得很容易。</p>
 </div>
 <div class="paragraph">
-<p>最后一种元指令是格式为 {function, Name, Arity, StartLabel} 的 function 指令。正如我们在 id/1 函数中看到的，开始标签实际上是函数代码中的第二个标签。</p>
+<p>最后一种元指令是格式为 <code>{function, Name, Arity, StartLabel}</code> 的 <code>function</code> 指令。正如我们在 <code>id/1</code> 函数中看到的，开始标签实际上是函数代码中的第二个标签。</p>
 </div>
 <div class="paragraph">
-<p>{label, N} ”指令“ 实际上不是一条指令，它在加载时不会占用内存中的任何空间。它只是为代码中的位置提供一个本地名称(或数字)。每个 label 都标记块的开始，因为每个 label 都可能是跳转的潜在目标。</p>
+<p><code>{label, N}</code> ”指令“ 实际上不是一条指令，它在加载时不会占用内存中的任何空间。它只是为代码中的位置提供一个本地名称(或数字)。每个 label 都标记块的开始，因为每个 label 都可能是跳转的潜在目标。</p>
 </div>
 <div class="paragraph">
-<p>第一个标签 ( {label,1} )之后的前两个指令实际上是为报错生成的代码，它添加行号、模块、函数和参数目信息，并抛出异常。即 line 和 func_info 指令。</p>
+<p>第一个标签 ( <code>{label,1}</code> )之后的前两个指令实际上是为报错生成的代码，它添加行号、模块、函数和参数目信息，并抛出异常。即 <code>line</code> 和 <code>func_info</code> 指令。</p>
 </div>
 <div class="paragraph">
-<p>在 {label,2} 之后，指令 {test,is_integer,{f,1},[{x,0}]} 才是函数的”肉“。test 指令测试它的参数 (在末尾的列表中，在本例中是变量{x,0}) 是否满足测试，在本例中是一个整数测试 (is_integer)。如果测试成功，则执行下一条指令 ( return )。否则，函数将失败，并跳转到 label 1 ({f,1})，也就是说，在 label 1 处继续执行，此时会抛出函数子句异常。</p>
+<p>在 <code>{label,2}</code> 之后，指令 <code>{test,is_integer,{f,1},[{x,0}]}</code> 才是函数的”肉“。test 指令测试它的参数 (在末尾的列表中，在本例中是变量{x,0}) 是否满足测试，在本例中是一个整数测试 (is_integer)。如果测试成功，则执行下一条指令 ( <code>return</code> )。否则，函数将失败，并跳转到 label 1 (<code>{f,1}</code>)，也就是说，在 label 1 处继续执行，此时会抛出函数子句异常。</p>
 </div>
 <div class="paragraph">
-<p>文件中的其他两个函数是自动生成的。如果我们查看第二个函数，则指令 {move,{x,0},{x,1}} 将寄存器 x0 中的参数移动到第二个参数寄存器 x1 中。然后指令 {move,{atom,beamexample1},{x,0}} 将模块名 atom 移动到第一个参数寄存器 x0。最后对 erlang:get_module_info/2  进行一个尾部调用 ({call_ext_only,2,{extfunc,erlang,get_module_info,2}})。正如我们将在下一节中看到的，有几种不同的调用指令。</p>
+<p>文件中的其他两个函数是自动生成的。如果我们查看第二个函数，则指令 <code>{move,{x,0},{x,1}}</code> 将寄存器 x0 中的参数移动到第二个参数寄存器 x1 中。然后指令 <code>{move,{atom,beamexample1},{x,0}}</code> 将模块名 atom 移动到第一个参数寄存器 x0。最后对 <code>erlang:get_module_info/2</code>  进行一个尾部调用 (<code>{call_ext_only,2,{extfunc,erlang,get_module_info,2}}</code>)。正如我们将在下一节中看到的，有几种不同的调用指令。</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_调用_call"><a class="link" href="#_调用_call">7.3. 调用 (call)</a></h3>
 <div class="paragraph">
-<p>正如我们在 <a href="#CH-Calls">Chapter 8</a> 中看到的，Erlang 中有几种不同类型的调用。为了区分指令集中的本地调用和远程调用，远程调用的指令名中有 _ext。本地调用只有模块代码中的一个标签，而远程调用的目标形式为 {extfunc, Module, Function, Arity}。</p>
+<p>正如我们在 <a href="#CH-Calls">Chapter 8</a> 中看到的，Erlang 中有几种不同类型的调用。为了区分指令集中的本地调用和远程调用，远程调用的指令名中有 <code>_ext</code>。本地调用只有模块代码中的一个标签，而远程调用的目标形式为 <code>{extfunc, Module, Function, Arity}</code>。</p>
 </div>
 <div class="paragraph">
-<p>为了区分普通(堆栈构建)调用和尾部递归调用，后者的名称中有 _only 或者 _last 。带 _last 的变体还将尽可能多的释放由最后一个参数给出的堆栈槽。</p>
+<p>为了区分普通(堆栈构建)调用和尾部递归调用，后者的名称中有 <code>_only</code> 或者 <code>_last</code> 。带 <code>_last</code> 的变体还将尽可能多的释放由最后一个参数给出的堆栈槽。</p>
 </div>
 <div class="paragraph">
-<p>还有一个 call_fun Arity 指令，它调用寄存器  {x, Arity} 中存储的闭包。参数存储在 x0 到 {x, array -1} 中。</p>
+<p>还有一个 <code>call_fun Arity</code> 指令，它调用寄存器  {x, Arity} 中存储的闭包。参数存储在 x0 到 {x, array -1} 中。</p>
 </div>
 <div class="paragraph">
 <p>所有类型的调用指令的完整清单见 <a href="#AP-Instructions">Appendix B</a>。</p>
@@ -5005,7 +5007,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>在进入非叶子函数时，CP指针 ( <em>continuation pointer</em> ) 被保存在栈上，在退出时，它被从堆栈读回。这是由 allocate 和 deallocate 指令完成的，它们用于为当前指令设置和拆除栈帧。</p>
+<p>在进入非叶子函数时，CP指针 ( <em>continuation pointer</em> ) 被保存在栈上，在退出时，它被从堆栈读回。这是由 <code>allocate</code> 和 <code>deallocate</code> 指令完成的，它们用于为当前指令设置和拆除栈帧。</p>
 </div>
 <div class="paragraph">
 <p>叶函数的函数框架是这样的：</p>
@@ -5040,7 +5042,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>指令 allocate StackNeed Live 保存 CP 指针( continuation pointer ) ，并在栈上为 StackNeed 分配额外空间。如果在分配期间需要GC，则需要保存 Live 个 X 寄存器。例如，如果 Live 是 2，那么寄存器 X0 和 X1 将被保存。</p>
+<p>指令 <code>allocate StackNeed Live</code> 保存 CP 指针( continuation pointer ) ，并在栈上为 <code>StackNeed</code> 分配额外空间。如果在分配期间需要GC，则需要保存 <code>Live</code> 个 X 寄存器。例如，如果 <code>Live</code> 是 2，那么寄存器 X0 和 X1 将被保存。</p>
 </div>
 <div class="paragraph">
 <p>在栈上分配空间时，栈指针 (E) 将被减小。</p>
@@ -5058,7 +5060,7 @@ p-mod调用的技巧
 <div class="sect2">
 <h3 id="_消息传递"><a class="link" href="#_消息传递">7.5. 消息传递</a></h3>
 <div class="paragraph">
-<p>用 beam 码发送信息非常直接。你只需要使用 send 指令。注意尽管发送指令不带任何参数,它更像是一个函数调用。它假设参数 (目的地和消息) 在参数寄存器 X0 和 X1 中。消息也被从 X1 复制到 X0。</p>
+<p>用 beam 码发送信息非常直接。你只需要使用 <code>send</code> 指令。注意尽管发送指令不带任何参数,它更像是一个函数调用。它假设参数 (目的地和消息) 在参数寄存器 X0 和 X1 中。消息也被从 X1 复制到 X0。</p>
 </div>
 <div class="paragraph">
 <p>接收消息要稍微复杂一些，因为它既涉及带有模式匹配的选择性接收，又在函数体中引入一个 yield / resume 点。(还有一个特性可以使用 refs 最小化消息队列扫描，稍后将对此进行详细介绍。)</p>
@@ -5066,7 +5068,7 @@ p-mod调用的技巧
 <div class="sect3">
 <h4 id="_最小接收循环"><a class="link" href="#_最小接收循环">7.5.1. 最小接收循环</a></h4>
 <div class="paragraph">
-<p>一个最小的接收循环，它接受任何消息并且没有超时 (例如：receive _ -&gt; ok end )，在 BEAM 代码中是这样的：</p>
+<p>一个最小的接收循环，它接受任何消息并且没有超时 (例如：<code>receive _ &#8594; ok end</code> )，在 BEAM 代码中是这样的：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5083,19 +5085,19 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>loop_rec L2 x0 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。</p>
+<p><code>loop_rec L2 x0</code> 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。</p>
 </div>
 <div class="paragraph">
-<p>如果消息队列中有消息，则 loop_rec 指令还将该消息从 <em>m-buf</em>  移动到进程堆中。有关 m-buf 处理的详细信息，请参阅 <a href="#CH-Memory">Chapter 12</a> 和 <a href="#CH-Processes">Chapter 3</a>。</p>
+<p>如果消息队列中有消息，则 <code>loop_rec</code> 指令还将该消息从 <em>m-buf</em>  移动到进程堆中。有关 m-buf 处理的详细信息，请参阅 <a href="#CH-Memory">Chapter 12</a> 和 <a href="#CH-Processes">Chapter 3</a>。</p>
 </div>
 <div class="paragraph">
-<p>对于像 receive _ -&gt; ok end 这样的代码，我们接受任何消息，且不需要模式匹配，我们只需要执行一个  remove_message 来从消息队列中将本消息与下一条消息分离。(它还消除了任何超时，稍后将详细介绍。)</p>
+<p>对于像 <code>receive _ &#8594; ok end</code> 这样的代码，我们接受任何消息，且不需要模式匹配，我们只需要执行一个  <code>remove_message</code> 来从消息队列中将本消息与下一条消息分离。(它还消除了任何超时，稍后将详细介绍。)</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_选择性接收循环"><a class="link" href="#_选择性接收循环">7.5.2. 选择性接收循环</a></h4>
 <div class="paragraph">
-<p>对于一个选择性接收，例如 receive [] -&gt; ok end ，我们将在消息队列循环检查队列中是否有匹配的消息。</p>
+<p>对于一个选择性接收，例如 <code>receive [] &#8594; ok end</code> ，我们将在消息队列循环检查队列中是否有匹配的消息。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5113,11 +5115,11 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>在本例中，如果邮箱中有消息，我们在 loop_rec 指令之后对 Nil 执行模式匹配。如果消息不匹配，我们会在 L3 结束，其中  loop_rec_end 指令将保存指针指向到下一个消息 (p-&gt;msg.save =
-&amp;(*p-&gt;msg.save)-&gt;next) ，并跳转回 L2。</p>
+<p>在本例中，如果邮箱中有消息，我们在 loop_rec 指令之后对 Nil 执行模式匹配。如果消息不匹配，我们会在 L3 结束，其中  <code>loop_rec_end</code> 指令将保存指针指向到下一个消息 (<code>p&#8594;msg.save =
+&amp;(*p&#8594;msg.save)&#8594;next</code>) ，并跳转回 L2。</p>
 </div>
 <div class="paragraph">
-<p>如果消息队列中没有更多消息，则进程将被位于 L4 的  wait  指令挂起，保存指针将指向消息队列的末尾。当进程被重新调度时，它将只查看消息队列中的新消息 (保存点之后)。</p>
+<p>如果消息队列中没有更多消息，则进程将被位于 L4 的  <code>wait</code>  指令挂起，保存指针将指向消息队列的末尾。当进程被重新调度时，它将只查看消息队列中的新消息 (保存点之后)。</p>
 </div>
 </div>
 <div class="sect3">
@@ -5142,13 +5144,13 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>wait_timeout 指令用给定的时间 (在我们的示例中是 1000 毫秒) 设置一个超时计时器，它还在 p-&gt;def_arg_reg[0] 保存了下一条指令的地址 ( timeout )，然后当计时器被设置后，将 p-&gt;i 设置为指向 def_arg_reg。</p>
+<p><code>wait_timeout</code> 指令用给定的时间 (在我们的示例中是 1000 毫秒) 设置一个超时计时器，它还在 <code>p&#8594;def_arg_reg[0]</code> 保存了下一条指令的地址 ( <code>timeout</code> )，然后当计时器被设置后，将 <code>p&#8594;i</code> 设置为指向 def_arg_reg。</p>
 </div>
 <div class="paragraph">
 <p>这意味着当进程挂起时，如果没有匹配的消息到达，1 秒后超时将被触发，进程将在超时指令处继续执行指令。</p>
 </div>
 <div class="paragraph">
-<p>注意，如果邮箱中接收到不匹配的消息，进程将被调度执行，并将在接收循环中运行模式匹配代码，但不会取消超时。因为超时计时器的取消是在 remove_message 中执行的。</p>
+<p>注意，如果邮箱中接收到不匹配的消息，进程将被调度执行，并将在接收循环中运行模式匹配代码，但不会取消超时。因为超时计时器的取消是在 <code>remove_message</code> 中执行的。</p>
 </div>
 <div class="paragraph">
 <p>超时指令将邮箱的保存点重置为队列中的第一个元素，并从 PCB 中清除超时标志 (F_TIMO)。</p>
@@ -5160,7 +5162,7 @@ p-mod调用的技巧
 <p>现在我们已经到了接收循环的最后一个版本，我们使用前面提到的 ref 技巧来避免长信箱扫描。</p>
 </div>
 <div class="paragraph">
-<p>Erlang 代码中的一种常见模式是实现一种远程调用  "remote call" ，在两个进程之间进行消息的发送和接收。例如 gen_server 中就是这样用的。这种代码通常隐藏在一个用普通函数调用包装过的库之后。例如，你调用函数 counter:increment(Counter) ，在这个场景的背后，它变成了类似 Counter ! {self(), inc}, receive {Counter, Count} -&gt; Count end。</p>
+<p>Erlang 代码中的一种常见模式是实现一种远程调用  "remote call" ，在两个进程之间进行消息的发送和接收。例如 gen_server 中就是这样用的。这种代码通常隐藏在一个用普通函数调用包装过的库之后。例如，你调用函数 <code>counter:increment(Counter)</code> ，在这个场景的背后，它变成了类似 <code>Counter ! {self(), inc}, receive {Counter, Count} &#8594; Count end</code>。</p>
 </div>
 <div class="paragraph">
 <p>这通常是封装进程中状态的很好的抽象。不过，当调用进程的邮箱中有许多消息时，会出现一个小问题。在这种情况下，receive 必须检查邮箱中的每条消息，以确定除最后一条消息外没有任何消息与返回消息匹配。</p>
@@ -5210,10 +5212,10 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>recv_mark 指令在  msg.saved_last 中保存当前位置( msg.last )，在 msg.mark 中保存 label 地址。</p>
+<p><code>recv_mark</code> 指令在  <code>msg.saved_last</code> 中保存当前位置( <code>msg.last</code> )，在 <code>msg.mark</code> 中保存 label 地址。</p>
 </div>
 <div class="paragraph">
-<p>recv_set 指令检查 msg.mark 是否指向下一条指令，如果指向下一条指令，将保存点 ( msg.save ) 移动到创建 ref  (msg.saved_last) 之前收到的最后一条消息。如果 msg.mark 无效 (即不等于 msg.save)，则指令不执行任何操作。</p>
+<p><code>recv_set</code> 指令检查 <code>msg.mark</code> 是否指向下一条指令，如果指向下一条指令，将保存点 ( <code>msg.save</code> ) 移动到创建 ref  (<code>msg.saved_last</code>) 之前收到的最后一条消息。如果 <code>msg.mark</code> 无效 (即不等于 msg.save)，则指令不执行任何操作。</p>
 </div>
 </div>
 </div>
@@ -5257,7 +5259,7 @@ p-mod调用的技巧
 <p>在 Erlang 中，本地函数调用和远程函数调用之间存在语义上的差异。远程调用 (即对已命名模块中的函数的调用) 保证会转到该模块的最新加载版本。本地调用 (对同一模块内的函数的非限定调用) 保证会与调用转到相同的代码版本。</p>
 </div>
 <div class="paragraph">
-<p>通过在调用点指定模块名称，可以将对本地函数的调用转换为远程调用。这通常通过 ?MODULE 宏来完成，如 ?MODULE:foo() 。对非本地模块的远程调用不能转换为本地调用，也就是说，无法在调用者中保证被调用者的版本。</p>
+<p>通过在调用点指定模块名称，可以将对本地函数的调用转换为远程调用。这通常通过 ?MODULE 宏来完成，如 <code>?MODULE:foo()</code> 。对非本地模块的远程调用不能转换为本地调用，也就是说，无法在调用者中保证被调用者的版本。</p>
 </div>
 <div class="paragraph">
 <p>这是 Erlang 的一个重要特性，它使得热代码加载或热升级成为可能。只要确保你在服务器循环的某个地方有一个远程调用，然后你可以在系统运行时加载这个远程调用函数的新代码；当执行到达远程调用时，它将切换为执行新代码。</p>
@@ -5294,7 +5296,7 @@ p-mod调用的技巧
 Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not related in that way? - bmacdonald
 -->
 <div class="paragraph">
-<p>在 Erlang 运行时系统中，代码加载由代码服务器 (code server) 处理。代码服务器将调用 erlang  模块中的更底层 BIFs 来进行实际加载。但是代码服务器也决定清除策略。</p>
+<p>在 Erlang 运行时系统中，代码加载由代码服务器 (code server) 处理。代码服务器将调用 <code>erlang</code>  模块中的更底层 BIFs 来进行实际加载。但是代码服务器也决定清除策略。</p>
 </div>
 <div class="paragraph">
 <p>运行时系统可以保存每个模块的两个版本，一个是当前版本，一个是旧版本。所有完全限定 (远程) 调用都转到当前版本。旧版本中的本地函数调用和堆栈上的返回地址仍然可以转到旧版本函数。</p>
@@ -5314,7 +5316,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <p>BEAM 加载器不只是获取外部 BEAM 格式并将其写入内存。它还对代码进行许多变换，并将外部 (通用) 格式转换为内部 (特定) 格式。</p>
 </div>
 <div class="paragraph">
-<p>加载器的代码可以在 beam_load.c (在 erts/emulator/beam ) 中找到，但是大多数翻译逻辑都在文件 ops.tab (在 erts/emulator/beam/emu ) 中。</p>
+<p>加载器的代码可以在 beam_load.c (在 <code>erts/emulator/beam</code> ) 中找到，但是大多数翻译逻辑都在文件 ops.tab (在 <code>erts/emulator/beam/emu</code> ) 中。</p>
 </div>
 <div class="paragraph">
 <p>加载器的第一步是解析 beam 文件，基本上和我们在 <a href="#CH-beam_modules">Chapter 6</a> 中使用 Erlang 所做的工作相同，但是该程序是用 C 编写的。</p>
@@ -5329,10 +5331,10 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <p>ops tab 中的转换尝试处理编译器生成的指令模式，通过窥孔优化将它们优化为更少的特定指令。ops tab 转换尝试为选择的模式生成跳转表。</p>
 </div>
 <div class="paragraph">
-<p>ops.tab 文件并不是在运行时解析的，而是从 ops.tab 生成一个模式匹配程序，并存储在生成的一个 C 文件中的数组中。perl 脚本 beam_makeops (在 erts/emulator/utils 中) 在 beam_opcodes.h 和 beam_opcodes.c 文件中生成一组特定于目标的操作码和翻译程序(这些文件在给定的目标目录中，例如  erts/emulator/x86_64-unknown-linux-gnu/opt/smp/)。</p>
+<p>ops.tab 文件并不是在运行时解析的，而是从 ops.tab 生成一个模式匹配程序，并存储在生成的一个 C 文件中的数组中。perl 脚本 <code>beam_makeops</code> (在 <code>erts/emulator/utils</code> 中) 在 <code>beam_opcodes.h</code> 和 <code>beam_opcodes.c</code> 文件中生成一组特定于目标的操作码和翻译程序(这些文件在给定的目标目录中，例如  <code>erts/emulator/x86_64-unknown-linux-gnu/opt/smp/</code>)。</p>
 </div>
 <div class="paragraph">
-<p>同一个程序 (beam_makeops) 还为编译器后端 beam_opcodes.erl 生成 Erlang 代码。</p>
+<p>同一个程序 (beam_makeops) 还为编译器后端 <code>beam_opcodes.erl</code> 生成 Erlang 代码。</p>
 </div>
 </div>
 <div class="sect2">
@@ -5364,7 +5366,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 </dd>
 <dt class="hdlist1">S</dt>
 <dd>
-<p>是一个绑定任何类型值的变量。模式中的任何值 ( <code>&#8658;</code> 的左值)，若在产生器中使用 ( <code>&#8658;</code> 的右值) ，都必须绑定到一个变量。</p>
+<p>是一个绑定任何类型值的变量。模式中的任何值 ( <code>=&gt;</code> 的左值)，若在产生器中使用 ( <code>=&gt;</code> 的右值) ，都必须绑定到一个变量。</p>
 </dd>
 <dt class="hdlist1">x==0</dt>
 <dd>
@@ -5378,7 +5380,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <dd>
 <p>是该模式中要匹配的第二个指令。</p>
 </dd>
-<dt class="hdlist1"><code>&#8658;</code></dt>
+<dt class="hdlist1"><code>=&gt;</code></dt>
 <dd>
 <p>表示模式的结束和要生成的代码的开始。</p>
 </dd>
@@ -5870,11 +5872,11 @@ ok
 <div class="paragraph">
 <p>由于除了递归和列表解析式 ( list comprehension ) 之外没有其他的循环结构，因此不进行函数调用就不可能永远循环。每个函数调用都被算作一次 <code>规约</code>；当进程的规约值减少达到下限时，它将被挂起。</p>
 </div>
-<div class="admonitionblock version">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<i class="fa icon-version" title=""></i>
+<i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
 <div class="title">版本信息</div>
@@ -5906,7 +5908,7 @@ ok
 <p>当进程被调度时，它将获得 <code>CONTEXT_REDS</code> (在 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_vm.h#L39">erl_vm.h</a> 中定义，当前值为4000) 定义的一个规约值。在用尽规约值，执行 receive 并且在收件箱中没有匹配的消息时，该进程将被挂起，另一个进程将被调度。</p>
 </div>
 <div class="paragraph">
-<p>如果 VM 已经执行了 <code>INPUT_REDUCTIONS</code> 定义的规约次数(当前是 <code>2*CONTEXT_REDS</code>，也在 erl_vm.h 中定义)，或者没有进程 ready，调度器将执行系统级活动。也就是检查IO；我们稍后会详细了解。</p>
+<p>如果 VM 已经执行了 <code>INPUT_REDUCTIONS</code> 定义的规约次数(当前是 <code>2*CONTEXT_REDS</code>，也在 <code>erl_vm.h</code> 中定义)，或者没有进程 ready，调度器将执行系统级活动。也就是检查IO；我们稍后会详细了解。</p>
 </div>
 </div>
 <div class="sect3">
@@ -5918,7 +5920,7 @@ ok
 <p>例如，在 R16 之前的 Erlang 版本中，BIFs 的 <code>binary_to_term/1</code> 和 <code>term_to_binary/1</code> 是不让步的，并且只算一次规约。这意味着以特大项式 (为参数) 调用这些函数的进程可能会饿死其他进程。因为调度器之间的进程平衡方式，这种情况甚至可能发生在 SMP 系统中，我们很快就会讲到。</p>
 </div>
 <div class="paragraph">
-<p>当进程运行时，仿真器在 (寄存器映射) 变量 <code>FCALLS</code> 中保留要执行的规约数 (参见 beam_emu.c)。</p>
+<p>当进程运行时，仿真器在 (寄存器映射) 变量 <code>FCALLS</code> 中保留要执行的规约数 (参见 <code>beam_emu.c</code>)。</p>
 </div>
 <div class="paragraph">
 <p>在 Elixir 中，我们可以用  <code>hipe_bifs:show_pcb/1</code> 检查这个值：</p>
@@ -5960,7 +5962,7 @@ ok
 <p>你可以通过调用 <code>erlang:process_info/2</code> 并将第二个参数设置为 reductions 原子，来查看进程的规约值总数。你还可以在 observer 的 process 选项卡中，或在 Erlang shell 中的 i/0 命令中看到这个数字。</p>
 </div>
 <div class="paragraph">
-<p>如前所述，每当进程启动时，字段 <code>fcalls</code> 被设置为 <code>CONTEXT_REDS</code> 的值，并且进程执行每个函数调用的时候， <code>fcalls</code> 将减少1。当进程被挂起时，reds 字段会随着执行的减少数量而增加。用类似 C 的代码描述，类似： <code>p &#8594; reds += (CONTEXT_REDS - p &#8594; fcalls)</code>。</p>
+<p>如前所述，每当进程启动时，字段 <code>fcalls</code> 被设置为 <code>CONTEXT_REDS</code> 的值，并且进程执行每个函数调用的时候， <code>fcalls</code> 将减少1。当进程被挂起时，reds 字段会随着执行的减少数量而增加。用类似 C 的代码描述，类似： <code>p -&gt; reds += (CONTEXT_REDS - p -&gt; fcalls)</code>。</p>
 </div>
 <div class="paragraph">
 <p>通常进程会执行所有分配的规约数，此时 <code>fcalls</code> 为0，但是如果进程在 receive 中挂起等待消息，那么它还会留下一些规约数未用尽。</p>
@@ -6066,7 +6068,7 @@ ok
 <p>当消息被发送到收件箱时，发送进程将检查接收者是否在 waiting 状态睡眠 ( <em>sleeping</em> )，在这种情况下，它将唤醒 ( <em>wake</em> ) 进程，将其状态更改为 runable，并将其放在适当的就绪队列的末尾。</p>
 </div>
 <div class="paragraph">
-<p>如果 receive 语句有一个 timeout 子句，那么将为进程创建一个计时器，该计时器将在指定的超时时间之后触发。运行时系统对超时的唯一保证是：它不会在设置的时间之前触发，也就是说，它可能会在进程被调度并执行之前的预期时间之后一段时间被触发。</p>
+<p>如果 receive 语句有一个 <code>timeout</code> 子句，那么将为进程创建一个计时器，该计时器将在指定的超时时间之后触发。运行时系统对超时的唯一保证是：它不会在设置的时间之前触发，也就是说，它可能会在进程被调度并执行之前的预期时间之后一段时间被触发。</p>
 </div>
 <div class="paragraph">
 <p>在 VM 中，计时器由一个计时器轮 ( <em>timing wheel</em> ) 处理。也就是说，一个环形的时间槽数组。在 Erlang 18 之前，计时器轮是一个全局资源，如果有很多进程将计时器插入到计时器轮中，那么可能会争用写锁。如果使用多个定时器，请确保使用的是 Erlang 的新版本。</p>
@@ -6086,7 +6088,7 @@ ok
 </div>
 </div>
 <div class="paragraph">
-<p>存储在计时器轮中的计时器是一个指向 ErlTimer 结构体的指针。参见 <a href="https://github.com/erlang/otp/blob/OTP-19.1/erts/emulator/beam/erl_time.h#L421">erl_time.h</a> (译注：该文件变动比较大，在 OTP-19.1 和 OTP-23.1 中有所不同，下文已附源码，请读者对比阅读)。如果多个定时器被插入到同一个插槽中 (译注：当超时时间相同时)，它们被 prev 和 next 字段链接在一个链表中。count 字段被设置为 T/TIW_SIZE</p>
+<p>存储在计时器轮中的计时器是一个指向 <code>ErlTimer</code> 结构体的指针。参见 <a href="https://github.com/erlang/otp/blob/OTP-19.1/erts/emulator/beam/erl_time.h#L421">erl_time.h</a> (译注：该文件变动比较大，在 OTP-19.1 和 OTP-23.1 中有所不同，下文已附源码，请读者对比阅读)。如果多个定时器被插入到同一个插槽中 (译注：当超时时间相同时)，它们被 <code>prev</code> 和 <code>next</code> 字段链接在一个链表中。<code>count</code> 字段被设置为 <code>T/TIW_SIZE</code></p>
 </div>
 <div id="ErlTimer" class="listingblock">
 <div class="content">
@@ -6172,7 +6174,7 @@ ok
 <p>当进程被调度时，它将获得 <code>CONTEXT_REDS</code> (在 <a href="https://github.com/erlang/otp/blob/OTP-20.0/erts/emulator/beam/erl_vm.h">erl_vm.h</a> 中定义，目前是 4000) 定义的规约值。在使用尽它的规约值后，或者在执行增加它的规约值时，或者在收件箱中执行没有匹配消息的接收时，该进程将被挂起 ( suspended )，一个新的进程会被调度。</p>
 </div>
 <div class="paragraph">
-<p>如果 VM 已经执行了 <code>INPUT_REDUCTIONS</code> 定义的规约值 (当前是 <code>2*CONTEXT_REDS</code>，也在 erl_vm.h 中定义)，或者没有准备运行的进程，调度器将执行系统级活动。也就是检查 IO；我们稍后会详细说明。</p>
+<p>如果 VM 已经执行了 <code>INPUT_REDUCTIONS</code> 定义的规约值 (当前是 <code>2*CONTEXT_REDS</code>，也在 <code>erl_vm.h</code> 中定义)，或者没有准备运行的进程，调度器将执行系统级活动。也就是检查 IO；我们稍后会详细说明。</p>
 </div>
 <div class="paragraph">
 <p>规约是什么还没有完全定义，但至少每个函数调用都应该算作规约。当谈到 BIFs 和 NIFs 时，事情变得有点复杂。如果不使用规约值和让步 ( yield )，进程不应该能够运行“很长时间”。用 C 编写的函数不能在中间产生让步，用 C 编写函数的原因通常是为了获得性能收益。在这类函数中，规约可能需要更长的时间，这可能导致调度器中的不平衡。</p>
@@ -6181,13 +6183,13 @@ ok
 <p>例如，在 R16 之前的 Erlang 版本中，BIFs 的 <code>binary_to_term/1</code> 和 <code>term_to_binary/1</code> 是不让步的，并且只算一次规约。这意味着以特大项式 (为参数) 调用这些函数的进程可能会饿死其他进程。因为调度器之间的进程平衡方式，这种情况甚至可能发生在 SMP 系统中，我们很快就会讲到。</p>
 </div>
 <div class="paragraph">
-<p>当进程运行时，仿真器在 (寄存器映射) 变量 <code>FCALLS</code> 中保留要执行的规约数 (参见 beam_emu.c)。</p>
+<p>当进程运行时，仿真器在 (寄存器映射) 变量 <code>FCALLS</code> 中保留要执行的规约数 (参见 <code>beam_emu.c</code>)。</p>
 </div>
 </div>
 <div class="sect2">
 <h3 id="SEC-Scheduler_loop"><a class="link" href="#SEC-Scheduler_loop">11.8. 调度器循环（原书未完成）</a></h3>
 <div class="paragraph">
-<p>从概念上讲，在 Erlang VM 中，可以看作是调度器来驱动程序执行的 。但实际上，在 C 代码中的结构是：模拟器 (beam_emu.c 中的 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/beam_emu.c#L482">process_main</a>) 驱动程序执行，它以子程序调用的方式调用调度器，来查找下一个要执行的进程。</p>
+<p>从概念上讲，在 Erlang VM 中，可以看作是调度器来驱动程序执行的 。但实际上，在 C 代码中的结构是：模拟器 (beam_emu.c 中的 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/beam_emu.c#L482"><code>process_main</code></a>) 驱动程序执行，它以子程序调用的方式调用调度器，来查找下一个要执行的进程。</p>
 </div>
 <div class="paragraph">
 <p>不过，我们将假设它使用前一种模型，因为它为调度器循环提供了一个很好的概念模型。也就是说，我们将这个过程 <em>当做</em> ：调度器选择一个要执行的进程，然后将执行过程移交给模拟器。</p>
@@ -6654,7 +6656,7 @@ works.</p>
 <p>小块被放置在多块载体 ( multiblock carrier ) 中。多块载体可以像它的名字一样包含许多块。更大的块放在单块载体 ( singleblock carrier ) 中，就像他的名字意味着只包含一个块一样。</p>
 </div>
 <div class="paragraph">
-<p>什么是小块，什么是大块是由参数 <em>singleblock carrier threshold</em> (sbct) 决定的，请参阅下面的系统标志列表。</p>
+<p>什么是小块，什么是大块是由参数 <em>singleblock carrier threshold</em> (<code>sbct</code>) 决定的，请参阅下面的系统标志列表。</p>
 </div>
 <div class="paragraph">
 <p>大多数分配器也有一个“主多块载体” ( main multiblock carrier )，它永远不会被释放。</p>
@@ -6670,7 +6672,7 @@ works.</p>
 Are you intending for readers to take advantage of these allocation strategies in their code? If so, this section needs to be much more prominent, and not a subheading in a reference section.  - bmacdonald
 -->
 <div class="paragraph">
-<p>内存分配策略被使用，以在多块载体中找到一个空闲的内存块。每种类型的分配器都有一个默认的分配策略，但也可以使用  as  标志设置它的分配策略。</p>
+<p>内存分配策略被使用，以在多块载体中找到一个空闲的内存块。每种类型的分配器都有一个默认的分配策略，但也可以使用  <code>as</code>  标志设置它的分配策略。</p>
 </div>
 <div class="paragraph">
 <p>Erlang 运行时系统应用程序参考手册列出了以下分配策略:</p>
@@ -6735,7 +6737,7 @@ ENVIRONMENT, CON_VPRINT_BUF.</p>
 <div class="paragraph">
 <p>For an up to date list of allocation types allocated with each
 allocator, see erl_alloc.types
-(e.g. grep TEMPORARY erts/emulator/beam/erl_alloc.types).</p>
+(e.g. <code>grep TEMPORARY erts/emulator/beam/erl_alloc.types</code>).</p>
 </div>
 </div>
 <div class="sect3">
@@ -6748,9 +6750,9 @@ allocator, see erl_alloc.types
 </div>
 </div>
 <div class="sect3">
-<h4 id="_binary_分配器binary_alloc"><a class="link" href="#_binary_分配器binary_alloc">12.2.6. Binary  分配器：binary_alloc</a></h4>
+<h4 id="_二进制数据分配器binary_alloc"><a class="link" href="#_二进制数据分配器binary_alloc">12.2.6. 二进制数据分配器：binary_alloc</a></h4>
 <div class="paragraph">
-<p>你猜对了，Binary 分配器用于分配 Binary 类型项式。Binary 可以有相当不同的大小和不同的生命周期。默认情况下，这个分配器使用  <em>best fit</em>  分配策略。</p>
+<p>你猜对了，二进制数据 (Binary) 分配器用于分配二进制类型的项式。二进制数据可以有相当不同的大小和不同的生命周期。默认情况下，这个分配器使用  <em>best fit</em>  分配策略。</p>
 </div>
 </div>
 <div class="sect3">
@@ -6762,7 +6764,7 @@ allocator, see erl_alloc.types
 <div class="sect3">
 <h4 id="_驱动_driver_分配器driver_alloc"><a class="link" href="#_驱动_driver_分配器driver_alloc">12.2.8. 驱动 (Driver) 分配器：driver_alloc</a></h4>
 <div class="paragraph">
-<p>驱动分配器用于端口，链接驱动 ( linked in driver ) 和NIF。</p>
+<p>驱动分配器用于端口，内联驱动 ( linked in driver ) 和NIF。</p>
 </div>
 </div>
 <div class="sect3">
@@ -6803,7 +6805,7 @@ nlink_lh nlink_lh nlink_sh node_entry node_tab nodes_monitor port_data_heap port
 <p>正如我们在 <a href="#CH-Processes">Chapter 3</a> 中看到的那样，进程实际上只是一些内存区域，在本章中，我们将更深入地研究如何管理栈、堆和邮箱。</p>
 </div>
 <div class="paragraph">
-<p>栈和堆的默认大小是 233 个字。在启动 Erlang 时，可以通过 +h 标志对默认大小进行全局更改。在使用 spawn_opt 启动进程时，还可以通过设置 min_heap_size 来设置最小堆大小。</p>
+<p>栈和堆的默认大小是 233 个字。在启动 Erlang 时，可以通过 <code>+h</code> 标志对默认大小进行全局更改。在使用 <code>spawn_opt</code> 启动进程时，还可以通过设置 <code>min_heap_size</code> 来设置最小堆大小。</p>
 </div>
 <div class="paragraph">
 <p>正如我们在 <a href="#CH-TypeSystem">Chapter 4</a> 中看到的那样，Erlang 项式都是被标记的，当它们存储在堆上时，它们要么是 cons 单元 ( 列表单元 ) ，要么是装箱对象。</p>
@@ -6842,16 +6844,15 @@ T = {L, L}.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>这样做很好，因为这样做很节省，而且只占用很少的空间。但如果您将元组发送到另一个进程或执行任何其他类型的IO，或任何导致所谓深拷贝 ( <em>deep copy</em>) 的操作，则数据结构将被扩展。因此，如果我们将元组 T 发送到另一个进程 P2 ( P2 ! T ) 则 T2 的堆为:</p>
+<p>这样做很好，因为这样做很节省，而且只占用很少的空间。但如果您将元组发送到另一个进程或执行任何其他类型的IO，或任何导致所谓深拷贝 ( <em>deep copy</em>) 的操作，则数据结构将被扩展。因此，如果我们将元组 <code>T</code> 发送到另一个进程 P2 ( <code>P2 ! T</code> ) 则 T2 的堆为:</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre> ..</pre>
+<pre> .. TODO</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>You can quickly bring down your Erlang node by expanding a highly shared term,
-see <a href="#listing-share">share.erl</a>.</p>
+<p>通过扩展高度共享的项式，可以很快使 Erlang 节点宕机，请参阅 <a href="#listing-share">share.erl</a>。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6881,9 +6882,7 @@ see <a href="#listing-share">share.erl</a>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>You can calculate the memory size of a shared term and the size of the
-expanded size of the term with the functions erts_debug:size/1 and
-erts_debug:flat_size/1.</p>
+<p>可以使用函数 <code>erts_debug:size/1</code> 和 <code>erts_debug:flat_size/1</code> 计算共享项式的内存大小和项式的扩展大小。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6892,25 +6891,19 @@ erts_debug:flat_size/1.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>For most applications this is not a problem, but you should be aware
-of the problem, which can come up in many situations. A deep copy is
-used for IO, ETS tables, binary_to_term, and message passing.</p>
+<p>对于大多数应用程序来说，这不是问题，但是您应该意识到这个问题，它可能在许多情况下出现。深拷贝用于 IO、ETS 表、binary_to_term 和 消息传递。</p>
 </div>
 <div class="paragraph">
-<p>Let us look in more detail how message passing works.</p>
+<p>让我们更详细地了解消息传递是如何工作的。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_message_passing"><a class="link" href="#_message_passing">12.4.2. Message passing</a></h4>
+<h4 id="_消息传递_2"><a class="link" href="#_消息传递_2">12.4.2. 消息传递</a></h4>
 <div class="paragraph">
-<p>When a process P1 sends a message M to another (local) process P2, the
-process P1 first calculates the flat size of M. Then it allocates a
-new message buffer of that size by doing a heap_alloc of a heap_frag in
-the local scheduler context.</p>
+<p>当进程 P1 向另一个 (本地) 进程 P2 发送消息 M 时，进程 P1 首先计算 M 的扩展大小，然后通过在本地调度器上下文中对 heap_frag 执行 heap_alloc 来分配该大小的新消息缓冲区。</p>
 </div>
 <div class="paragraph">
-<p>Given the code in <a href="#listing-send">send.erl</a> the state of the system could
-look like this just before the send in p1/1:</p>
+<p>给出 <a href="#listing-send">send.erl</a> 中的代码。在 p1/1 send 之前，系统的状态可能是这样的：</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -6918,17 +6911,10 @@ look like this just before the send in p1/1:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Then P1 start sending the message M to P2. It (through the code in
-erl_message.c) first calculates the flat size of M (which in our example is
-23 words)<sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup>.
-Then (in a SMP system) if it can take a lock on P2 and there is enough
-room on the heap of P2 it will copy the message to the heap of P2.</p>
+<p>然后 P1 开始向 P2 发送消息 M。它 (通过 erl_message.c 中的代码) 首先计算 M (在我们的示例中是 23 个字长) <sup class="footnote">[<a id="_footnoteref_2" class="footnote" href="#_footnotedef_2" title="View footnote.">2</a>]</sup> 的平面大小。然后(在SMP系统中)，如果它可以锁定 P2，并且 P2 的堆中有足够的空间，它就会将消息复制到 P2 的堆中。</p>
 </div>
 <div class="paragraph">
-<p>If P2 is running (or exiting) or there isn&#8217;t enough space on the heap,
-then a new heap fragment is allocated
-(of sizeof ErlHeapFragment - sizeof(Eterm) + 23*sizeof(Eterm))
-<sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup> which after initialization will look like:</p>
+<p>如果 P2 正在运行 (或退出) 或者堆上没有足够的空间，那么分配一个新的堆片段 (大小为：sizeof ErlHeapFragment - sizeof(Eterm) + 23*sizeof(Eterm)) <sup class="footnote">[<a id="_footnoteref_3" class="footnote" href="#_footnotedef_3" title="View footnote.">3</a>]</sup>，初始化后的样子是：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6944,7 +6930,7 @@ then a new heap fragment is allocated
 </div>
 </div>
 <div class="paragraph">
-<p>Then the message is copied into the heap fragment:</p>
+<p>然后，消息被复制到堆片段中：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6977,13 +6963,11 @@ then a new heap fragment is allocated
                                   (l*16)+15    &lt;--+
                                   &amp;amp;mem+21*WS+1 ----+
                                   (o*16)+15    &lt;---+
-                                  NIL&lt;/pre&gt;</pre>
+                                  NIL</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>In either case a new mbox (ErlMessage) is allocated, a lock
- (ERTS_PROC_LOCK_MSGQ) is taken on the receiver and the message
- on the heap or in the new heap fragment is linked into the mbox.</p>
+<p>在这两种情况下，都分配了一个新的mbox (<code>ErlMessage</code>)，接收端加一个锁 (<code>ERTS_PROC_LOCK_MSGQ</code>)，堆上或新堆片段中的消息链接到 mbox 中。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6995,74 +6979,36 @@ then a new heap fragment is allocated
 </div>
 </div>
 <div class="paragraph">
-<p>Then the mbox is linked into the in message queue (msg_inq) of the
-receiver, and the lock is released. Note that msg_inq.last points to
-the next field of the last message in the queue. When a new mbox is
-linked in this next pointer is updated to point to the new mbox, and
-the last pointer is updated to point to the next field of the new
-mbox.</p>
+<p>然后 mbox 被链接到接收方的 in message queue (<code>msg_inq</code>) 中，锁被释放。注意 <code>msg_inq.last</code> 指向队列中最后一条消息的 <code>next</code> 字段。当一个新的 mbox 被链接时，下一个指针被更新为指向新的 mbox，最后一个指针被更新为指向新的 mbox 的 next 字段。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="SS-Binaries"><a class="link" href="#SS-Binaries">12.4.3. Binaries</a></h4>
+<h4 id="SS-Binaries"><a class="link" href="#SS-Binaries">12.4.3. 二进制数据</a></h4>
 <div class="paragraph">
-<p>As we saw in <a href="#CH-TypeSystem">Chapter 4</a> there are four types of binaries
-internally. Three of these types, <em>heap binaries</em>, <em>sub binaries</em> and
-<em>match contexts</em> are stored on the local heap and handled by the
-garbage collector and message passing as any other object, copied as
-needed.</p>
+<p>正如我们在 <a href="#CH-TypeSystem">Chapter 4</a> 中看到的，在内部有四种类型的二进制文件。其中三种类型，<em>heap binaries</em>, <em>sub binaries</em> 和 <em>match contexts</em> 存储在本地堆上，由垃圾收集器处理，并像任何其他对象一样作为消息传递，并根据需要复制。</p>
 </div>
 <div class="sect4">
-<h5 id="_reference_counting"><a class="link" href="#_reference_counting">Reference Counting</a></h5>
+<h5 id="_引用计数"><a class="link" href="#_引用计数">引用计数</a></h5>
 <div class="paragraph">
-<p>The fourth type.  large binaries or <em>refc binaries</em> on the other hand
-are partially stored outside of the process heap and they are
-reference counted.</p>
+<p>另一方面，大型二进制数据或 <em>refc binaries</em> (译注：reference-counted binaries 的缩写) 部分存储在进程堆之外，并被引用计数。<em>refc binaries</em> 是第四种二进制类型。</p>
 </div>
 <div class="paragraph">
-<p>The payload of a refc binary is stored in memory allocated by the
-binary allocator. There is also a small reference to the payload call
-a ProcBin which is stored on the process heap. This reference is
-copied by message passing and by the GC, but the payload is
-untouched. This makes it relatively cheap to send large binaries to
-other processes since the whole binary doesn&#8217;t need to be copied.</p>
+<p>refc binary 的有效载荷存储在二进制分配器分配的内存中。还有一个叫 ProcBin 的，对 refc binary 的有效负载的小引用存储在进程堆上。该引用可能会由消息传递或 GC 复制，但载荷并不会被复制。因为不需要复制整个二进制数据，使得向其他进程发送大型二进制数据变得相对节省。</p>
 </div>
 <div class="paragraph">
-<p>All references through a ProcBin to a refc binary increases the
-reference count of the binary by one. All ProcBin objects on a
-process heap are linked together in a linked list. After a
-GC pass this linked list is traversed and the reference count
-of the binary is decreased with one for each ProcBin that
-has deceased. If the reference count of the refc binary
-reaches zero that binary is deallocated.</p>
+<p>通过 ProcBin 对 refc binary 的每次引用都会使该二进制数据的引用计数增加 1。进程堆上的所有 ProcBin 对象都链接在一个链表中。在一次 GC 之后，这个链表被遍历，堆外二进制数据的引用计数会减少，每个将被回收的引用 refc binary 的 ProcBin 都会导致该 refc binary 减少一个引用计数。如果 refc binary 的引用计数减到 0，该二进制数据所占内存将被释放。</p>
 </div>
 <div class="paragraph">
-<p>Having large binaries reference counted and not copied by send or
-garbage collection is a big win, but there is one problem
-with having a mixed environment of garbage collection and
-reference counting. In a pure reference counted implementation
-the reference count would be reduced as soon as a reference to
-the object dies, and when the reference count reaches zero the
-object is freed. In the ERTS mixed environment a reference to a
-reference counted object does not die until a garbage collection
-detects that the reference is dead.</p>
+<p>对大型二进制数据进行引用计数，并且不在消息发送或垃圾收集时复制数据是一个很大的成功，但是在垃圾收集和引用计数混合的环境中存在一个问题。在纯引用计数实现中，一旦对对象的引用终止，引用计数就会减少，当引用计数减到 0 时，对象就会被释放。在 ERTS 混合环境中，直到垃圾收集检测到该引用已死前，对引用计数对象的引用都不会终止。</p>
 </div>
 <div class="paragraph">
-<p>This means that binaries, which has a tendency to be large or even
-huge, can hang around for a long time after all references to the
-binary are dead. Note that since binaries are allocated globally,
-all references from all processes need to be dead, that is all
-processes that has seen a binary need to do a GC.</p>
+<p>这意味着在所有对二进制数据的引用都停止后，二进制数据 (往往很大，甚至非常巨大) 可能会挂起很长一段时间。注意，由于二进制数据是全局分配的，所以来自所有进程的所有引用都必须是死的，也就是说，所有看到二进制数据的进程都需要进行GC。</p>
 </div>
 <div class="paragraph">
-<p>Unfortunately it is not always easy, as a developer, to see which
-processes have seen a binary in the GC sense of the word seen. Imagine
-for example that you have a load balancer that receives work items
-and dispatches them to workers.</p>
+<p>不幸的是，作为开发人员，要知道哪些进程看到了二进制数据并不总是那么容易。例如，假设您有一个负载均衡器，它接收工作项并将它们分派给 worker。</p>
 </div>
 <div class="paragraph">
-<p>In <a href="#load_balancer">this code</a> there is an example of a loop which
-doesn&#8217;t need to do GC. (See <a href="#listing-lb">listing lb</a> for a full example.)</p>
+<p>在 <a href="#load_balancer">this code</a> 中，有一个不需要执行GC的循环示例。(参见清单  <a href="#listing-lb">listing lb</a>  获得完整示例。)</p>
 </div>
 <div id="load_balancer" class="listingblock">
 <div class="content">
@@ -7076,112 +7022,66 @@ doesn&#8217;t need to do GC. (See <a href="#listing-lb">listing lb</a> for a ful
 </div>
 </div>
 <div class="paragraph">
-<p>This server will just keep on grabbing references to binaries and
-never free them, eventually using up all system memory.</p>
+<p>这个服务器只会持续抓取对二进制数据的引用，并且永远不会释放它们，最终会耗尽所有系统内存。</p>
 </div>
 <div class="paragraph">
-<p>When one is aware of the problem it is easy to fix, one can either do
-a garbage_collect on each iteration of <em>loop</em> or one could do it every
-five seconds or so by adding an after clause to the receive. (<em>after
-5000 &#8594; garbage_collect(), loop(Workers, N)</em> ).</p>
+<p>当意识到这个问题时，发现其实它很容易解决：可以在每次 <em>循环</em> 迭代时执行一个 garbage_collect，或者通过在 receive 中添加一个 after 子句，每隔5秒执行一次。 ( <em>after 5000 &#8594; garbage_collect(), loop(Workers, N)</em> )</p>
+</div>
+<div class="paragraph">
+<p>译注：关于二进制数据的更多信息，可以参考文档 <a href="http://erlang.org/doc/efficiency_guide/binaryhandling.html">binaryhandling</a>。</p>
 </div>
 </div>
 <div class="sect4">
-<h5 id="_sub_binaries_and_matching"><a class="link" href="#_sub_binaries_and_matching">Sub Binaries and Matching</a></h5>
+<h5 id="_sub_binaries_以及匹配"><a class="link" href="#_sub_binaries_以及匹配">Sub Binaries 以及匹配</a></h5>
 <div class="paragraph">
-<p>When you match out a part of a binary you get a sub binary.
-This sub binary will be a small structure just containing
-pointers into the real binary. This increases the reference
-count for the binary but uses very little extra space.</p>
+<p>当你匹配二进制数据的一部分，你会得到一个 sub binary。sub binary 是一个小的结构，只包含指向真正二进制数据的指针。这增加了二进制文件的引用计数，但只使用很少的额外空间。</p>
 </div>
 <div class="paragraph">
-<p>If a match would create a new copy of the matched part of the binary
-it would cost both space and time. So in most cases just doing a
-pattern match on a binary and getting a sub binary to work on is just
-what you want.</p>
+<p>如果一次匹配，需要创建二进制数据中已匹配部分的新副本，就会既消耗空间又消耗时间。所以在大多数情况下，对二进制数据进行模式匹配然后使用 sub binary ，就是你想要的。</p>
 </div>
 <div class="paragraph">
-<p>There are some degenerate cases, imagine for example that you load
-huge file like a book into memory and then you match out a small part
-like a chapter to work on. The problem is then that the whole of the
-rest of the book is still kept in memory until you are done with
-processing the chapter. If you do this for many books, perhaps you
-want to get the introduction of every book in your file system, then
-you will keep the whole of each book in memory and not just the
-introductory chapter. This might lead to huge memory usage.</p>
+<p>有一些退化的情况，想象一下你把像书这样的大文件加载到内存中，然后你匹配一个小的部分，比如一章。问题是书的其余部分仍然保存在内存中，直到你处理完这一章。如果你对许多书都这样做，也许你希望在文件系统中获得每本书的介绍，你可能将把每本书的整个内容保存在内存中，而不仅仅是介绍性章节。这可能会导致大量内存的使用。</p>
 </div>
 <div class="paragraph">
-<p>The solution in this case, when you know you only want one small
-part of a large binary and you want to have the small part hanging
-around for some time, is to use binary:copy/1. This function
-is only used for its side effect, which is to actually copy
-the sub binary out of the real binary removing the reference to
-the larger binary and therefore hopefully letting it be garbage
-collected.</p>
+<p>在这种情况下，当你知道你只需要一个大二进制文件的一小部分，并且您想让这一小部分保留一段时间时，解决方案是使用 <code>binary:copy/1</code>。这个函数只使用其副作用，从实际二进制文件中复制 sub binary，删除对更大二进制数据的引用，从而有希望对其进行垃圾收集。</p>
 </div>
 <div class="paragraph">
-<p>There is a pretty thorough explanation of how binary construction
-and matching is done in the Erlang documentation:
-<a href="http://www.erlang.org/doc/efficiency_guide/binaryhandling.html" class="bare">http://www.erlang.org/doc/efficiency_guide/binaryhandling.html</a>.</p>
+<p>在 Erlang 文档中有关于如何构造和匹配二进制文件的详细解释： <a href="http://erlang.org/doc/efficiency_guide/binaryhandling.html">binaryhandling</a>。</p>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_garbage_collection"><a class="link" href="#_garbage_collection">12.4.4. Garbage Collection</a></h4>
+<h4 id="_垃圾收集"><a class="link" href="#_垃圾收集">12.4.4. 垃圾收集</a></h4>
 <!--
 This part of the content seems to be good, and probably worthy of being a top-level heading. It might be a bit long, though. - bmacdonald
 -->
 <div class="paragraph">
-<p>When a process runs out of space on the stack and heap the process
-will try to reclaim space by doing a minor garbage collection. The
-code for this can be found in
-<a href="https://github.com/erlang/otp/blob/maint/erts/emulator/beam/erl_gc.c">erl_gc.c</a>.</p>
+<p>当进程用完堆栈上的空间并堆起来时，进程将尝试通过执行一次 minor GC 来回收空间。此代码可以在 <a href="https://github.com/erlang/otp/blob/maint/erts/emulator/beam/erl_gc.c">erl_gc.c</a> 中找到。</p>
 </div>
 <div class="paragraph">
-<p>ERTS uses a generational copying garbage collector. A copying
-collector means that during garbage collection all live young terms
-are copied from the old heap to a new heap. Then the old heap is
-discarded. A generational collector works on the principle that
-most terms die young, they are temporary terms created, used,
-and thrown away. Older terms are promoted to the old generation
-which is collected more seldom, with the rational that once
-a term has become old it will probably live for a long time.</p>
+<p>ERTS使用分代复制垃圾收集器。复制收集器意味着在垃圾收集期间，所有活的年轻项式都从旧堆复制到新堆。然后旧堆被丢弃。分代收集器的工作原理是大多数项式在年轻时就消失了，它们是创建、使用和丢弃的临时项式。旧的项式被提升到很少收集的老一代，理性地说，一旦一个术语变老了，它可能会活很长一段时间。</p>
 </div>
 <div class="paragraph">
-<p>Conceptually a garbage collection cycle works as follows:</p>
+<p>从概念上讲，垃圾收集周期的工作原理如下:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>First you collect all roots (e.g. the stack).</p>
+<p>首先收集所有根(例如栈)。</p>
 </li>
 <li>
-<p>Then for each root, if the root points to a heap allocated object
-which doesn&#8217;t have a forwarding pointer you copy the object to the new
-heap. For each copied object update the original with a forwarding
-pointer to the new copy.</p>
+<p>然后，对于每个根，如果根指向没有转发指针的堆分配对象，则将该对象复制到新堆。对于每个复制的对象，用一个指向新副本的转发指针更新原始对象。</p>
 </li>
 <li>
-<p>Now go through the new heap and do the same as for the roots.</p>
+<p>现在遍历新堆并执行与根堆相同的操作。</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>We will go through an example to see how this is done in
-detail. We will go through a minor collection without an
-old generation, and we will only use the stack as the root set.
-In reality the process dictionary, trace data and probe data
-among other things are also included in the rootset.</p>
+<p>我们将通过一个示例来详细了解这是如何实现的。我们将在不使用旧代的情况下进行 minor GC，并且只使用栈作为根集。实际上，进程字典、跟踪数据 ( trace data ) 和探测数据 ( probe data ) 等也包含在根集中。</p>
 </div>
 <div class="paragraph">
-<p>Let us look at how the call to garbage_collect in the gc_example
-behaves. The code will generate a string which is shared by two
-elements of a cons and a tuple, the tuple will the be eliminated
-resulting in garbage. After the GC there should only be one string on
-the heap. That is, first we generate the term
-{["Hello","Hello"], "Hello"} (sharing the same string "Hello" in
-all instances. Then we just keep the term ["Hello","Hello"] when
-triggering a GC.</p>
+<p>让我们看看在 gc_example 中调用 garbage_collect 的行为。代码将生成一个由 cons 和元组的两个元素共享的字符串，元组将被消除，从而产生垃圾。GC 之后，堆上应该只有一个字符串。也就是说，首先生成项式 <code>{["Hello","Hello"], "Hello"}</code> (在所有实例中共享相同的字符串"Hello")。然后在触发 GC 时只保留项式  <code>["Hello","Hello"]</code> 。</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -7190,12 +7090,7 @@ triggering a GC.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-We will take the opportunity to go through how you, on a
-linux system, can use gdb to examine the behavior of ERTS.
-You can of course use the debugger of your choice. If you already know
-how to use gdb or if you have no interest in going into the debugger
-you can just ignore the meta text about how to inspect the system and
-just look at the diagrams and the explanations of how the GC works.
+我们将借此机会介绍如何在 linux 系统上使用 gdb 检查 ERTS 的行为。当然，您可以使用自己选择的调试器。如果你已经知道如何使用 gdb，或者如果你对调试器没有兴趣，你可以忽略关于如何检查系统的元文本，而只是看看图表和关于 GC 如何工作的解释。
 </td>
 </tr>
 </table>
@@ -7224,8 +7119,7 @@ just look at the diagrams and the explanations of how the GC works.
 </div>
 </div>
 <div class="paragraph">
-<p>After compiling the example I start an erlang shell, test the call
-and prepare for a new call to the example (without hitting return):</p>
+<p>编译示例后，我启动了一个 erlang shell，测试调用并准备对示例进行新的调用 (不按下return键):</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7235,7 +7129,7 @@ and prepare for a new call to the example (without hitting return):</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Then I use gdb to attach to my erlang node (OS PID: 2955 in this case)</p>
+<p>然后使用 gdb 连接到 erlang 节点(本例中 OS PID: 2955)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7249,15 +7143,13 @@ and prepare for a new call to the example (without hitting return):</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Depending on your settings for ptrace_scope you might have to
-precede the gdb invocation with 'sudo'.
+根据你对 ptrace_scope 的设置，你可能必须在 gdb 调用之时使用 sudo。
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Then in gdb I set a breakpoint at the start of the main GC function and
-let the node continue:</p>
+<p>然后在 gdb 中，我在主 GC 函数的开始处设置了一个断点，然后让节点继续:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7267,7 +7159,7 @@ Continuing.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now I hit enter in the Erlang shell and execution stops at the breakpoint:</p>
+<p>现在我在 Erlang shell 中按回车键，执行在断点处停止:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7276,7 +7168,7 @@ Continuing.</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Now we can inspect the PCB of the process:</p>
+<p>现在我们可以检查进程的PCB：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7301,7 +7193,7 @@ $1 = {common = {id = 1408749273747, refc = {counter = 1}, tracer_proc = 18446744
 </div>
 </div>
 <div class="paragraph">
-<p>Wow, that was a lot of information. The interesting part is about the stack and the heap:</p>
+<p>哇，信息量真大啊。有趣的部分是关于栈和堆:</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7312,8 +7204,7 @@ heap = 0x7f67371458c8,</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>By using some helper scripts we can inspect the stack and the heap in a meaningful
-way. (see <a href="#AP-listings">Appendix C</a> for the definitions of the scripts in gdb_script.)</p>
+<p>通过使用一些 helper 脚本，我们可以以一种有意义的方式检查栈和堆。(gdb_script 中的脚本定义见 <a href="#AP-listings">Appendix C</a> 。)</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7341,31 +7232,16 @@ way. (see <a href="#AP-listings">Appendix C</a> for the definitions of the scrip
 </div>
 </div>
 <div class="paragraph">
-<p>Here we can see the heap of the process after it has allocated the
-list "Hello" on the heap and the cons containing that list twice, and
-the tuple containing the cons and the list. The <em>root set</em>, in this
-case the stack, contains a pointer to the cons containing two copies
-of the list. The tuple is dead, that is, there are no references to
-it.</p>
+<p>在这里，我们可以看到进程在堆上分配列表 “Hello” 和两次包含该列表的 cons，以及包含 cons 和列表的元组之后的堆。根集 (在本例中是栈) 包含一个指向 cons 的指针，cons 包含列表的两个副本。元组是死的，也就是说，没有对它的引用。</p>
 </div>
 <div class="paragraph">
-<p>The garbage collection starts by calculating the root set and by
-allocating a new heap (<em>to space</em>). By stepping into the GC code in the
-debugger you can see how this is done. I will not go through the
-details here. After a number of steps the execution will reach the
-point where all terms in the root set are copied to the new heap. This
-starts around (depending on version) line 1272 with a while loop in
-erl_gc.c.</p>
+<p>垃圾收集从计算根集和分配新堆开始。通过在调试器中进入GC代码，您可以看到这是如何完成的。这里不继续深入。在执行许多步骤之后，会到达根集中的所有项式都被复制到新堆的位置。这是从 erl_gc.c 中的 <code>while</code> 循环(取决于版本)第 1272 行开始的。</p>
 </div>
 <div class="paragraph">
-<p>In our case the root is a cons pointing to address 0x00007f95666597f0
-containing the letter (integer) 'H'. When a cons cell is moved from
-the current heap, called <em>from space</em>, to <em>to space</em> the value in the
-head (or car) is overwritten with a <em>moved cons</em> tag (the value 0).</p>
+<p>在我们的例子中，根是一个列表项，指向地址0x00007f95666597f0 包含字母 (整数) h。列表项被从当前堆 (from space)，移动到目标空间 (to space)，列表头的值被一个  <em>moved cons</em> tag (值为0) 覆写。</p>
 </div>
 <div class="paragraph">
-<p>After the first step where the root set is moved, the <em>from space</em>
-and the <em>to space</em> looks like this:</p>
+<p>在移动根集的第一步之后，from space和to space看起来是这样的：</p>
 </div>
 <div class="paragraph">
 <p>from space:</p>
@@ -7403,17 +7279,10 @@ and the <em>to space</em> looks like this:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>In <em>from space</em> the head of the first cons cell has been overwritten
-with 0 (looks like a tuple of size 0) and the tail has been overwritten
-with a forwarding pointer pointing to the new cons cell in the <em>to space</em>.
-In <em>to space</em> we now have the first cons cell with two
-backward pointers to the head and the tail of the cons in the <em>from space</em>.</p>
+<p>在  <em>from space</em> 中，第一个列表项的头部被 0 覆盖 (看起来像一个大小为 0 的元组)，尾部被一个指向 <em>to space</em> 中新的列表项的转发指针覆盖。在 to space 中，我们现在有了第一个列表项，它有两个反向指针指向 from space 中列表项的头和尾。</p>
 </div>
 <div class="paragraph">
-<p>When the collector is done with the root set the <em>to space</em> contains
-backward pointers to all still live terms. At this point the collector
-starts sweeping the <em>to space</em>. It uses two pointers n_hp pointing to
-the bottom of the unseen heap and n_htop pointing to the top of the heap.</p>
+<p>当收集器处理完根集时，to space 包含指向所有仍然活动的项式的向后指针。此时，收集器开始扫 <em>to space</em>。它使用两个指针 <code>n_hp</code> 指向不可见的堆的底部， <code>n_htop</code> 指向堆的顶部。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7423,10 +7292,7 @@ n_hp    0x00007f67371445b0 [0x00007f6737145909] cons -&gt; 0x00007f6737145908</p
 </div>
 </div>
 <div class="paragraph">
-<p>The GC will then look at the value pointed to by n_hp, in this case a
-cons pointing back to the <em>from space</em>. So it moves that cons to the to
-space, incrementing n_htop to make room for the new cons, and
-incrementing n_hp to indicate that the first cons is seen.</p>
+<p>然后 GC 将查看 <code>n_hp</code> 指向的值，在本例中是指回 <em>from space</em> 的列表项。因此，它将该列表项移到 to space 中，递增 n_htop 为新的列表项腾出空间，递增 <code>n_hp</code> 表示第一个列表项可见。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7460,7 +7326,7 @@ SEEN    0x00007f67371445b0 [0x00007f67371445c1] cons -&gt; 0x00007f67371445c0</p
 </div>
 </div>
 <div class="paragraph">
-<p>The same thing then happens with the second cons.</p>
+<p>同样的事情也会发生在第列表项上。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7495,12 +7361,13 @@ SEEN    0x00007f67371445b8 [0x00007f6737145919] cons -&gt; 0x00007f67371445d0
 SEEN    0x00007f67371445b0 [0x00007f67371445c1] cons -&gt; 0x00007f67371445c0</pre>
 </div>
 </div>
-<div class="paragraph">
-<p>The next element in <em>to space</em> is the immediate 72, which is only
-stepped over (with <code>n_hp++</code>). Then there is another cons which is moved.</p>
+<div class="literalblock">
+<div class="content">
+<pre>_to space_ 中的下一个元素是直接的72，它只被单步跳过 (使用 n_hp++)。然后还有另一个被移走的列表项。</pre>
+</div>
 </div>
 <div class="paragraph">
-<p>The same thing then happens with the second cons.</p>
+<p>同样的事情也会发生在第二个列表项上。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7538,11 +7405,7 @@ SEEN    0x00007f67371445b0 [0x00007f67371445c1] cons -&gt; 0x00007f67371445c0</p
 </div>
 </div>
 <div class="paragraph">
-<p>Now we come to a cons that points to a cell that has already been moved.
-The GC sees the IS_MOVED_CONS tag at 0x00007f6737145908 and copies the
-destination of the moved cell from the tail (<code>*n_hp++ = ptr[1];</code>). This
-way sharing is preserved during GC. This step does not affect <em>from space</em>,
-but the backward pointer in to space is rewritten.</p>
+<p>现在我们来看一个指向已经被移动的项的问题。GC 在 0x00007f6737145908 处看到 IS_MOVED_CONS 标记，并从尾部复制已被移动单元的目的地 (<code>*n_hp++ = ptr[1];</code>)。这种方式在 GC 期间保留了共享。此步骤不影响 <em>from space</em>，但 to space 中的反向指针将被重写。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7556,11 +7419,12 @@ SEEN    0x00007f67371445d0 [0x00007f67371445c1] cons -&gt; 0x00007f67371445c0
 SEEN    0x00007f67371445c8 [0x00007f67371458f9] cons -&gt; 0x00007f67371445e0
 SEEN    0x00007f67371445c0 [0x000000000000048f] 72
 SEEN    0x00007f67371445b8 [0x00007f6737145919] cons -&gt; 0x00007f67371445d0
+
 SEEN    0x00007f67371445b0 [0x00007f67371445c1] cons -&gt; 0x00007f67371445c0</pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Then the rest of the list (the string) is moved.</p>
+<p>然后，列表 (字符串) 的其余部分被移动。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7605,26 +7469,13 @@ SEEN    0x00007f67371445b0 [0x00007f67371445c1] cons -&gt; 0x00007f67371445c0</p
 </div>
 </div>
 <div class="paragraph">
-<p>There are some things to note from this example. When terms are
-created in Erlang they are created bottom up, starting with the
-elements. The garbage collector works top down, starting with the
-top level structure and then copying the elements. This means that
-the direction of the pointers change after the first GC. This has
-no real implications but it is good to know when looking at actual
-heaps. You can not assume that structures should be bottom up.</p>
+<p>这个例子中有一些需要注意的地方。在 Erlang 中创建项式时，它们是从元素开始自底向上创建的。垃圾收集器自顶向下工作，从顶层结构开始，然后复制元素。这意味着在第一次 GC 之后指针的方向会改变。这没有真正的含义，但是在查看实际堆时最好知道。你不能假设结构应该是自底向上的。</p>
 </div>
 <div class="paragraph">
-<p>Also note that the GC does a breath first traversal. This means that
-locality for one term most often is worse after a GC. With the size of
-modern caches this should not be a problem. You could of course create
-a pathological example where it becomes a problem, but you can also
-create a pathological example where a depth first approach would cause
-problems.</p>
+<p>还要注意，GC 执行一口气第一次遍历。这意味着某个项式的局部性在 GC 之后通常会变得更糟。以现代缓存的大小，这应该不是问题。当然，您可以创建一个病态的示例，使其成为一个问题，但是您也可以创建一个病态示例，使深度优先方法导致问题。</p>
 </div>
 <div class="paragraph">
-<p>The third thing to note is that sharing is preserved which is really
-important otherwise we might end up using more space after a GC than
-before.</p>
+<p>第三件要注意的事情是，共享被保留了，这非常重要，否则我们可能会在 GC 之后使用比以前更多的空间。</p>
 </div>
 <div class="paragraph">
 <p>Generations..</p>
@@ -7644,15 +7495,26 @@ bin_vheap_mature, bin_old_vheap_sz, bin_old_vheap+.</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_other_interesting_memory_areas"><a class="link" href="#_other_interesting_memory_areas">12.5. Other interesting memory areas</a></h3>
-<div class="sect3">
-<h4 id="_the_atom_table"><a class="link" href="#_the_atom_table">12.5.1. The atom table.</a></h4>
+<h3 id="_其他有趣的内存区域原书未完成"><a class="link" href="#_其他有趣的内存区域原书未完成">12.5. 其他有趣的内存区域（原书未完成）</a></h3>
 <div class="paragraph">
-<p>TODO
-==== Code
-TODO
-==== Constants
-TODO</p>
+<p>原书未完成</p>
+</div>
+<div class="sect3">
+<h4 id="_原子表原书未完成"><a class="link" href="#_原子表原书未完成">12.5.1. 原子表（原书未完成）</a></h4>
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_代码_原书未完成"><a class="link" href="#_代码_原书未完成">12.5.2. 代码 （原书未完成）</a></h4>
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_常量原书未完成"><a class="link" href="#_常量原书未完成">12.5.3. 常量（原书未完成）</a></h4>
+<div class="paragraph">
+<p>原书未完成</p>
 </div>
 </div>
 </div>
@@ -7754,20 +7616,20 @@ process. A driver port requires a driver to be loaded in the Erlang
 node.</p>
 </div>
 <div class="paragraph">
-<p>All ports are created by a call to erlang:open_port(PortName,
-PortSettings).</p>
+<p>All ports are created by a call to <code>erlang:open_port(PortName,
+PortSettings)</code>.</p>
 </div>
 <div class="paragraph">
-<p>A file descriptor port is opened with {fd, In, Out} as the
-PortName. This class of ports is used by some internal ERTS servers
+<p>A file descriptor port is opened with <code>{fd, In, Out}</code> as the
+<code>PortName</code>. This class of ports is used by some internal ERTS servers
 like the old shell. They are considered to not be very efficient and
 hence seldom used.</p>
 </div>
 <div class="paragraph">
 <p>An external program port can be used to execute any program in the
 native OS of the Erlang node. To open an external program port you
-give either the argument {spawn, Command} or {spawn_executable,
-FileName} with the name of the external program. This is the easiest
+give either the argument <code>{spawn, Command}</code> or <code>{spawn_executable,
+FileName}</code> with the name of the external program. This is the easiest
 and one of the safest way to interact with code written in other
 programming languages. Since the external program is executed in its
 own OS process it will not bring down the Erlang node if it
@@ -7777,8 +7639,8 @@ linked in driver or a NIF).</p>
 </div>
 <div class="paragraph">
 <p>A driver port requires that a driver program has been loaded with
-ERTS. Such a port is started with either {spawn, Command} or
-{spawn_driver, Command}. Writing your own linked in driver can be an
+ERTS. Such a port is started with either <code>{spawn, Command}</code> or
+<code>{spawn_driver, Command}</code>. Writing your own linked in driver can be an
 efficient way to interface for example some C library code that you
 would like to use. Note that a linked in driver executes in the same
 OS process as the Erlang node and a crash in the driver will bring
@@ -8192,7 +8054,7 @@ idea. To improve things, we can use a couple of redbug options.  The
 option <code>{arity, true}</code> instructs redbug to only display the number of
 input arguments for the given function, instead of their actual
 value. The <code>{print_return, false}</code> option tells Redbug not to display
-the return value of the function call, and to display a <code>&#8230;&#8203;</code>  symbol,
+the return value of the function call, and to display a <code>...</code>  symbol,
 instead. Let’s see these options in action.</p>
 </div>
 <div class="listingblock">
@@ -10310,7 +10172,7 @@ out the allocated stack slots with <code>NIL</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">170</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>bs_start_match4</strong> <em>Fail</em>, <em>Bin</em>, <em>Live</em>, <em>Dst</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">As bs_start_match3, but the fail label can be 'no_fail' when we know        it will never fail at runtime, or 'resume' when we know the input is        a match context.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">As bs_start_match3, but the fail label can be <em>no_fail</em> when we know        it will never fail at runtime, or <em>resume</em> when we know the input is        a match context.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="line-through">bs_test_tail</span></p></td>
@@ -10975,7 +10837,7 @@ out the allocated stack slots with <code>NIL</code>.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">161</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><strong>raw_raise</strong></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This instruction works like the erlang:raise/3 BIF, except that the        stacktrace in x(2) must be a raw stacktrace.        x(0) is the class of the exception (error, exit, or throw),        x(1) is the exception term, and x(2) is the raw stackframe.        If x(0) is not a valid class, the instruction will not throw an        exception, but store the atom 'badarg' in x(0) and execute the        next instruction.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">This instruction works like the erlang:raise/3 BIF, except that the        stacktrace in x(2) must be a raw stacktrace.        x(0) is the class of the exception (error, exit, or throw),        x(1) is the exception term, and x(2) is the raw stackframe.        If x(0) is not a valid class, the instruction will not throw an        exception, but store the atom <em>badarg</em> in x(0) and execute the        next instruction.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">recv_mark</p></td>
@@ -11132,7 +10994,7 @@ out the allocated stack slots with <code>NIL</code>.</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">An immediate atom value, e.g. 'foo'</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">An immediate atom value, e.g. <em>foo</em></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">c</p></td>
@@ -12072,7 +11934,7 @@ out the allocated stack slots with <code>NIL</code>.</p>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">is_boolean</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">f rxy</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Check whether a value is atom 'true' or 'false' and jump otherwise</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Check whether a value is atom <em>true</em> or <em>false</em> and jump otherwise</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">is_float</p></td>
@@ -13331,12 +13193,12 @@ out the allocated stack slots with <code>NIL</code>.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="BIB-References"><a class="link" href="#BIB-References">References</a></h2>
+<h2 id="BIB-References"><a class="link" href="#BIB-References">22. References</a></h2>
 <div class="sectionbody">
-<div class="ulist bibliography">
-<ul class="bibliography">
+<div class="ulist">
+<ul>
 <li>
-<p><a id="warren"></a>[warren] D. H. D. Warren. An Abstract Prolog Instruction Set:
+<p>[<a id="warren"></a>] D. H. D. Warren. An Abstract Prolog Instruction Set:
 Technical Note 309, Artificial Intelligence Center, SRI International, 333 Ravenswood Ave, Menlo Park, CA 94025, October 1983.</p>
 </li>
 </ul>
@@ -13350,15 +13212,15 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 <a href="#_footnoteref_1">1</a>. 此处的翻译是在根据 <a href="http://www.erlang.org/eeps/eep-0018.html">EEP 18</a> (Erlang增强建议18:"JSON bifs")进行的
 </div>
 <div class="footnote" id="_footnotedef_2">
-<a href="#_footnoteref_2">2</a>. We ignore tracing here which will add a trace token to the size of the message, and always use a heap fragment.
+<a href="#_footnoteref_2">2</a>. 在这里，我们忽略 tracing，它会在消息大小上增加跟踪标记的空间，并且会使用堆片段
 </div>
 <div class="footnote" id="_footnotedef_3">
-<a href="#_footnoteref_3">3</a>. The -sizeof(Eterm) comes from mem in ErlHeapFragment already having the size of 1 Eterm
+<a href="#_footnoteref_3">3</a>. 减去一个 sizeof(Eterm) 的原因是，ErlHeapFragment 的内存中已经包含了一个 Eterm 的大小
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-14 20:28:03 +0800
+Last updated 2020-10-17 01:15:34 +0800
 </div>
 </div>
 <style>
