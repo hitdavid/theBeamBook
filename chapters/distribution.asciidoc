@@ -1,4 +1,4 @@
 [[CH-Distribution]]
-== Distribution（原书未完成）
+== 分布式（原书未完成）
 
 原书未完成

@@ -6,11 +6,27 @@
 
 书籍的 Github Repository 为：https://github.com/happi/theBeamBook
 
-中文翻译工程，翻译人：杜宇（hitdavid），诚邀共同翻译者，可以邮件到 hitdavid@gmail.com 或者其他方式联系我。
+翻译人：杜宇（hitdavid），前火币网技术总监，曾任多家公司中层管理岗位，对技术和技术管理有一定经验积累。
+
+中文翻译工程，诚邀共同翻译者，可以邮件到 hitdavid@gmail.com 或者其他方式联系我。
 
 最新翻译版本预览：https://hitdavid.github.io/theBeamBook/[中文网页版]
 
-因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠，以下附比特币收款地址和支付宝二维码，谢谢。
+因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠：
+
+1元：觉得这本书挺好玩
+
+5元：翻译不易，支持一下
+
+10元：了解了 ERTS，有点收获
+
+50元：对我很有帮助
+
+100元：太棒了，就想要这个，今后继续加油
+
+以下附比特币收款地址和支付宝二维码，谢谢。
+
+
 
 BitCoin Address: 12JdwAdCZugkrtiPwCGaT4qetbixvZM4Dg
 

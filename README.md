@@ -2,11 +2,31 @@
 
 # The BEAM Book 简体中文翻译
 
-中文翻译工程，翻译人 hitdavid，诚邀共同翻译者，可以邮件到 hitdavid@gmail.com 或者其他方式联系我。
+本书来自 Github，项目版权协议为：CC-BY-4.0 License。
 
-由于原书未出版，目前翻译工作是义工，欢迎 star 同时接受捐赠，多少不限。您的资助是对我最好的鼓励。
+书籍的 Github Repository 为：https://github.com/happi/theBeamBook
 
-当前翻译版本预览：[中文网页版](https://hitdavid.github.io/theBeamBook/). （最新进展：翻译完成前 11 章，第 12 章正在翻译中）
+翻译人：杜宇（hitdavid），前火币网技术总监，曾任多家公司中层管理岗位，对技术和技术管理有一定经验积累。
+
+中文翻译工程，诚邀共同翻译者，可以邮件到 hitdavid@gmail.com 或者其他方式联系我。
+
+当前翻译版本预览：[中文网页版](https://hitdavid.github.io/theBeamBook/). （最新进展：翻译完成第一卷）
+
+因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠：
+
+1元：觉得这本书挺好玩
+
+5元：翻译不易，支持一下
+
+10元：了解了 ERTS，有点收获
+
+50元：对我很有帮助
+
+100元：太棒了，就想要这个，今后继续加油
+
+以下附比特币收款地址和支付宝二维码，谢谢。
+
+
 
 BitCoin Address: 12JdwAdCZugkrtiPwCGaT4qetbixvZM4Dg
 

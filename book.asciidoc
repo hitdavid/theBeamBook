@@ -1,5 +1,5 @@
 = Erlang 运行时系统（The Erlang Runtime System）
-:author: Erik Stenman (杜宇 翻译)
+:author: Erik Stenman 等著，杜宇 翻译
 :encoding: utf-8
 :lang: zh_CN
 :toc: left
@@ -23,7 +23,7 @@ include::chapters/tip.asciidoc[中文版前言]
 
 // Part I
 [[P-ERTS]]
-= 理解 ERTS
+= 卷一：理解 ERTS
 
 include::chapters/introduction.asciidoc[Erlang 运行时系统介绍]
 
@@ -61,7 +61,7 @@ include::chapters/hipe.asciidoc[]
 
 // Part II
 [[P-Running]]
-= 运行 ERTS
+= 卷二：运行 ERTS
 
 include::chapters/tracing.asciidoc[]
 

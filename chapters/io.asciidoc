@@ -1,43 +1,28 @@
 [[CH-IO]]
 == IO、端口和网络
 
-Within Erlang, all communication is done by asynchronous signaling.
-The communication between an Erlang node and the outside world is done
-through a _port_. A port is an interface between Erlang processes and
-an external resource. In early versions of Erlang a port behaved very
-much in the same way as a process and you communicated by sending and
-receiving signals. You can still communicate with ports this way but
-there are also a number of BIFs to communicate directly with a port.
+在Erlang中，所有通信都是通过异步信令 (signaling) 完成的。Erlang节点和外部世界之间的通信是通过端口 (_port_) 完成的。端口是Erlang进程和外部资源之间的接口。在Erlang的早期版本中，端口的行为与进程非常相似，您通过发送和接收信号进行通信。您仍然可以以这种方式与端口通信，但是也有许多 bif 可以直接与端口通信。
 
-In this chapter we will look at how ports are used as a common
-interface for all IO, how ports communicate with the outside world and
-how Erlang processes communicate with ports. But first we will look
-at how standard IO works on a higher level.
+在本章中，我们将了解端口是如何作为所有IO的公共接口使用的，端口是如何与外部世界进行通信的，以及Erlang进程是如何与端口进行通信的。但首先我们将看看标准IO如何在更高的层次上工作。
 
-=== Standard IO ===
+=== 标准 IO 
 
-* IO protocol
+* IO协议
 * group leader
-* erlang:display -- a BIF that sends directly to node's std out
-* io:format -- sends through io protocol and the group leader
-* Redirecting standard IO at startup (detached mode)
-* Standard in and out
+* erlang:display -- 直接发送到节点 std out 的 BIF
+* io:format -- 通过IO协议和组长发送
+* 启动时重定向标准IO(分离模式)
+* 标准输入输出
 
-=== Ports ===
+=== 端口
 
-A port is the process like interface between Erlang processes and
-everything that is not Erlang processes. The programmer can to
-a large extent pretend that everything in the world behaves like
-an Erlang process and communicate through message passing.
+端口是 Erlang 进程和非 Erlang 进程之间的类进程的接口。程序员可以在很大程度上假装世界上的一切都像 Erlang 进程一样运行，并通过消息传递进行通信。
 
-Each port has an owner, more on this later, but all processes
-who know about the port can send messages to the port.
-In figure REF we see how a process can communicate with the
-port and how the port is communicating to the world outside the
-Erlang node.
+每个端口都有一个所有者(稍后详细介绍)，但是所有了解该端口的进程都可以向该端口发送消息。在 xref:port_communication 中，我们看到了进程如何与端口通信，以及端口如何与 Erlang 节点之外的世界通信。
 
 [[port_communication]]
 .Port Communication
+
 [ditaa]
 ----
       Erlang Node
@@ -58,66 +43,28 @@ Erlang node.
 
 ----
 
-Process P1 has opened a port (Port1) to a file, and is the owner of
-the port and can receive messages from the port. Process P2 also has a
-handle to the port and can send messages to the port. The processes
-and the port reside in an Erlang node. The file lives in the file and
-operating system on the outside of the Erlang node.
+进程 P1 打开了一个文件的端口 (Port1)，它是该端口的所有者，可以从该端口接收消息。进程 P2 也有一个端口的句柄，可以向该端口发送消息。进程和端口驻留在 Erlang 节点中。文件位于 Erlang 节点外部的文件和操作系统中。
 
+如果端口所有者死亡或被终止，该端口也会被终止。当端口终止时，也应该清除所有外部资源。对于 Erlang 附带的所有端口来说都是如此，如果您实现自己的端口，那么应该确保它执行此清理工作。
 
-If the port owner dies or is terminated the port is also killed.
-When a port terminates all external resources should also be cleaned
-up. This is true for all ports that come with Erlang and if you
-implement your own port you should make sure it does this cleanup.
+==== 不同类型的 Ports
 
-==== Different types of Ports ====
+有三种不同的端口:文件描述符、外部程序和驱动程序。文件描述符端口使进程能够访问已经打开的文件描述符。到外部程序的端口将外部程序作为单独的 OS 进程调用。驱动程序端口需要在 Erlang 节点中加载驱动程序。
 
-There are three different classes of ports: file descriptors, external
-programs and drivers. A file descriptor port makes it possible for a
-process to access an already opened file descriptor. A port to an
-external program invokes the external program as a separate OS
-process. A driver port requires a driver to be loaded in the Erlang
-node.
+所有端口都是通过调用 +erlang:open_port(PortName, PortSettings)+ 创建的。
 
-All ports are created by a call to +erlang:open_port(PortName,
-PortSettings)+.
+打开文件描述符端口时，以 +{fd, In, Out}+ 作为 PortName 参数。此类端口由一些内部 ERTS 服务器 (如旧shell) 使用。它们被认为效率不高，因此很少使用。
 
-A file descriptor port is opened with +{fd, In, Out}+ as the
-+PortName+. This class of ports is used by some internal ERTS servers
-like the old shell. They are considered to not be very efficient and
-hence seldom used.
+外部程序端口可以用于执行 Erlang 节点所在的本机操作系统中的任何程序。要打开一个外部程序端口，您可以使用参数 +{spawn, Command}+ 或 +{spawn_executable, FileName}+ 作为外部程序的名称。这是与用其他编程语言编写的代码进行交互的最简单也是最安全的方法之一。由于外部程序是在它自己的 OS 进程中执行的，所以当 Erlang 节点崩溃时，它不会停止运行。(它当然有可能会耗尽所有的CPU或内存，或者做许多其他事情导致整个操作系统崩溃，但它比一个链接的驱动程序或一个 NIF 要安全得多)。
 
-An external program port can be used to execute any program in the
-native OS of the Erlang node. To open an external program port you
-give either the argument +{spawn, Command}+ or +{spawn_executable,
-FileName}+ with the name of the external program. This is the easiest
-and one of the safest way to interact with code written in other
-programming languages. Since the external program is executed in its
-own OS process it will not bring down the Erlang node if it
-crashes. (It can of course use up all CPU or memory or do a number of
-other things to bring down the whole OS, but it is much safer than a
-linked in driver or a NIF).
+驱动程序端口要求驱动程序已经加载到 ERTS。这样的端口由 +{spawn, Command}+ 或 +{spawn_driver, Command}+ 启动。编写自己的链入驱动程序可以是一种有效的方式来使用一些你想用的 C 库代码做接口。请注意，一个链入驱动程序与 Erlang 节点在同一个操作系统进程中执行，驱动程序的崩溃将导致整个节点崩溃。关于如何编写 Erlang 驱动程序的详细信息可以在 xref:CH-C[] 中找到。
 
-A driver port requires that a driver program has been loaded with
-ERTS. Such a port is started with either +{spawn, Command}+ or
-+{spawn_driver, Command}+. Writing your own linked in driver can be an
-efficient way to interface for example some C library code that you
-would like to use. Note that a linked in driver executes in the same
-OS process as the Erlang node and a crash in the driver will bring
-down the whole node. Details about how to write an Erlang driver in
-general can be found in xref:CH-C[].
-
-Erlang/OTP comes with a number port drivers implementing the
-predefined port types. There are the common drivers available on all
-platforms: `tcp_inet`, `udp_inet`, `sctp_inet`, `efile`, `zlib_drv`,
-`ram_file_drv`, `binary_filer`, `tty_sl`. These drivers are used to
-implement e.g. file handling and sockets in Erlang. On Windows there
-is also a driver to access the registry: `registry_drv`. And on most
-platforms there are example drivers to use when implementing your own
-driver like: `multi_drv` and `sig_drv`.
+Erlang/OTP 附带了一些实现预定义端口类型的端口驱动程序。在所有平台上都有通用的驱动程序： `tcp_inet`, `udp_inet`, `sctp_inet`, `efile`, `zlib_drv`,
+`ram_file_drv`, `binary_filer`, `tty_sl`。这些驱动程序用于实现 Erlang 中的文件处理和套接字。在 Windows 上，还有一个访问注册表的驱动程序： `registry_drv`。在大多数平台上，在实现自己的驱动程序时都有示例驱动程序可以使用，比如： `multi_drv` 和 `sig_drv`。
 
 [[entities_on_node]]
 .Entities on an Erlang Node
+
 [ditaa]
 ----
  +-----------------------------------------------------------------------------------------------------+
@@ -169,15 +116,19 @@ Commands
 
 Implementation
 
-See chapter xref:CH-C[] for details of how to implement your own
-linked in driver.
+关于如何实现你自己的链接驱动程序，请参阅 xref:CH-C[]。
 
-=== Distributed Erlang ===
+=== 分布式 Erlang
+
+原书未完成
 
 // How Erlang nodes communicate.
 // RPC
 
-=== Sockets, UDP and TCP ===
+=== Sockets, UDP and TCP 
+
+原书未完成
+
 // Sockets.
 // Getting info on ports and sockets.
 // Tweaking.
