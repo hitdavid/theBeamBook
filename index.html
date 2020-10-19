@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
-<meta name="author" content="Erik Stenman (杜宇 翻译)">
+<meta name="author" content="Erik Stenman 等著，杜宇 翻译">
 <title>Erlang 运行时系统（The Erlang Runtime System）</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -445,301 +445,301 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>Erlang 运行时系统（The Erlang Runtime System）</h1>
 <div class="details">
-<span id="author" class="author">Erik Stenman (杜宇 翻译)</span><br>
+<span id="author" class="author">Erik Stenman 等著，杜宇 翻译</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_preface">Preface</a>
+<li><a href="#_原书前言">1. 原书前言</a>
 <ul class="sectlevel2">
-<li><a href="#_阅读方法">阅读方法</a></li>
-<li><a href="#_erlang">Erlang</a></li>
-<li><a href="#_致谢">致谢</a></li>
+<li><a href="#_阅读方法">1.1. 阅读方法</a></li>
+<li><a href="#_erlang">1.2. Erlang</a></li>
+<li><a href="#_致谢">1.3. 致谢</a></li>
 </ul>
 </li>
-<li><a href="#CHChinese_Version">1. 中文版前言</a></li>
-<li><a href="#P-ERTS">I: 理解 ERTS</a>
+<li><a href="#CHChinese_Version">2. 中文版前言</a></li>
+<li><a href="#P-ERTS">I: 卷一：理解 ERTS</a>
 <ul class="sectlevel1">
-<li><a href="#introduction">2. Erlang 运行时系统介绍</a>
+<li><a href="#introduction">3. Erlang 运行时系统介绍</a>
 <ul class="sectlevel2">
-<li><a href="#_erts_和_erlang_运行时系统">2.1. ERTS 和 Erlang 运行时系统</a></li>
-<li><a href="#_如何阅读本书">2.2. 如何阅读本书</a></li>
-<li><a href="#ERTS">2.3. ERTS</a>
+<li><a href="#_erts_和_erlang_运行时系统">3.1. ERTS 和 Erlang 运行时系统</a></li>
+<li><a href="#_如何阅读本书">3.2. 如何阅读本书</a></li>
+<li><a href="#ERTS">3.3. ERTS</a>
 <ul class="sectlevel3">
-<li><a href="#_erlang_节点_erts">2.3.1. Erlang 节点 (ERTS)</a></li>
-<li><a href="#_执行环境中的分层">2.3.2. 执行环境中的分层</a></li>
-<li><a href="#_分布式">2.3.3. 分布式</a></li>
-<li><a href="#_erlang_编译器">2.3.4. Erlang 编译器</a></li>
-<li><a href="#_erlang_虚拟机_beam">2.3.5. Erlang 虚拟机: BEAM</a></li>
-<li><a href="#_进程">2.3.6. 进程</a></li>
-<li><a href="#_调度器">2.3.7. 调度器</a></li>
-<li><a href="#_erlang_标签方案">2.3.8. Erlang 标签方案</a></li>
-<li><a href="#_内存处理">2.3.9. 内存处理</a></li>
-<li><a href="#_解释器和命令行接口">2.3.10. 解释器和命令行接口</a></li>
+<li><a href="#_erlang_节点_erts">3.3.1. Erlang 节点 (ERTS)</a></li>
+<li><a href="#_执行环境中的分层">3.3.2. 执行环境中的分层</a></li>
+<li><a href="#_分布式">3.3.3. 分布式</a></li>
+<li><a href="#_erlang_编译器">3.3.4. Erlang 编译器</a></li>
+<li><a href="#_erlang_虚拟机_beam">3.3.5. Erlang 虚拟机: BEAM</a></li>
+<li><a href="#_进程">3.3.6. 进程</a></li>
+<li><a href="#_调度器">3.3.7. 调度器</a></li>
+<li><a href="#_erlang_标签方案">3.3.8. Erlang 标签方案</a></li>
+<li><a href="#_内存处理">3.3.9. 内存处理</a></li>
+<li><a href="#_解释器和命令行接口">3.3.10. 解释器和命令行接口</a></li>
 </ul>
 </li>
-<li><a href="#Other_Erlang_Implementations">2.4. 其他的 Erlang 实现</a>
+<li><a href="#Other_Erlang_Implementations">3.4. 其他的 Erlang 实现</a>
 <ul class="sectlevel3">
-<li><a href="#_erlang_on_xen">2.4.1. Erlang on Xen</a></li>
-<li><a href="#_erjang">2.4.2. Erjang</a></li>
+<li><a href="#_erlang_on_xen">3.4.1. Erlang on Xen</a></li>
+<li><a href="#_erjang">3.4.2. Erjang</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-Compiler">3. 编译器</a>
+<li><a href="#CH-Compiler">4. 编译器</a>
 <ul class="sectlevel2">
-<li><a href="#_编译_erlang">3.1. 编译 Erlang</a></li>
-<li><a href="#_产生中间结果输出">3.2. 产生中间结果输出</a></li>
-<li><a href="#_编译器的遍pass">3.3. 编译器的遍（Pass）</a>
+<li><a href="#_编译_erlang">4.1. 编译 Erlang</a></li>
+<li><a href="#_产生中间结果输出">4.2. 产生中间结果输出</a></li>
+<li><a href="#_编译器的遍pass">4.3. 编译器的遍（Pass）</a>
 <ul class="sectlevel3">
-<li><a href="#_编译器_passerlang_预处理器_epp">3.3.1. 编译器 Pass：Erlang 预处理器 (epp)</a></li>
-<li><a href="#SEC-parse_transform">3.3.2. 编译器 Pass: 解析转换（Parse Transformations)</a></li>
-<li><a href="#_编译器_passlinter">3.3.3. 编译器 Pass：Linter</a></li>
-<li><a href="#_编译器_pass保存抽象语法树ast">3.3.4. 编译器 Pass：保存抽象语法树（AST）</a></li>
-<li><a href="#_编译器_passexpand">3.3.5. 编译器 Pass：Expand</a></li>
-<li><a href="#_编译器_passcore_erlang">3.3.6. 编译器 Pass：Core Erlang</a></li>
-<li><a href="#_编译器_passkernel_erlang">3.3.7. 编译器 Pass：Kernel Erlang</a></li>
-<li><a href="#_编译器_passbeam_代码">3.3.8. 编译器 Pass：BEAM 代码</a></li>
-<li><a href="#_编译器_pass原生_native_代码">3.3.9. 编译器 Pass：原生 (Native) 代码</a></li>
+<li><a href="#_编译器_passerlang_预处理器_epp">4.3.1. 编译器 Pass：Erlang 预处理器 (epp)</a></li>
+<li><a href="#SEC-parse_transform">4.3.2. 编译器 Pass: 解析转换（Parse Transformations)</a></li>
+<li><a href="#_编译器_passlinter">4.3.3. 编译器 Pass：Linter</a></li>
+<li><a href="#_编译器_pass保存抽象语法树ast">4.3.4. 编译器 Pass：保存抽象语法树（AST）</a></li>
+<li><a href="#_编译器_passexpand">4.3.5. 编译器 Pass：Expand</a></li>
+<li><a href="#_编译器_passcore_erlang">4.3.6. 编译器 Pass：Core Erlang</a></li>
+<li><a href="#_编译器_passkernel_erlang">4.3.7. 编译器 Pass：Kernel Erlang</a></li>
+<li><a href="#_编译器_passbeam_代码">4.3.8. 编译器 Pass：BEAM 代码</a></li>
+<li><a href="#_编译器_pass原生_native_代码">4.3.9. 编译器 Pass：原生 (Native) 代码</a></li>
 </ul>
 </li>
-<li><a href="#_其他编译器工具">3.4. 其他编译器工具</a>
+<li><a href="#_其他编译器工具">4.4. 其他编译器工具</a>
 <ul class="sectlevel3">
-<li><a href="#_leex">3.4.1. Leex</a></li>
-<li><a href="#_yecc">3.4.2. Yecc</a></li>
+<li><a href="#_leex">4.4.1. Leex</a></li>
+<li><a href="#_yecc">4.4.2. Yecc</a></li>
 </ul>
 </li>
-<li><a href="#_语法工具和_merl">3.5. 语法工具和 Merl</a></li>
-<li><a href="#_编译_elixir">3.6. 编译 Elixir</a></li>
+<li><a href="#_语法工具和_merl">4.5. 语法工具和 Merl</a></li>
+<li><a href="#_编译_elixir">4.6. 编译 Elixir</a></li>
 </ul>
 </li>
-<li><a href="#CH-Processes">4. 进程</a>
+<li><a href="#CH-Processes">5. 进程</a>
 <ul class="sectlevel2">
-<li><a href="#_什么是进程">4.1. 什么是进程？</a>
+<li><a href="#_什么是进程">5.1. 什么是进程？</a>
 <ul class="sectlevel3">
-<li><a href="#_从终端获得进程列表">4.1.1. 从终端获得进程列表</a></li>
-<li><a href="#_程序化的进程探查">4.1.2. 程序化的进程探查</a></li>
-<li><a href="#_使用_observer_检查进程">4.1.3. 使用 Observer 检查进程</a></li>
+<li><a href="#_从终端获得进程列表">5.1.1. 从终端获得进程列表</a></li>
+<li><a href="#_程序化的进程探查">5.1.2. 程序化的进程探查</a></li>
+<li><a href="#_使用_observer_检查进程">5.1.3. 使用 Observer 检查进程</a></li>
 </ul>
 </li>
-<li><a href="#_进程就是内存">4.2. 进程就是内存</a></li>
-<li><a href="#_进程控制块pcb">4.3. 进程控制块（PCB）</a></li>
-<li><a href="#_垃圾收集器_gc">4.4. 垃圾收集器 (GC)</a></li>
-<li><a href="#_信箱mailbox和消息传递">4.5. 信箱（Mailbox）和消息传递</a>
+<li><a href="#_进程就是内存">5.2. 进程就是内存</a></li>
+<li><a href="#_进程控制块pcb">5.3. 进程控制块（PCB）</a></li>
+<li><a href="#_垃圾收集器_gc">5.4. 垃圾收集器 (GC)</a></li>
+<li><a href="#_信箱mailbox和消息传递">5.5. 信箱（Mailbox）和消息传递</a>
 <ul class="sectlevel3">
-<li><a href="#_并行发送消息">4.5.1. 并行发送消息</a></li>
+<li><a href="#_并行发送消息">5.5.1. 并行发送消息</a></li>
 </ul>
 </li>
-<li><a href="#_无锁消息传递">4.6. 无锁消息传递</a>
+<li><a href="#_无锁消息传递">5.6. 无锁消息传递</a>
 <ul class="sectlevel3">
-<li><a href="#_消息的内存区域">4.6.1. 消息的内存区域</a></li>
-<li><a href="#_检查消息处理">4.6.2. 检查消息处理</a></li>
-<li><a href="#_向进程发送消息的过程">4.6.3. 向进程发送消息的过程</a></li>
-<li><a href="#_消息接收">4.6.4. 消息接收</a></li>
-<li><a href="#_消息传递调优">4.6.5. 消息传递调优</a></li>
+<li><a href="#_消息的内存区域">5.6.1. 消息的内存区域</a></li>
+<li><a href="#_检查消息处理">5.6.2. 检查消息处理</a></li>
+<li><a href="#_向进程发送消息的过程">5.6.3. 向进程发送消息的过程</a></li>
+<li><a href="#_消息接收">5.6.4. 消息接收</a></li>
+<li><a href="#_消息传递调优">5.6.5. 消息传递调优</a></li>
 </ul>
 </li>
-<li><a href="#_进程字典pd">4.7. 进程字典（PD）</a></li>
-<li><a href="#_深入">4.8. 深入</a></li>
+<li><a href="#_进程字典pd">5.7. 进程字典（PD）</a></li>
+<li><a href="#_深入">5.8. 深入</a></li>
 </ul>
 </li>
-<li><a href="#CH-TypeSystem">5. Erlang 类型系统和标签</a>
+<li><a href="#CH-TypeSystem">6. Erlang 类型系统和标签</a>
 <ul class="sectlevel2">
-<li><a href="#_erlang_类型系统">5.1. Erlang 类型系统</a></li>
-<li><a href="#_标签方案">5.2. 标签方案</a>
+<li><a href="#_erlang_类型系统">6.1. Erlang 类型系统</a></li>
+<li><a href="#_标签方案">6.2. 标签方案</a>
 <ul class="sectlevel3">
-<li><a href="#_即时类型的标签">5.2.1. 即时类型的标签</a></li>
-<li><a href="#_装箱项式的标签">5.2.2. 装箱项式的标签</a></li>
+<li><a href="#_即时类型的标签">6.2.1. 即时类型的标签</a></li>
+<li><a href="#_装箱项式的标签">6.2.2. 装箱项式的标签</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-BEAM">6. Erlang 虚拟机: BEAM</a>
+<li><a href="#CH-BEAM">7. Erlang 虚拟机: BEAM</a>
 <ul class="sectlevel2">
-<li><a href="#_工作内存_堆栈机并不是">6.1. 工作内存: 堆栈机？并不是！</a></li>
-<li><a href="#SEC-Dispatch_directly_threaded_code">6.2. 分派(Dispatch)：直接线程代码</a></li>
-<li><a href="#_调度非抢占规约值计数">6.3. 调度：非抢占，规约值计数</a></li>
-<li><a href="#_内存管理垃圾收集">6.4. 内存管理：垃圾收集</a></li>
-<li><a href="#_beam_一个虚拟机">6.5. BEAM: 一个虚拟机</a></li>
+<li><a href="#_工作内存_堆栈机并不是">7.1. 工作内存: 堆栈机？并不是！</a></li>
+<li><a href="#SEC-Dispatch_directly_threaded_code">7.2. 分派(Dispatch)：直接线程代码</a></li>
+<li><a href="#_调度非抢占规约值计数">7.3. 调度：非抢占，规约值计数</a></li>
+<li><a href="#_内存管理垃圾收集">7.4. 内存管理：垃圾收集</a></li>
+<li><a href="#_beam_一个虚拟机">7.5. BEAM: 一个虚拟机</a></li>
 </ul>
 </li>
-<li><a href="#CH-beam_modules">7. 模块和 BEAM 文件格式</a>
+<li><a href="#CH-beam_modules">8. 模块和 BEAM 文件格式</a>
 <ul class="sectlevel2">
-<li><a href="#modules">7.1. 模块</a></li>
-<li><a href="#BEAM_files">7.2. BEAM 文件格式</a>
+<li><a href="#modules">8.1. 模块</a></li>
+<li><a href="#BEAM_files">8.2. BEAM 文件格式</a>
 <ul class="sectlevel3">
-<li><a href="#atom_table_chunk">7.2.1. 原子表块</a></li>
-<li><a href="#export_table_chunk">7.2.2. 导出表块</a></li>
-<li><a href="#import_table_chunk">7.2.3. 导入表块</a></li>
-<li><a href="#code_chunk">7.2.4. 代码块</a></li>
-<li><a href="#_字符串表块">7.2.5. 字符串表块</a></li>
-<li><a href="#_属性块">7.2.6. 属性块</a></li>
-<li><a href="#_编译信息块">7.2.7. 编译信息块</a></li>
-<li><a href="#_局部函数表块">7.2.8. 局部函数表块</a></li>
-<li><a href="#_字面值表块">7.2.9. 字面值表块</a></li>
-<li><a href="#_抽象代码块">7.2.10. 抽象代码块</a></li>
-<li><a href="#_压缩和加密原书未完成">7.2.11. 压缩和加密（原书未完成）</a></li>
-<li><a href="#_函数跟踪块_已过时">7.2.12. 函数跟踪块 (已过时)</a></li>
-<li><a href="#_整合回顾原书未完成">7.2.13. 整合回顾（原书未完成）</a></li>
-<li><a href="#SEC-BeamModulesCTE">7.2.14. 紧凑的项式编码</a></li>
+<li><a href="#atom_table_chunk">8.2.1. 原子表块</a></li>
+<li><a href="#export_table_chunk">8.2.2. 导出表块</a></li>
+<li><a href="#import_table_chunk">8.2.3. 导入表块</a></li>
+<li><a href="#code_chunk">8.2.4. 代码块</a></li>
+<li><a href="#_字符串表块">8.2.5. 字符串表块</a></li>
+<li><a href="#_属性块">8.2.6. 属性块</a></li>
+<li><a href="#_编译信息块">8.2.7. 编译信息块</a></li>
+<li><a href="#_局部函数表块">8.2.8. 局部函数表块</a></li>
+<li><a href="#_字面值表块">8.2.9. 字面值表块</a></li>
+<li><a href="#_抽象代码块">8.2.10. 抽象代码块</a></li>
+<li><a href="#_压缩和加密原书未完成">8.2.11. 压缩和加密（原书未完成）</a></li>
+<li><a href="#_函数跟踪块_已过时">8.2.12. 函数跟踪块 (已过时)</a></li>
+<li><a href="#_整合回顾原书未完成">8.2.13. 整合回顾（原书未完成）</a></li>
+<li><a href="#SEC-BeamModulesCTE">8.2.14. 紧凑的项式编码</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-Instructions">8. 通用 BEAM 指令集</a>
+<li><a href="#CH-Instructions">9. 通用 BEAM 指令集</a>
 <ul class="sectlevel2">
-<li><a href="#_指令定义">8.1. 指令定义</a></li>
-<li><a href="#_beam_代码清单">8.2. BEAM 代码清单</a></li>
-<li><a href="#_调用_call">8.3. 调用 (call)</a></li>
-<li><a href="#_栈_堆_管理">8.4. 栈 (堆) 管理</a></li>
-<li><a href="#_消息传递">8.5. 消息传递</a>
+<li><a href="#_指令定义">9.1. 指令定义</a></li>
+<li><a href="#_beam_代码清单">9.2. BEAM 代码清单</a></li>
+<li><a href="#_调用_call">9.3. 调用 (call)</a></li>
+<li><a href="#_栈_堆_管理">9.4. 栈 (堆) 管理</a></li>
+<li><a href="#_消息传递">9.5. 消息传递</a>
 <ul class="sectlevel3">
-<li><a href="#_最小接收循环">8.5.1. 最小接收循环</a></li>
-<li><a href="#_选择性接收循环">8.5.2. 选择性接收循环</a></li>
-<li><a href="#_带超时的接收循环">8.5.3. 带超时的接收循环</a></li>
-<li><a href="#_同步调用的技巧_ref_trick">8.5.4. 同步调用的技巧 ( Ref Trick )</a></li>
+<li><a href="#_最小接收循环">9.5.1. 最小接收循环</a></li>
+<li><a href="#_选择性接收循环">9.5.2. 选择性接收循环</a></li>
+<li><a href="#_带超时的接收循环">9.5.3. 带超时的接收循环</a></li>
+<li><a href="#_同步调用的技巧_ref_trick">9.5.4. 同步调用的技巧 ( Ref Trick )</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-Calls">9. 各种类型的调用，链接以及热代码加载（原书未完成）</a>
+<li><a href="#CH-Calls">10. 各种类型的调用，链接以及热代码加载（原书未完成）</a>
 <ul class="sectlevel2">
-<li><a href="#_热代码加载">9.1. 热代码加载</a></li>
-<li><a href="#_代码加载">9.2. 代码加载</a></li>
+<li><a href="#_热代码加载">10.1. 热代码加载</a></li>
+<li><a href="#_代码加载">10.2. 代码加载</a></li>
 </ul>
 </li>
-<li><a href="#CH-Beam_loader">10. BEAM 加载器</a>
+<li><a href="#CH-Beam_loader">11. BEAM 加载器</a>
 <ul class="sectlevel2">
-<li><a href="#_从通用指令变换为特定指令">10.1. 从通用指令变换为特定指令</a></li>
-<li><a href="#_理解_ops_tab">10.2. 理解 ops.tab</a>
+<li><a href="#_从通用指令变换为特定指令">11.1. 从通用指令变换为特定指令</a></li>
+<li><a href="#_理解_ops_tab">11.2. 理解 ops.tab</a>
 <ul class="sectlevel3">
-<li><a href="#_变换">10.2.1. 变换</a></li>
-<li><a href="#_特定指令">10.2.2. 特定指令</a></li>
+<li><a href="#_变换">11.2.1. 变换</a></li>
+<li><a href="#_特定指令">11.2.2. 特定指令</a></li>
 </ul>
 </li>
-<li><a href="#_优化">10.3. 优化</a>
+<li><a href="#_优化">11.3. 优化</a>
 <ul class="sectlevel3">
-<li><a href="#_select_val_优化">10.3.1. select_val 优化</a></li>
-<li><a href="#_字面值预哈希">10.3.2. 字面值预哈希</a></li>
+<li><a href="#_select_val_优化">11.3.1. select_val 优化</a></li>
+<li><a href="#_字面值预哈希">11.3.2. 字面值预哈希</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-Internal_instructions">11. BEAM 内部指令（原书未完成）</a></li>
-<li><a href="#CH-Scheduling">12. 调度</a>
+<li><a href="#CH-Internal_instructions">12. BEAM 内部指令（原书未完成）</a></li>
+<li><a href="#CH-Scheduling">13. 调度</a>
 <ul class="sectlevel2">
-<li><a href="#_并发并行抢占式多任务">12.1. 并发、并行，抢占式多任务</a></li>
-<li><a href="#_在_c_层面上的协作的_erts_抢占式多任务">12.2. 在 C 层面上的协作的 ERTS 抢占式多任务</a></li>
-<li><a href="#_规约值">12.3. 规约值</a>
+<li><a href="#_并发并行抢占式多任务">13.1. 并发、并行，抢占式多任务</a></li>
+<li><a href="#_在_c_层面上的协作的_erts_抢占式多任务">13.2. 在 C 层面上的协作的 ERTS 抢占式多任务</a></li>
+<li><a href="#_规约值">13.3. 规约值</a>
 <ul class="sectlevel3">
-<li><a href="#_你能得到多少规约值">12.3.1. 你能得到多少规约值？</a></li>
-<li><a href="#_规约值究竟是啥">12.3.2. 规约值究竟是啥？</a></li>
+<li><a href="#_你能得到多少规约值">13.3.1. 你能得到多少规约值？</a></li>
+<li><a href="#_规约值究竟是啥">13.3.2. 规约值究竟是啥？</a></li>
 </ul>
 </li>
-<li><a href="#_进程状态">12.4. 进程状态</a></li>
-<li><a href="#_进程队列">12.5. 进程队列</a>
+<li><a href="#_进程状态">13.4. 进程状态</a></li>
+<li><a href="#_进程队列">13.5. 进程队列</a>
 <ul class="sectlevel3">
-<li><a href="#_ready_队列">12.5.1. Ready 队列</a></li>
-<li><a href="#_waiting_timeouts_and_the_timing_wheel">12.5.2. Waiting, Timeouts and the Timing Wheel</a></li>
+<li><a href="#_ready_队列">13.5.1. Ready 队列</a></li>
+<li><a href="#_waiting_timeouts_and_the_timing_wheel">13.5.2. Waiting, Timeouts and the Timing Wheel</a></li>
 </ul>
 </li>
-<li><a href="#_端口_ports">12.6. 端口 ( Ports )</a></li>
-<li><a href="#_规约可以跳过">12.7. 规约（可以跳过）</a></li>
-<li><a href="#SEC-Scheduler_loop">12.8. 调度器循环（原书未完成）</a></li>
-<li><a href="#_负载均衡">12.9. 负载均衡</a>
+<li><a href="#_端口_ports">13.6. 端口 ( Ports )</a></li>
+<li><a href="#_规约可以跳过">13.7. 规约（可以跳过）</a></li>
+<li><a href="#SEC-Scheduler_loop">13.8. 调度器循环（原书未完成）</a></li>
+<li><a href="#_负载均衡">13.9. 负载均衡</a>
 <ul class="sectlevel3">
-<li><a href="#_任务窃取_task_stealing">12.9.1. 任务窃取 ( <em>task stealing</em> )</a></li>
-<li><a href="#_迁移">12.9.2. 迁移</a></li>
+<li><a href="#_任务窃取_task_stealing">13.9.1. 任务窃取 ( <em>task stealing</em> )</a></li>
+<li><a href="#_迁移">13.9.2. 迁移</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-Memory">13. 内存子系统: 栈、堆以及垃圾收集</a>
+<li><a href="#CH-Memory">14. 内存子系统: 栈、堆以及垃圾收集</a>
 <ul class="sectlevel2">
-<li><a href="#_内存子系统">13.1. 内存子系统</a></li>
-<li><a href="#SS-Memory_Allocators">13.2. 不同类型的内存分配器</a>
+<li><a href="#_内存子系统">14.1. 内存子系统</a></li>
+<li><a href="#SS-Memory_Allocators">14.2. 不同类型的内存分配器</a>
 <ul class="sectlevel3">
-<li><a href="#_基础分配器sys_alloc">13.2.1. 基础分配器：sys_alloc</a></li>
-<li><a href="#_内存段分配器mseg_alloc">13.2.2. 内存段分配器：mseg_alloc</a></li>
-<li><a href="#_内存分配器框架alloc_util">13.2.3. 内存分配器框架：alloc_util</a></li>
-<li><a href="#_临时分配器temp_alloc">13.2.4. 临时分配器：temp_alloc</a></li>
-<li><a href="#_堆分配器eheap_alloc">13.2.5. 堆分配器：eheap_alloc</a></li>
-<li><a href="#_二进制数据分配器binary_alloc">13.2.6. 二进制数据分配器：binary_alloc</a></li>
-<li><a href="#_ets_分配器ets_alloc">13.2.7. ETS 分配器：ets_alloc</a></li>
-<li><a href="#_驱动_driver_分配器driver_alloc">13.2.8. 驱动 (Driver) 分配器：driver_alloc</a></li>
-<li><a href="#_短生存期分配器sl_alloc">13.2.9. 短生存期分配器：sl_alloc</a></li>
-<li><a href="#_长生存期分配器ll_alloc">13.2.10. 长生存期分配器：ll_alloc</a></li>
-<li><a href="#_定长分配器fix_alloc">13.2.11. 定长分配器：fix_alloc</a></li>
-<li><a href="#_标准分配器std_alloc">13.2.12. 标准分配器：std_alloc</a></li>
+<li><a href="#_基础分配器sys_alloc">14.2.1. 基础分配器：sys_alloc</a></li>
+<li><a href="#_内存段分配器mseg_alloc">14.2.2. 内存段分配器：mseg_alloc</a></li>
+<li><a href="#_内存分配器框架alloc_util">14.2.3. 内存分配器框架：alloc_util</a></li>
+<li><a href="#_临时分配器temp_alloc">14.2.4. 临时分配器：temp_alloc</a></li>
+<li><a href="#_堆分配器eheap_alloc">14.2.5. 堆分配器：eheap_alloc</a></li>
+<li><a href="#_二进制数据分配器binary_alloc">14.2.6. 二进制数据分配器：binary_alloc</a></li>
+<li><a href="#_ets_分配器ets_alloc">14.2.7. ETS 分配器：ets_alloc</a></li>
+<li><a href="#_驱动_driver_分配器driver_alloc">14.2.8. 驱动 (Driver) 分配器：driver_alloc</a></li>
+<li><a href="#_短生存期分配器sl_alloc">14.2.9. 短生存期分配器：sl_alloc</a></li>
+<li><a href="#_长生存期分配器ll_alloc">14.2.10. 长生存期分配器：ll_alloc</a></li>
+<li><a href="#_定长分配器fix_alloc">14.2.11. 定长分配器：fix_alloc</a></li>
+<li><a href="#_标准分配器std_alloc">14.2.12. 标准分配器：std_alloc</a></li>
 </ul>
 </li>
-<li><a href="#_system_flags_for_memory原书未完成">13.3. system flags for memory（原书未完成）</a></li>
-<li><a href="#_进程内存">13.4. 进程内存</a>
+<li><a href="#_system_flags_for_memory原书未完成">14.3. system flags for memory（原书未完成）</a></li>
+<li><a href="#_进程内存">14.4. 进程内存</a>
 <ul class="sectlevel3">
-<li><a href="#_项式共享">13.4.1. 项式共享</a></li>
-<li><a href="#_消息传递_2">13.4.2. 消息传递</a></li>
-<li><a href="#SS-Binaries">13.4.3. 二进制数据</a></li>
-<li><a href="#_垃圾收集">13.4.4. 垃圾收集</a></li>
+<li><a href="#_项式共享">14.4.1. 项式共享</a></li>
+<li><a href="#_消息传递_2">14.4.2. 消息传递</a></li>
+<li><a href="#SS-Binaries">14.4.3. 二进制数据</a></li>
+<li><a href="#_垃圾收集">14.4.4. 垃圾收集</a></li>
 </ul>
 </li>
-<li><a href="#_其他有趣的内存区域原书未完成">13.5. 其他有趣的内存区域（原书未完成）</a>
+<li><a href="#_其他有趣的内存区域原书未完成">14.5. 其他有趣的内存区域（原书未完成）</a>
 <ul class="sectlevel3">
-<li><a href="#_原子表原书未完成">13.5.1. 原子表（原书未完成）</a></li>
-<li><a href="#_代码_原书未完成">13.5.2. 代码 （原书未完成）</a></li>
-<li><a href="#_常量原书未完成">13.5.3. 常量（原书未完成）</a></li>
+<li><a href="#_原子表原书未完成">14.5.1. 原子表（原书未完成）</a></li>
+<li><a href="#_代码_原书未完成">14.5.2. 代码 （原书未完成）</a></li>
+<li><a href="#_常量原书未完成">14.5.3. 常量（原书未完成）</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-DataStructures">14. 高级数据结构 (ETS, DETS, Mnesia)（原书未完成）</a></li>
-<li><a href="#CH-IO">15. IO、端口和网络</a>
+<li><a href="#CH-DataStructures">15. 高级数据结构 (ETS, DETS, Mnesia)（原书未完成）</a></li>
+<li><a href="#CH-IO">16. IO、端口和网络</a>
 <ul class="sectlevel2">
-<li><a href="#_standard_io">15.1. Standard IO</a></li>
-<li><a href="#_ports">15.2. Ports</a>
+<li><a href="#_标准_io">16.1. 标准 IO</a></li>
+<li><a href="#_端口">16.2. 端口</a>
 <ul class="sectlevel3">
-<li><a href="#_different_types_of_ports">15.2.1. Different types of Ports</a></li>
+<li><a href="#_不同类型的_ports">16.2.1. 不同类型的 Ports</a></li>
 </ul>
 </li>
-<li><a href="#_distributed_erlang">15.3. Distributed Erlang</a></li>
-<li><a href="#_sockets_udp_and_tcp">15.4. Sockets, UDP and TCP</a></li>
+<li><a href="#_分布式_erlang">16.3. 分布式 Erlang</a></li>
+<li><a href="#_sockets_udp_and_tcp">16.4. Sockets, UDP and TCP</a></li>
 </ul>
 </li>
-<li><a href="#CH-Distribution">16. Distribution（原书未完成）</a></li>
-<li><a href="#CH-C">17. Interfacing C, BIFs NIFs and Linked in Drivers (原书未完成)</a></li>
-<li><a href="#CH-Native">18. Native Code（原书未完成）</a></li>
+<li><a href="#CH-Distribution">17. 分布式（原书未完成）</a></li>
+<li><a href="#CH-C">18. Interfacing C, BIFs NIFs and Linked in Drivers (原书未完成)</a></li>
+<li><a href="#CH-Native">19. Native Code（原书未完成）</a></li>
 </ul>
 </li>
-<li><a href="#P-Running">II: 运行 ERTS</a>
+<li><a href="#P-Running">II: 卷二：运行 ERTS</a>
 <ul class="sectlevel1">
-<li><a href="#CH-Tracing">19. 跟踪</a></li>
-<li><a href="#CH-Debugging">20. 调试</a>
+<li><a href="#CH-Tracing">20. 跟踪（原书未完成）</a></li>
+<li><a href="#CH-Debugging">21. 调试</a>
 <ul class="sectlevel2">
-<li><a href="#_preliminary_outline">20.1. Preliminary Outline</a></li>
-<li><a href="#_introduction">20.2. Introduction</a></li>
-<li><a href="#_debugger">20.3. debugger</a></li>
-<li><a href="#_dbg">20.4. dbg</a></li>
-<li><a href="#_redbug">20.5. Redbug</a>
+<li><a href="#_preliminary_outline">21.1. Preliminary Outline</a></li>
+<li><a href="#_introduction">21.2. Introduction</a></li>
+<li><a href="#_debugger">21.3. debugger</a></li>
+<li><a href="#_dbg">21.4. dbg</a></li>
+<li><a href="#_redbug">21.5. Redbug</a>
 <ul class="sectlevel3">
-<li><a href="#_installing_redbug">20.5.1. Installing Redbug</a></li>
-<li><a href="#_using_redbug">20.5.2. Using Redbug</a></li>
+<li><a href="#_installing_redbug">21.5.1. Installing Redbug</a></li>
+<li><a href="#_using_redbug">21.5.2. Using Redbug</a></li>
 </ul>
 </li>
-<li><a href="#_crash_dumps">20.6. Crash Dumps</a></li>
+<li><a href="#_crash_dumps">21.6. Crash Dumps</a></li>
 </ul>
 </li>
-<li><a href="#CH-Ops">21. 运维</a>
+<li><a href="#CH-Ops">22. 运维</a>
 <ul class="sectlevel2">
-<li><a href="#_connecting_to_the_system">21.1. Connecting to the System</a></li>
-<li><a href="#_the_shell">21.2. The Shell</a>
+<li><a href="#_connecting_to_the_system">22.1. Connecting to the System</a></li>
+<li><a href="#_the_shell">22.2. The Shell</a>
 <ul class="sectlevel3">
-<li><a href="#_configuring_your_shell">21.2.1. Configuring Your Shell</a></li>
-<li><a href="#_connecting_a_shell_to_a_node">21.2.2. Connecting a Shell to a Node</a></li>
-<li><a href="#_breaking_out_or_in">21.2.3. Breaking (out or in).</a></li>
+<li><a href="#_configuring_your_shell">22.2.1. Configuring Your Shell</a></li>
+<li><a href="#_connecting_a_shell_to_a_node">22.2.2. Connecting a Shell to a Node</a></li>
+<li><a href="#_breaking_out_or_in">22.2.3. Breaking (out or in).</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#CH-Tweak">22. 调整运行时系统</a></li>
+<li><a href="#CH-Tweak">23. 调整运行时系统（原书未完成）</a></li>
 </ul>
 </li>
 <li><a href="#AP-BuildingERTS">Appendix A: 构造 Erlang 运行时系统</a>
@@ -891,13 +891,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#AP-listings">Appendix C: 全部代码清单</a></li>
-<li><a href="#BIB-References">23. References</a></li>
+<li><a href="#BIB-References">24. References</a></li>
 </ul>
 </div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_preface"><a class="link" href="#_preface">Preface</a></h2>
+<h2 id="_原书前言"><a class="link" href="#_原书前言">1. 原书前言</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>本书并不是关于如何正确并且优雅的书写代码的，因为我假设你已经了解如何做到那些了。尽管本书有关于跟踪诊断，以便帮助你找到程序瓶颈和不必要的资源使用，以及性能调优的章节，但是，本书也不是真正的关于诊断和性能调优的书。
@@ -907,16 +907,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <p>关于本书</p>
 </div>
 <div class="paragraph">
-<p><sub>~</sub><sub>~</sub><sub>~</sub><sub>~</sub><sub>~</sub></p>
-</div>
-<div class="paragraph">
 <p>任何人期望：调整 Erlang 安装，了解如何调试 VM 崩溃，改进 Erlang 应用性能，深入理解 Erlang 如何工作，学习如何构建你自己的运行时环境</p>
 </div>
 <div class="paragraph">
 <p>如果你想要调试VM，扩展 VM，调整性能，请跳到最后一章，但是想要真正理解那一章，你需要阅读这本书。</p>
 </div>
 <div class="sect2">
-<h3 id="_阅读方法"><a class="link" href="#_阅读方法">阅读方法</a></h3>
+<h3 id="_阅读方法"><a class="link" href="#_阅读方法">1.1. 阅读方法</a></h3>
 <div class="paragraph">
 <p>Erlang RunTime System (ERTS) 是一个有许多组件相互依赖的复杂系统。他使用了非常易于移植的方法编码，以便能够在从电脑棒到上TB内存的多核计算机上运行。为了能够为你的应用优化性能，你就不能只了解你的应用本身，同时需要深刻理解ERTS。</p>
 </div>
@@ -928,7 +925,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_erlang"><a class="link" href="#_erlang">Erlang</a></h3>
+<h3 id="_erlang"><a class="link" href="#_erlang">1.2. Erlang</a></h3>
 <div class="paragraph">
 <p>本节中，我们将一起了解一些基础的 Erlang 概念，这对理解本书至关重要。</p>
 </div>
@@ -975,7 +972,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_致谢"><a class="link" href="#_致谢">致谢</a></h3>
+<h3 id="_致谢"><a class="link" href="#_致谢">1.3. 致谢</a></h3>
 <div class="paragraph">
 <p>首先我要感谢 Ericsson OTP Team，感谢他们维护 Erlang 和 Erlang 运行时，并且耐心的回复我的提问。特别感谢Kenneth Lundin, Björn Gustavsson, Lukas Larsson, Rickard Green 和 Raimo Niskanen。</p>
 </div>
@@ -1030,14 +1027,11 @@ Jan Lehnardt
 Chris Yunker</pre>
 </div>
 </div>
-<div class="paragraph">
-<p><sub>~</sub><sub>~</sub><sub>~</sub><sub>~</sub><sub>~</sub></p>
-</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CHChinese_Version"><a class="link" href="#CHChinese_Version">1. 中文版前言</a></h2>
+<h2 id="CHChinese_Version"><a class="link" href="#CHChinese_Version">2. 中文版前言</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>本书来自 Github，项目版权协议为：CC-BY-4.0 License。</p>
@@ -1046,13 +1040,34 @@ Chris Yunker</pre>
 <p>书籍的 Github Repository 为：https://github.com/happi/theBeamBook</p>
 </div>
 <div class="paragraph">
-<p>中文翻译工程，翻译人：杜宇（hitdavid），诚邀共同翻译者，可以邮件到 <a href="mailto:hitdavid@gmail.com">hitdavid@gmail.com</a> 或者其他方式联系我。</p>
+<p>翻译人：杜宇（hitdavid），前火币网技术总监，曾任多家公司中层管理岗位，对技术和技术管理有一定经验积累。</p>
+</div>
+<div class="paragraph">
+<p>中文翻译工程，诚邀共同翻译者，可以邮件到 <a href="mailto:hitdavid@gmail.com">hitdavid@gmail.com</a> 或者其他方式联系我。</p>
 </div>
 <div class="paragraph">
 <p>最新翻译版本预览：https://hitdavid.github.io/theBeamBook/[中文网页版]</p>
 </div>
 <div class="paragraph">
-<p>因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠，以下附比特币收款地址和支付宝二维码，谢谢。</p>
+<p>因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠：</p>
+</div>
+<div class="paragraph">
+<p>1元：觉得这本书挺好玩</p>
+</div>
+<div class="paragraph">
+<p>5元：翻译不易，支持一下</p>
+</div>
+<div class="paragraph">
+<p>10元：了解了 ERTS，有点收获</p>
+</div>
+<div class="paragraph">
+<p>50元：对我很有帮助</p>
+</div>
+<div class="paragraph">
+<p>100元：太棒了，就想要这个，今后继续加油</p>
+</div>
+<div class="paragraph">
+<p>以下附比特币收款地址和支付宝二维码，谢谢。</p>
 </div>
 <div class="paragraph">
 <p>BitCoin Address: 12JdwAdCZugkrtiPwCGaT4qetbixvZM4Dg</p>
@@ -1067,17 +1082,17 @@ Chris Yunker</pre>
 </div>
 </div>
 </div>
-<h1 id="P-ERTS" class="sect0"><a class="link" href="#P-ERTS">I: 理解 ERTS</a></h1>
+<h1 id="P-ERTS" class="sect0"><a class="link" href="#P-ERTS">I: 卷一：理解 ERTS</a></h1>
 <div class="sect1">
-<h2 id="introduction"><a class="link" href="#introduction">2. Erlang 运行时系统介绍</a></h2>
+<h2 id="introduction"><a class="link" href="#introduction">3. Erlang 运行时系统介绍</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Erlang 运行时系统（ERTS）  是一个有许多组件相互依赖的复杂系统。他使用了非常易于移植的方法编码，以便能够在从电脑棒到上TB内存的多核计算机上运行。为了能够为你的应用优化性能，你就不能只了解你的应用本身，同时需要深刻理解ERTS。</p>
 </div>
 <div class="sect2">
-<h3 id="_erts_和_erlang_运行时系统"><a class="link" href="#_erts_和_erlang_运行时系统">2.1. ERTS 和 Erlang 运行时系统</a></h3>
+<h3 id="_erts_和_erlang_运行时系统"><a class="link" href="#_erts_和_erlang_运行时系统">3.1. ERTS 和 Erlang 运行时系统</a></h3>
 <div class="paragraph">
-<p>任何 Erlang 运行时系统  和 Erlang 运行时的特定实现系统有一点区别。由爱立信开发维护的 Erlang/OTP 是 Erlang 和 Erlang 运行时系统事实上的标准实现。在本书中，我将参考这个实现为 <em>ERTS</em>，将 <em>Erlang RunTime System</em> 中 T 字母大写 (See <a href="#ERTS">Section 2.3</a> for a definition of OTP)。</p>
+<p>任何 Erlang 运行时系统  和 Erlang 运行时的特定实现系统有一点区别。由爱立信开发维护的 Erlang/OTP 是 Erlang 和 Erlang 运行时系统事实上的标准实现。在本书中，我将参考这个实现为 <em>ERTS</em>，将 <em>Erlang RunTime System</em> 中 T 字母大写 (See <a href="#ERTS">Section 3.3</a> for a definition of OTP)。</p>
 </div>
 <div class="paragraph">
 <p>Erlang 运行时系统或者 Erlang 虚拟机并没有一个官方定义。你可以想象这样一个理想的柏拉图式系统看起来就像是ERTS，并且移除了所有特定实现细节。不幸的是，这是一个循环定义，因为你需要了解通用定义以便能够鉴别一个特定实现细节。在Erlang 的世界里，我们通常比较务实而不去担心这些。</p>
@@ -1090,7 +1105,7 @@ Chris Yunker</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_如何阅读本书"><a class="link" href="#_如何阅读本书">2.2. 如何阅读本书</a></h3>
+<h3 id="_如何阅读本书"><a class="link" href="#_如何阅读本书">3.2. 如何阅读本书</a></h3>
 <div class="paragraph">
 <p>在本书的 <a href="#P-Running">Part II</a> 部分，我们将关注如何为你的应用调整运行时系统，以及分析和调试你的应用和运行时系统。为了真正了解如何如何调整系统，你也需要了解系统。在本书的 <a href="#P-ERTS">Part I</a> 部分，你讲深入理解运行时系统的工作原理。</p>
 </div>
@@ -1102,14 +1117,14 @@ Chris Yunker</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="ERTS"><a class="link" href="#ERTS">2.3. ERTS</a></h3>
+<h3 id="ERTS"><a class="link" href="#ERTS">3.3. ERTS</a></h3>
 <div class="paragraph">
 <p>此处我们将对 ERTS 的主要组件以及一些词汇有一个概览，并在后续章节做更细节的描述。</p>
 </div>
 <div class="sect3">
-<h4 id="_erlang_节点_erts"><a class="link" href="#_erlang_节点_erts">2.3.1. Erlang 节点 (ERTS)</a></h4>
+<h4 id="_erlang_节点_erts"><a class="link" href="#_erlang_节点_erts">3.3.1. Erlang 节点 (ERTS)</a></h4>
 <div class="paragraph">
-<p>当你启动一个 Elixir / Erlang 应用或者系统，实际上你启动的是一个 Erlang 节点。这个节点运行了 ERTS 以及虚拟机 BEAM（或者也可能是其他的 Erlang 实现(参见 <a href="#Other_Erlang_Implementations">Section 2.4</a>)）</p>
+<p>当你启动一个 Elixir / Erlang 应用或者系统，实际上你启动的是一个 Erlang 节点。这个节点运行了 ERTS 以及虚拟机 BEAM（或者也可能是其他的 Erlang 实现(参见 <a href="#Other_Erlang_Implementations">Section 3.4</a>)）</p>
 </div>
 <div class="paragraph">
 <p>你的应用代码在 Erlang 节点上运行，节点的各层也同时对你的应用性能表现产生影响。我们来看一下组成节点的层次栈。这将帮你理解将你的系统运行在不同环境的选项。</p>
@@ -1150,7 +1165,7 @@ iex(3)&gt;</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_执行环境中的分层"><a class="link" href="#_执行环境中的分层">2.3.2. 执行环境中的分层</a></h4>
+<h4 id="_执行环境中的分层"><a class="link" href="#_执行环境中的分层">3.3.2. 执行环境中的分层</a></h4>
 <div class="paragraph">
 <p>你的程序（应用）是在一个或者多个节点上运行的，它的性能不只取决于你的应用程序代码，同时取决于在 ERTS 栈 （<em>ERTS stack</em>）中，你应用以下的各层。图 <a href="#the_erts_stack">Figure 1</a> 中，你可以看到同一台计算机运行2个 Erlang 节点时的 ERTS 栈。</p>
 </div>
@@ -1191,14 +1206,14 @@ iex(3)&gt;</pre>
 <p>如果你运行 Elixir 程序，第6层提供了 Elixir 环境和 Elixir 库。</p>
 </div>
 <div class="paragraph">
-<p>最后，向上数第7层是你的应用程序以及其中使用的第三方库。应用层可以使用底层提供的所有功能。除了升级硬件，这也是你最容易实现应用性能优化的地方。在 <a href="#CH-Tracing">Chapter 19</a> 中介绍了一些诊断优化应用程序的提示和工具。在 <a href="#CH-Debugging">Chapter 20</a> 一章中，我们将了解如何找到应用崩溃的原因以及如何查找应用 bug。</p>
+<p>最后，向上数第7层是你的应用程序以及其中使用的第三方库。应用层可以使用底层提供的所有功能。除了升级硬件，这也是你最容易实现应用性能优化的地方。在 <a href="#CH-Tracing">Chapter 20</a> 中介绍了一些诊断优化应用程序的提示和工具。在 <a href="#CH-Debugging">Chapter 21</a> 一章中，我们将了解如何找到应用崩溃的原因以及如何查找应用 bug。</p>
 </div>
 <div class="paragraph">
 <p>有关如何构建运行 Erlang 节点的信息，请参见 <a href="#AP-BuildingERTS">Appendix A</a> ，然后通过本书其余部分学习 Erlang 节点的组件知识。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_分布式"><a class="link" href="#_分布式">2.3.3. 分布式</a></h4>
+<h4 id="_分布式"><a class="link" href="#_分布式">3.3.3. 分布式</a></h4>
 <div class="paragraph">
 <p>Erlang 语言设计者的一个关键洞见是：为了构造一个可以 24小时 * 7天 工作的系统，你需要能够处理硬件失败。所以你需要至少将你的系统部署在2台以上的物理机器上。在每台机器上启动 Erlang 节点后，节点之间互相连接，跨节点的进程可以相互通信，就好像它们运行在同一个节点一样。</p>
 </div>
@@ -1210,16 +1225,16 @@ iex(3)&gt;</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_erlang_编译器"><a class="link" href="#_erlang_编译器">2.3.4. Erlang 编译器</a></h4>
+<h4 id="_erlang_编译器"><a class="link" href="#_erlang_编译器">3.3.4. Erlang 编译器</a></h4>
 <div class="paragraph">
 <p>Erlang 编译器负责将 Erlang 源代码从 .erl 文件编译为 BEAM 虚拟机代码。编译器本身就是使用 Erlang 编写的，它将自身编译为 BEAM 码，通常在运行的 Erlang 节点可用。为了引导运行时系统，包含编译器在内的数个预先编译好的 BEAM 文件都被放置在 bootstrap 目录。</p>
 </div>
 <div class="paragraph">
-<p>有关编译器的更多信息可以参考 <a href="#CH-Compiler">Chapter 3</a>。</p>
+<p>有关编译器的更多信息可以参考 <a href="#CH-Compiler">Chapter 4</a>。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_erlang_虚拟机_beam"><a class="link" href="#_erlang_虚拟机_beam">2.3.5. Erlang 虚拟机: BEAM</a></h4>
+<h4 id="_erlang_虚拟机_beam"><a class="link" href="#_erlang_虚拟机_beam">3.3.5. Erlang 虚拟机: BEAM</a></h4>
 <div class="paragraph">
 <p>类似 JVM 是用来执行Java 代码的虚拟机一样，BEAM 是用来执行 Erlang 代码的虚拟机。BEAM 运行在 Erlang 节点上。</p>
 </div>
@@ -1234,11 +1249,11 @@ iex(3)&gt;</pre>
 <p>就像 ERTS 是 Erlang 运行时系统的更通用概念实现一样， BEAM 是 Erlang 虚拟机(EVM) 的一个通用实现。虽然没有对 EVM 组成结构的定义，但是 BEAM 的指令实际上分2层，分别是通用指令和特定指令。通用指令集可以看作是 EVM 的蓝图。</p>
 </div>
 <div class="paragraph">
-<p>对 BEAM 的全部描述可以参考 <a href="#CH-BEAM">Chapter 6</a>, <a href="#CH-beam_modules">Chapter 7</a> 以及 <a href="#CH-Instructions">Chapter 8</a>.</p>
+<p>对 BEAM 的全部描述可以参考 <a href="#CH-BEAM">Chapter 7</a>, <a href="#CH-beam_modules">Chapter 8</a> 以及 <a href="#CH-Instructions">Chapter 9</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_进程"><a class="link" href="#_进程">2.3.6. 进程</a></h4>
+<h4 id="_进程"><a class="link" href="#_进程">3.3.6. 进程</a></h4>
 <div class="paragraph">
 <p>一个 Erlang 进程基本上与操作系统进程一样工作。每个进程拥有它自己的内存（mailbox, heap 和 stack）和带有进程信息的进程控制块（<em>process control block</em> ,  PCB）</p>
 </div>
@@ -1246,11 +1261,11 @@ iex(3)&gt;</pre>
 <p>所有的 Erlang 代码执行均在进程上下文中完成。一个 Erlang 节点可以拥有分多进程，这些进程可以通过消息传递或信号通信，如果多个节点是连接的，Erlang 进程也可以与其他节点上的进程通信。</p>
 </div>
 <div class="paragraph">
-<p>想了解更多关于进程和 PCB 的知识，请参考 <a href="#CH-Processes">Chapter 4</a>.</p>
+<p>想了解更多关于进程和 PCB 的知识，请参考 <a href="#CH-Processes">Chapter 5</a>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_调度器"><a class="link" href="#_调度器">2.3.7. 调度器</a></h4>
+<h4 id="_调度器"><a class="link" href="#_调度器">3.3.7. 调度器</a></h4>
 <div class="paragraph">
 <p>调度器负责选择某个 Erlang 进程执行。通常来讲，调度器有2个队列，1个是 <em>ready to run</em> 的进程队列  <em>ready queue</em> ，另一个是等待接受消息的进程队列 <em>waiting queue</em> 。一个 <em>waiting queue</em> 中的进程如果收到了消息，或者接收超时，将被移动到  <em>ready queue</em> 。</p>
 </div>
@@ -1261,11 +1276,11 @@ iex(3)&gt;</pre>
 <p>Erlang 天生支持并发，这意味着从概念上讲，每一个进程与其他的进程同时执行，但是事实上，只有1个进程在虚拟机中运行。在多核系统中，Erlang 运行多个调度器，通常每核心一个，每个调度器独有自己的队列。这样 Erlang 获得了真正的并行能力。为了利用多核能力， ERTS 必须使用_SMP_ 被构建 (参见 <a href="#AP-BuildingERTS">Appendix A</a>)。 SMP 意即_Symmetric MultiProcessing_，它意味着进程在多核中任意一个核心上运行的能力。</p>
 </div>
 <div class="paragraph">
-<p>现实世界中，进程优先级等问题会使问题变得更复杂，等待队列使用时间轮实现。所有关于调度器的细节会在 <a href="#CH-Scheduling">Chapter 12</a>中描述。</p>
+<p>现实世界中，进程优先级等问题会使问题变得更复杂，等待队列使用时间轮实现。所有关于调度器的细节会在 <a href="#CH-Scheduling">Chapter 13</a>中描述。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_erlang_标签方案"><a class="link" href="#_erlang_标签方案">2.3.8. Erlang 标签方案</a></h4>
+<h4 id="_erlang_标签方案"><a class="link" href="#_erlang_标签方案">3.3.8. Erlang 标签方案</a></h4>
 <div class="paragraph">
 <p>Erlang 是一个动态类型语言，运行时系统需要跟踪所有的数据对象的类型，这是通过标签方案（tagging scheme）完成的。每一个数据对象或指向数据对象的指针同时也会有一个带有其对象数据类型的标签。</p>
 </div>
@@ -1276,11 +1291,11 @@ iex(3)&gt;</pre>
 <p>这些标签在模式匹配、类型检测、原始操作（primitive operations）和垃圾收集是被使用。</p>
 </div>
 <div class="paragraph">
-<p><a href="#CH-TypeSystem">Chapter 5</a> 中完整的描述了标签方案。</p>
+<p><a href="#CH-TypeSystem">Chapter 6</a> 中完整的描述了标签方案。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_内存处理"><a class="link" href="#_内存处理">2.3.9. 内存处理</a></h4>
+<h4 id="_内存处理"><a class="link" href="#_内存处理">3.3.9. 内存处理</a></h4>
 <div class="paragraph">
 <p>Erlang 使用了自动内存管理方案，使得程序员不必担忧内存的分配和回收。每个进程都有可以按需扩容和缩容的堆和栈。</p>
 </div>
@@ -1288,30 +1303,30 @@ iex(3)&gt;</pre>
 <p>当一个进程出现堆空间不足时，虚拟机会首先尝试通过垃圾回收的方法回收并分配内存。垃圾收集器接下来会找到该进程的栈和堆，并将其中的活动数据复制到一个新的堆中，这样就扔掉了所有死数据。如果做完这些堆空间还是不够用，一个新的更大的堆会被分配出来，活动数据也会被移动到新的堆中。</p>
 </div>
 <div class="paragraph">
-<p>关于当前的代际复制垃圾收集器的细节，包含被引用计数的 binary 处理，可以在 <a href="#CH-Memory">Chapter 13</a> 章节中找到。</p>
+<p>关于当前的代际复制垃圾收集器的细节，包含被引用计数的 binary 处理，可以在 <a href="#CH-Memory">Chapter 14</a> 章节中找到。</p>
 </div>
 <div class="paragraph">
-<p>在使用 <strong>HiPE</strong> (High Performance <strong>Erlang</strong> ，译者注：类似 JIT ) 兼容本地代码的系统中，每个进程事实上有2个栈，1个 BEAM栈，1个本地代码栈，细节见 <a href="#CH-Native">Chapter 18</a> 。</p>
+<p>在使用 <strong>HiPE</strong> (High Performance <strong>Erlang</strong> ，译者注：类似 JIT ) 兼容本地代码的系统中，每个进程事实上有2个栈，1个 BEAM栈，1个本地代码栈，细节见 <a href="#CH-Native">Chapter 19</a> 。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_解释器和命令行接口"><a class="link" href="#_解释器和命令行接口">2.3.10. 解释器和命令行接口</a></h4>
+<h4 id="_解释器和命令行接口"><a class="link" href="#_解释器和命令行接口">3.3.10. 解释器和命令行接口</a></h4>
 <div class="paragraph">
 <p>当你使用 <code>erl</code> 启动 Erlang 节点，可以得到一个命令行提示符。这就是 <em>Erlang read eval print loop</em> (REPL) 或者叫做 <em>command line
 interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 <div class="paragraph">
-<p>你可以在 Erlang 节点中输入并且在 shell 中直接执行。这种情况，代码不会被编译为 BEAM 码并被 BEAM执行，而是被 Erlang 解释器解析和解释执行。通常，解释后的代码与编译后的代码表现一致，但也存在一些差异，差异和其他方面的问题将在 <a href="#CH-Ops">Chapter 21</a> 介绍。</p>
+<p>你可以在 Erlang 节点中输入并且在 shell 中直接执行。这种情况，代码不会被编译为 BEAM 码并被 BEAM执行，而是被 Erlang 解释器解析和解释执行。通常，解释后的代码与编译后的代码表现一致，但也存在一些差异，差异和其他方面的问题将在 <a href="#CH-Ops">Chapter 22</a> 介绍。</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="Other_Erlang_Implementations"><a class="link" href="#Other_Erlang_Implementations">2.4. 其他的 Erlang 实现</a></h3>
+<h3 id="Other_Erlang_Implementations"><a class="link" href="#Other_Erlang_Implementations">3.4. 其他的 Erlang 实现</a></h3>
 <div class="paragraph">
 <p>本书主要关注 Ericsson/OTP 实现的“标准” Erlang，即 ERTS。也有一些可用的其他 Erlang 实现，我们将在本节简要提及。</p>
 </div>
 <div class="sect3">
-<h4 id="_erlang_on_xen"><a class="link" href="#_erlang_on_xen">2.4.1. Erlang on Xen</a></h4>
+<h4 id="_erlang_on_xen"><a class="link" href="#_erlang_on_xen">3.4.1. Erlang on Xen</a></h4>
 <div class="paragraph">
 <p>Erlang on Xen (链接: <a href="http://erlangonxen.org" class="bare">http://erlangonxen.org</a>，译注，网页已经没人维护) 是一个直接在服务器硬件上运行，中间没有操作系统层而只有一个 Xen 客户端薄层的 Erlang 实现。</p>
 </div>
@@ -1329,7 +1344,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_erjang"><a class="link" href="#_erjang">2.4.2. Erjang</a></h4>
+<h4 id="_erjang"><a class="link" href="#_erjang">3.4.2. Erjang</a></h4>
 <div class="paragraph">
 <p>Erjang (链接: <a href="http://www.erjang.org" class="bare">http://www.erjang.org</a>，译注，项目已经废弃5年以上，最高支持Java 7) 是一个在 JVM 上运行的 Erlang 实现。它加载 <code>.beam</code> 文件后，将其重编译为 Java <code>.class</code> 文件。他与 BEAM 几乎 100% 二进制兼容。</p>
 </div>
@@ -1350,7 +1365,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Compiler"><a class="link" href="#CH-Compiler">3. 编译器</a></h2>
+<h2 id="CH-Compiler"><a class="link" href="#CH-Compiler">4. 编译器</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>虽然本书不是一本设计 Erlang 编程语言的书，但是，ERTS 的目标是运行 Erlang 代码，所以你需要了解如何编译 Erlang 代码。本章将涉及到用来生成可读的 BEAM 码的编译器选项，以及如何位生成的 beam 文件增加调试信息。本章的最后，也有一节关于 Elixir 编译器的内容。</p>
@@ -1362,7 +1377,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 <p>我会展示解析转换，并通过样例来说明如何通过它们来调整 Erlang 语言。</p>
 </div>
 <div class="sect2">
-<h3 id="_编译_erlang"><a class="link" href="#_编译_erlang">3.1. 编译 Erlang</a></h3>
+<h3 id="_编译_erlang"><a class="link" href="#_编译_erlang">4.1. 编译 Erlang</a></h3>
 <div class="paragraph">
 <p>Erlang 被从 <code>.erl</code> 格式文件的模块源代码，编译成二进制 <code>.beam</code> 文件</p>
 </div>
@@ -1410,7 +1425,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_产生中间结果输出"><a class="link" href="#_产生中间结果输出">3.2. 产生中间结果输出</a></h3>
+<h3 id="_产生中间结果输出"><a class="link" href="#_产生中间结果输出">4.2. 产生中间结果输出</a></h3>
 <div class="paragraph">
 <p>阅读由编译器产生的代码对于试图理解虚拟机如何工作有很大帮助。幸运的是，编译器可以输出每遍后产生的中间代码，以及最终的 beam 码。</p>
 </div>
@@ -1528,7 +1543,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>我们将在观察 <a href="#SEC-parse_transform">Section 3.3.2</a> 解析转换时，使用 <em>P</em> 和 <em>E</em> 选项，但首先我们先来看看汇编器生成的 BEAM 码。使用编译器选项 <code><em>S</em></code> 可以得到一个内容为源代码对应的每条 BEAM 指令的 Erlang 项式的 <code>.S</code> 文件。</p>
+<p>我们将在观察 <a href="#SEC-parse_transform">Section 4.3.2</a> 解析转换时，使用 <em>P</em> 和 <em>E</em> 选项，但首先我们先来看看汇编器生成的 BEAM 码。使用编译器选项 <code><em>S</em></code> 可以得到一个内容为源代码对应的每条 BEAM 指令的 Erlang 项式的 <code>.S</code> 文件。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1598,14 +1613,14 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_编译器的遍pass"><a class="link" href="#_编译器的遍pass">3.3. 编译器的遍（Pass）</a></h3>
+<h3 id="_编译器的遍pass"><a class="link" href="#_编译器的遍pass">4.3. 编译器的遍（Pass）</a></h3>
 <div class="paragraph">
 <p>接下来几节，我们将深入到图 <a href="#fig_compiler_passes">Figure 6</a> 中所示的编译器的各遍。对于面向 BEAM 的编程语言设计者，这些内容将向你展示使用 宏（macros），解析转换（parse
 transforms），Core Erlang，BEAM 码等不同方法你可以做什么，以及它们之间是如何相互依赖的。
 在调优 Erlang 代码时，通过查看优化前后的生成代码，来了解何种优化在何时，以何种方式起作用是非常有效的。</p>
 </div>
 <div class="sect3">
-<h4 id="_编译器_passerlang_预处理器_epp"><a class="link" href="#_编译器_passerlang_预处理器_epp">3.3.1. 编译器 Pass：Erlang 预处理器 (epp)</a></h4>
+<h4 id="_编译器_passerlang_预处理器_epp"><a class="link" href="#_编译器_passerlang_预处理器_epp">4.3.1. 编译器 Pass：Erlang 预处理器 (epp)</a></h4>
 <div class="paragraph">
 <p>编译过程起始于一个组合的分词器（或者扫描器）和预处理器。预处理器驱动分词器运行。这意味着宏被以符号的方式展开，而不纯粹是字符串替换（不像是 m4 或 cpp）。你不能够使用 Erlang 宏来定义自己的语法，宏像一个与周围字符独立的符号一样被展开。所以你也不能将一个宏与（它前后连续的）字符连接为新的符号：</p>
 </div>
@@ -1645,7 +1660,7 @@ transforms），Core Erlang，BEAM 码等不同方法你可以做什么，以及
 </div>
 </div>
 <div class="sect3">
-<h4 id="SEC-parse_transform"><a class="link" href="#SEC-parse_transform">3.3.2. 编译器 Pass: 解析转换（Parse Transformations)</a></h4>
+<h4 id="SEC-parse_transform"><a class="link" href="#SEC-parse_transform">4.3.2. 编译器 Pass: 解析转换（Parse Transformations)</a></h4>
 <div class="paragraph">
 <p>调整Erlang语言最简单的方法是通过解析转换(Parse Transformations 或 parse transforms)。解析转换带有各种各样的警告，比如OTP文档中的注释:</p>
 </div>
@@ -1884,13 +1899,13 @@ error</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_passlinter"><a class="link" href="#_编译器_passlinter">3.3.3. 编译器 Pass：Linter</a></h4>
+<h4 id="_编译器_passlinter"><a class="link" href="#_编译器_passlinter">4.3.3. 编译器 Pass：Linter</a></h4>
 <div class="paragraph">
 <p>Linter 为句法正确但是不好的代码生成警告，类似"export_all flag enabled"</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass保存抽象语法树ast"><a class="link" href="#_编译器_pass保存抽象语法树ast">3.3.4. 编译器 Pass：保存抽象语法树（AST）</a></h4>
+<h4 id="_编译器_pass保存抽象语法树ast"><a class="link" href="#_编译器_pass保存抽象语法树ast">4.3.4. 编译器 Pass：保存抽象语法树（AST）</a></h4>
 <div class="paragraph">
 <p>为了启用对某模块的调试，您可以“调试编译”该模块，即将选项 <code>debug_info</code> 传递给编译器。抽象语法树将被“Save AST”保存，直到编译结束时，它将被写入.beam文件。</p>
 </div>
@@ -1899,13 +1914,13 @@ error</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_passexpand"><a class="link" href="#_编译器_passexpand">3.3.5. 编译器 Pass：Expand</a></h4>
+<h4 id="_编译器_passexpand"><a class="link" href="#_编译器_passexpand">4.3.5. 编译器 Pass：Expand</a></h4>
 <div class="paragraph">
 <p>在扩展（Expand）阶段，诸如 record 等源 erlang 结构将被扩展为底层的 erlang 结构。编译器选项 "<code>-compile(&#8230;&#8203;)</code>" 也会被 <em>扩展</em> 为元数据。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_passcore_erlang"><a class="link" href="#_编译器_passcore_erlang">3.3.6. 编译器 Pass：Core Erlang</a></h4>
+<h4 id="_编译器_passcore_erlang"><a class="link" href="#_编译器_passcore_erlang">4.3.6. 编译器 Pass：Core Erlang</a></h4>
 <div class="paragraph">
 <p>Core Erlang 是一种适用于编译器优化的严格函数式语言。通过减少表示同一操作的方法的数量，使代码转换更容易。其中一种方法是通过引入 let 和 letrec 表达式来使作用域更明确。</p>
 </div>
@@ -1932,29 +1947,29 @@ ok
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_passkernel_erlang"><a class="link" href="#_编译器_passkernel_erlang">3.3.7. 编译器 Pass：Kernel Erlang</a></h4>
+<h4 id="_编译器_passkernel_erlang"><a class="link" href="#_编译器_passkernel_erlang">4.3.7. 编译器 Pass：Kernel Erlang</a></h4>
 <div class="paragraph">
 <p>Kernel Erlang 是 Core Erlang 的一个扁平版本，它们有一些不同之处。例如，每个变量在一个完整的函数作用域中都是唯一的。模式匹配被编译成更原始的操作。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_passbeam_代码"><a class="link" href="#_编译器_passbeam_代码">3.3.8. 编译器 Pass：BEAM 代码</a></h4>
+<h4 id="_编译器_passbeam_代码"><a class="link" href="#_编译器_passbeam_代码">4.3.8. 编译器 Pass：BEAM 代码</a></h4>
 <div class="paragraph">
 <p>正常编译的最后一步是外部 beam 代码格式。一些底层的优化，如死代码块消除和窥孔优化是在这个级别上完成的。</p>
 </div>
 <div class="paragraph">
-<p>BEAM 码在 <a href="#CH-Instructions">Chapter 8</a> 和 <a href="#AP-Instructions">Appendix B</a> 中有详细描述。</p>
+<p>BEAM 码在 <a href="#CH-Instructions">Chapter 9</a> 和 <a href="#AP-Instructions">Appendix B</a> 中有详细描述。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译器_pass原生_native_代码"><a class="link" href="#_编译器_pass原生_native_代码">3.3.9. 编译器 Pass：原生 (Native) 代码</a></h4>
+<h4 id="_编译器_pass原生_native_代码"><a class="link" href="#_编译器_pass原生_native_代码">4.3.9. 编译器 Pass：原生 (Native) 代码</a></h4>
 <div class="paragraph">
 <p>如果您在编译中添加了 <code>native</code> 标志，并且您有一个启用了 HiPE (High Performance <strong>Erlang</strong> ，译者注：类似 JIT )  的运行时系统，那么编译器将为您的模块生成本机代码，并将本地代码与 beam 代码一起存储在 <code>.beam</code> 文件中。</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_其他编译器工具"><a class="link" href="#_其他编译器工具">3.4. 其他编译器工具</a></h3>
+<h3 id="_其他编译器工具"><a class="link" href="#_其他编译器工具">4.4. 其他编译器工具</a></h3>
 <div class="paragraph">
 <p>有许多工具可以帮助您处理代码生成和代码操作。这些工具是用 Erlang 编写的，但并不是运行时系统的一部分，但是如果你想在 BEAM 之上实现另一种语言，了解它们是非常好的。</p>
 </div>
@@ -1962,7 +1977,7 @@ ok
 <p>在本节中，我们将介绍三个最有用的代码工具: 词法分析器 ( Leex )、解析器生成器 ( Yecc )，和一组用于操作（语言）抽象形式的通用函数 ( Syntax Tools )。</p>
 </div>
 <div class="sect3">
-<h4 id="_leex"><a class="link" href="#_leex">3.4.1. Leex</a></h4>
+<h4 id="_leex"><a class="link" href="#_leex">4.4.1. Leex</a></h4>
 <div class="paragraph">
 <p>Leex是Erlang 词法分析器生成器。词法分析器生成器从定义文件 <code>xrl</code> 获取 DFA （译注，DFA 是 Deterministic Finite Automaton 的简称，形式语言术语，译为 <em>确定有限自动机</em>）的描述，并生成一个与 DFA 描述的符号相匹配 Erlang 程序。</p>
 </div>
@@ -2116,7 +2131,7 @@ drop_quotes([$"</span> <span class="p">|</span> <span class="nv">QuotedString</s
 </div>
 </div>
 <div class="sect3">
-<h4 id="_yecc"><a class="link" href="#_yecc">3.4.2. Yecc</a></h4>
+<h4 id="_yecc"><a class="link" href="#_yecc">4.4.2. Yecc</a></h4>
 <div class="paragraph">
 <p>Yecc 是 Erlang 的解析器生成器。该名称来自Yacc (Yet another compiler compiler)，它是 C 的经典的解析器生成器。</p>
 </div>
@@ -2186,7 +2201,7 @@ drop_quotes([$"</span> <span class="p">|</span> <span class="nv">QuotedString</s
 </div>
 </div>
 <div class="sect2">
-<h3 id="_语法工具和_merl"><a class="link" href="#_语法工具和_merl">3.5. 语法工具和 Merl</a></h3>
+<h3 id="_语法工具和_merl"><a class="link" href="#_语法工具和_merl">4.5. 语法工具和 Merl</a></h3>
 <div class="paragraph">
 <p>语法工具是一组库，用于操作 Erlang 抽象语法树 (AST) 的内部表示。</p>
 </div>
@@ -2198,7 +2213,7 @@ drop_quotes([$"</span> <span class="p">|</span> <span class="nv">QuotedString</s
 </div>
 </div>
 <div class="sect2">
-<h3 id="_编译_elixir"><a class="link" href="#_编译_elixir">3.6. 编译 Elixir</a></h3>
+<h3 id="_编译_elixir"><a class="link" href="#_编译_elixir">4.6. 编译 Elixir</a></h3>
 <div class="paragraph">
 <p>在 Beam 上编写自己的编程语言的另一种方法，是使用 Elixir 中的元编程工具。Elixir 通过 Erlang 抽象语法树编译 Beam 代码。</p>
 </div>
@@ -2209,13 +2224,13 @@ drop_quotes([$"</span> <span class="p">|</span> <span class="nv">QuotedString</s
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Processes"><a class="link" href="#CH-Processes">4. 进程</a></h2>
+<h2 id="CH-Processes"><a class="link" href="#CH-Processes">5. 进程</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>轻量级进程的概念是 Erlang 和 BEAM 的本质；它使 BEAM 从其他虚拟机中脱颖而出。为了理解 BEAM (以及 Erlang 和 Elixir )是如何工作的，您需要了解进程是如何工作的细节，这将帮助您理解 BEAM 的核心概念，包括对进程来说什么是容易且低成本的，什么是困难且昂贵的。</p>
 </div>
 <div class="paragraph">
-<p>BEAM 中的几乎所有内容都与进程的概念有关，在本章中，我们将进一步了解这些关系。我们将对 <a href="#introduction">Chapter 2</a> 部分的内容进行扩展，并更深入地了解一些概念，如内存管理、消息传递，特别是调度。</p>
+<p>BEAM 中的几乎所有内容都与进程的概念有关，在本章中，我们将进一步了解这些关系。我们将对 <a href="#introduction">Chapter 3</a> 部分的内容进行扩展，并更深入地了解一些概念，如内存管理、消息传递，特别是调度。</p>
 </div>
 <div class="paragraph">
 <p>Erlang 进程与操作系统进程非常相似。它有自己的地址空间，它可以通过信号和消息与其他进程通信，并且执行是由抢占式调度程序控制的。</p>
@@ -2227,7 +2242,7 @@ drop_quotes([$"</span> <span class="p">|</span> <span class="nv">QuotedString</s
 <p>我们将在本章中介绍这些工具，通过它们了解进程和调度器是如何工作的，然后我们将把所有工具放在一起作为最后的练习。</p>
 </div>
 <div class="sect2">
-<h3 id="_什么是进程"><a class="link" href="#_什么是进程">4.1. 什么是进程？</a></h3>
+<h3 id="_什么是进程"><a class="link" href="#_什么是进程">5.1. 什么是进程？</a></h3>
 <div class="paragraph">
 <p>进程是相互隔离的实体，代码的执行就发生在其中。进程通过隔离错误对执行有缺陷代码的进程的影响，来保护系统不受代码中的错误影响。</p>
 </div>
@@ -2235,7 +2250,7 @@ drop_quotes([$"</span> <span class="p">|</span> <span class="nv">QuotedString</s
 <p>运行时提供了许多检查进程的工具，帮助我们发现瓶颈、问题和资源的过度使用。这些工具将帮助您识别和检查有问题的进程。</p>
 </div>
 <div class="sect3">
-<h4 id="_从终端获得进程列表"><a class="link" href="#_从终端获得进程列表">4.1.1. 从终端获得进程列表</a></h4>
+<h4 id="_从终端获得进程列表"><a class="link" href="#_从终端获得进程列表">5.1.1. 从终端获得进程列表</a></h4>
 <div class="paragraph">
 <p>让我们来看看在运行的系统中有哪些进程。最简单的方法是启动一个 Erlang 终端并发出 shell 命令 ` i() ` 。在 Elixir 中，您可以像  <code>:shell_default.i</code> 这样来调用 ` shell_default ` 模块中的 <code>i/0</code> 函数。</p>
 </div>
@@ -2353,14 +2368,14 @@ ok</code></pre>
 <p>字段 <code>priority</code>, <code>suspending</code>, <code>reductions</code>, <code>links</code>, <code>trap_exit</code>, <code>error_handler</code>，和 <code>group_leader</code> 控制进程执行、错误处理和 IO。在介绍 <em>Observer</em> 时，我们将对此进行更深入的研究。</p>
 </div>
 <div class="paragraph">
-<p>最后几个字段 (<code>dictionary</code>, <code>total_heap_size</code>, <code>heap_size</code>, <code>stack_size</code>，和 <code>garbage_collection</code>) 提供了进程内存使用情况的信息。我们将在 <a href="#CH-Memory">Chapter 13</a> 章节中详细讨论进程内存区域。</p>
+<p>最后几个字段 (<code>dictionary</code>, <code>total_heap_size</code>, <code>heap_size</code>, <code>stack_size</code>，和 <code>garbage_collection</code>) 提供了进程内存使用情况的信息。我们将在 <a href="#CH-Memory">Chapter 14</a> 章节中详细讨论进程内存区域。</p>
 </div>
 <div class="paragraph">
 <p>另一种获取进程信息的更直接的方法是使用 <code>BREAK</code> 菜单: <code>ctrl+c p [enter]</code> 提供的进程信息。注意，当处于 <code>BREAK</code> 状态时，整个节点都会冻结。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_程序化的进程探查"><a class="link" href="#_程序化的进程探查">4.1.2. 程序化的进程探查</a></h4>
+<h4 id="_程序化的进程探查"><a class="link" href="#_程序化的进程探查">5.1.2. 程序化的进程探查</a></h4>
 <div class="paragraph">
 <p>shell 函数只打印有关进程的信息，但实际上这些信息可以作为数据形式获取到，因此您可以编写自己的工具来检查进程。您可以通过`erlang:processes/0` 获得所有进程的列表，并通过 <code>erlang:process_info/1</code> 获得某个进程的更多信息。我们也可以使用函数 <code>whereis/1</code> 来用进程名获得它的pid:</p>
 </div>
@@ -2475,7 +2490,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_使用_observer_检查进程"><a class="link" href="#_使用_observer_检查进程">4.1.3. 使用 Observer 检查进程</a></h4>
+<h4 id="_使用_observer_检查进程"><a class="link" href="#_使用_observer_检查进程">5.1.3. 使用 Observer 检查进程</a></h4>
 <div class="paragraph">
 <p>第三种检查进程的方法是使用 <a href="http://erlang.org/doc/apps/observer/observer_ug.html"><em>Observer</em></a>。<em>Observer</em> 是一个用于检查 Erlang 运行时系统的扩展图形界面。在本书中，我们将使用观察者来检查系统的不同方面。</p>
 </div>
@@ -2542,7 +2557,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_进程就是内存"><a class="link" href="#_进程就是内存">4.2. 进程就是内存</a></h3>
+<h3 id="_进程就是内存"><a class="link" href="#_进程就是内存">5.2. 进程就是内存</a></h3>
 <div class="paragraph">
 <p>一个进程基本上是四个内存块：一个_stack_，一个_heap_，一个_message区域，和一个进程控制块_ (<em>PCB</em>)。</p>
 </div>
@@ -2568,7 +2583,7 @@ ok</code></pre>
 <p>栈、堆和邮箱内存都是动态分配的，可以根据需要扩容或缩容。我们将在后面的章节中看到它是如何工作的。另一方面，PCB 是静态分配的，并且包含许多控制进程的字段。</p>
 </div>
 <div class="paragraph">
-<p>实际上，我们可以通过使用 <em>HiPE&#8217;s Built In Functions</em> (HiPE BIFs) 中的自省来检查其中一些内存区域。有了这些 BIFs，我们可以打印出栈、堆和 PCB 的内存中的内容。原始数据会被打印出来，在大多数情况下，人类可读的版本会与数据一起打印出来。要真正了解检查内存时我们所看到的一切，我们需要知道更多关于 Erlang 标签方案 （将在 <a href="#CH-TypeSystem">Chapter 5</a> 中介绍）、执行模型和错误处理（将在 <a href="#CH-BEAM">Chapter 6</a> 中介绍），但是使用这些工具将给我们一个很好的视图来说明，进程其实就是内存。</p>
+<p>实际上，我们可以通过使用 <em>HiPE&#8217;s Built In Functions</em> (HiPE BIFs) 中的自省来检查其中一些内存区域。有了这些 BIFs，我们可以打印出栈、堆和 PCB 的内存中的内容。原始数据会被打印出来，在大多数情况下，人类可读的版本会与数据一起打印出来。要真正了解检查内存时我们所看到的一切，我们需要知道更多关于 Erlang 标签方案 （将在 <a href="#CH-TypeSystem">Chapter 6</a> 中介绍）、执行模型和错误处理（将在 <a href="#CH-BEAM">Chapter 7</a> 中介绍），但是使用这些工具将给我们一个很好的视图来说明，进程其实就是内存。</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -2627,7 +2642,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>我们将 <a href="#CH-TypeSystem">Chapter 5</a> 中进一步研究的栈和堆中的值。堆的内容由 <code>hipe_bifs:show_heap/1</code> 打印。我们不想在这里列出一个大的堆，所以我们将生成一个不做任何事情的新进程并显示它的堆：</p>
+<p>我们将 <a href="#CH-TypeSystem">Chapter 6</a> 中进一步研究的栈和堆中的值。堆的内容由 <code>hipe_bifs:show_heap/1</code> 打印。我们不想在这里列出一个大的堆，所以我们将生成一个不做任何事情的新进程并显示它的堆：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2747,9 +2762,9 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_进程控制块pcb"><a class="link" href="#_进程控制块pcb">4.3. 进程控制块（PCB）</a></h3>
+<h3 id="_进程控制块pcb"><a class="link" href="#_进程控制块pcb">5.3. 进程控制块（PCB）</a></h3>
 <div class="paragraph">
-<p>进程控制块包含控制进程行为和当前状态的所有字段。在本节和本章的其余部分，我们将介绍最重要的字段。我们将在本章中省略与执行和跟踪有关的一些字段，而在 <a href="#CH-BEAM">Chapter 6</a> 中讨论那些字段。</p>
+<p>进程控制块包含控制进程行为和当前状态的所有字段。在本节和本章的其余部分，我们将介绍最重要的字段。我们将在本章中省略与执行和跟踪有关的一些字段，而在 <a href="#CH-BEAM">Chapter 7</a> 中讨论那些字段。</p>
 </div>
 <div class="paragraph">
 <p>如果你想比我们在本章中介绍的内容了解的更深入，你可以看看PCB 的 C 源代码。PCB在文件 link: <a href="https://github.com/erlang/otp/blob/OTP-19.3/erts/emulator/beam/erl_process.h">' erl_process.h '</a> 中被实现为一个名为 <code>process</code> 的 C 结构体。</p>
@@ -2765,7 +2780,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>进程 ID 是一个 Erlang 项式，因此会有 tag (参见 <a href="#CH-TypeSystem">Chapter 5</a> )。这意味着4个最低有效位是一个标签 (tag, 0011)。在代码部分，有一个检查 Erlang 项式的模块(请参阅 <a href="#listing-show">show.erl</a> )，我们将在关于类型的一章中介绍它。不过，我们现在可以使用它来检查加了标签的项式的类型。</p>
+<p>进程 ID 是一个 Erlang 项式，因此会有 tag (参见 <a href="#CH-TypeSystem">Chapter 6</a> )。这意味着4个最低有效位是一个标签 (tag, 0011)。在代码部分，有一个检查 Erlang 项式的模块(请参阅 <a href="#listing-show">show.erl</a> )，我们将在关于类型的一章中介绍它。不过，我们现在可以使用它来检查加了标签的项式的类型。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2812,7 +2827,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_垃圾收集器_gc"><a class="link" href="#_垃圾收集器_gc">4.4. 垃圾收集器 (GC)</a></h3>
+<h3 id="_垃圾收集器_gc"><a class="link" href="#_垃圾收集器_gc">5.4. 垃圾收集器 (GC)</a></h3>
 <div class="paragraph">
 <p>Erlang 使用每个进程复制分代垃圾收集器来管理堆内存。当堆 (或栈，因为它们共享分配的内存块) 上没有更多空间时，垃圾收集器就会开始释放内存。</p>
 </div>
@@ -2846,11 +2861,11 @@ ok</code></pre>
 <div class="title">Figure 11. Erlang Process Memory : GC</div>
 </div>
 <div class="paragraph">
-<p>当一个进程启动时是没有旧堆的，但是一旦年轻数据成熟为旧数据，并且存在垃圾收集，就会分配旧堆。当有 <em>major collection</em>  (也称为 <em>full sweep</em>) 时，旧堆被垃圾收集。请参阅 <a href="#CH-Memory">Chapter 13</a> 了解垃圾收集如何工作的更多细节。在那一章中，我们还将看到如何跟踪和修复与内存相关的问题。</p>
+<p>当一个进程启动时是没有旧堆的，但是一旦年轻数据成熟为旧数据，并且存在垃圾收集，就会分配旧堆。当有 <em>major collection</em>  (也称为 <em>full sweep</em>) 时，旧堆被垃圾收集。请参阅 <a href="#CH-Memory">Chapter 14</a> 了解垃圾收集如何工作的更多细节。在那一章中，我们还将看到如何跟踪和修复与内存相关的问题。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_信箱mailbox和消息传递"><a class="link" href="#_信箱mailbox和消息传递">4.5. 信箱（Mailbox）和消息传递</a></h3>
+<h3 id="_信箱mailbox和消息传递"><a class="link" href="#_信箱mailbox和消息传递">5.5. 信箱（Mailbox）和消息传递</a></h3>
 <div class="paragraph">
 <p>进程通信通过消息传递完成。进程发送被实现，以便发送进程将消息从自己的堆复制到接收进程的邮箱。</p>
 </div>
@@ -2858,7 +2873,7 @@ ok</code></pre>
 <p>在 Erlang 的 早期，并发是通过调度器中的多任务来实现的。我们将在本章后面的调度器一节中更多地讨论并发性，现在值得注意的是，在 Erlang 的第一版中没有并行性，那时一次只能同时运行一个进程。在那个版本中，发送进程可以直接在接收进程的堆上写入数据。</p>
 </div>
 <div class="sect3">
-<h4 id="_并行发送消息"><a class="link" href="#_并行发送消息">4.5.1. 并行发送消息</a></h4>
+<h4 id="_并行发送消息"><a class="link" href="#_并行发送消息">5.5.1. 并行发送消息</a></h4>
 <div class="paragraph">
 <p>当多核系统被引入，Erlang 实现被扩展为多个调度器来调度多个并行运行的进程时，在不获取接收方的 <code>main lock</code> 的情况下直接写另一个进程的堆就不再安全了。此时引入了 <code>m-bufs</code> 的概念 (也称为“堆片段”， <code>heap fragments</code>)。 <code>m-bufs</code> 是一个在进程堆外的内存区域，其他进程可以安全地写入数据。</p>
 </div>
@@ -2871,7 +2886,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_无锁消息传递"><a class="link" href="#_无锁消息传递">4.6. 无锁消息传递</a></h3>
+<h3 id="_无锁消息传递"><a class="link" href="#_无锁消息传递">5.6. 无锁消息传递</a></h3>
 <div class="paragraph">
 <p>在 Erlang 19 中引入了一个新的可以每个进程分别设置的 <em>message_queue_data</em> ，它可以取 <em>on_heap</em> 或 <em>off_heap</em> 的值。当设置为 <em>on_heap</em> 时，发送进程将首先尝试获取接收方的 <code>main lock</code> ，如果成功，则消息将直接复制到接收方的堆上。以上场景只有在接收方被挂起并且没有其他进程获取该锁以发送给同一进程时才发生。如果发送方不能获得锁，它将分配一个堆片段并将消息复制到那里。</p>
 </div>
@@ -2885,7 +2900,7 @@ ok</code></pre>
 <p>当消息被复制到接收进程时，所有消息都被添加到一个链表 ( <em>mailbox</em> ) 中。如果消息被复制到接收进程的堆中，该消息将链接到 “内部消息队列” ( <code>internal message queue</code> ，或 <code>seen</code> 消息) 并由 GC 检查。在 <em>off_heap</em> 分配方案中，新消息被放置在 “外部” ( <code>external</code> ) <code>message in queue</code> 中，并被 GC 忽略。</p>
 </div>
 <div class="sect3">
-<h4 id="_消息的内存区域"><a class="link" href="#_消息的内存区域">4.6.1. 消息的内存区域</a></h4>
+<h4 id="_消息的内存区域"><a class="link" href="#_消息的内存区域">5.6.1. 消息的内存区域</a></h4>
 <div class="paragraph">
 <p>现在，我们可以再次将进程描述为四个内存区域的看法组一个修正了。现在每个进程由五个内存区域 ( <code>heap</code> ,<code>stack</code>, <code>PCB</code> , <code>internal mailbox</code>， 和 <code>external mailbox</code> ) 和不同数量的堆碎片 ( <code>m-bufs</code> )组成:</p>
 </div>
@@ -2900,7 +2915,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_检查消息处理"><a class="link" href="#_检查消息处理">4.6.2. 检查消息处理</a></h4>
+<h4 id="_检查消息处理"><a class="link" href="#_检查消息处理">5.6.2. 检查消息处理</a></h4>
 <div class="paragraph">
 <p>让我们使用自省工具来更详细地了解它是如何工作的。我们首先在邮箱中设置一个带有消息的进程，然后查看PCB。</p>
 </div>
@@ -3017,7 +3032,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_向进程发送消息的过程"><a class="link" href="#_向进程发送消息的过程">4.6.3. 向进程发送消息的过程</a></h4>
+<h4 id="_向进程发送消息的过程"><a class="link" href="#_向进程发送消息的过程">5.6.3. 向进程发送消息的过程</a></h4>
 <div class="paragraph">
 <p>现在我们将忽略分布情况，也就是说我们不会考虑Erlang节点之间发送的消息。想象两个过程 <code>P1</code> 和 <code>P2</code>。进程 <code>P1</code> 想向进程 `P2`发送一条消息(<em>Msg</em>)，如图所示：</p>
 </div>
@@ -3084,7 +3099,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_消息接收"><a class="link" href="#_消息接收">4.6.4. 消息接收</a></h4>
+<h4 id="_消息接收"><a class="link" href="#_消息接收">5.6.4. 消息接收</a></h4>
 <div class="paragraph">
 <p>Erlang 支持选择性接收，这意味着不匹配的消息可以留在邮箱中等待以后收取。如果消息不匹配，即使信箱中有消息的时候，进程也可能是挂起的。 <code>msg.save</code>  字段包含一个指向下一条要查看的消息的指针。</p>
 </div>
@@ -3093,7 +3108,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_消息传递调优"><a class="link" href="#_消息传递调优">4.6.5. 消息传递调优</a></h4>
+<h4 id="_消息传递调优"><a class="link" href="#_消息传递调优">5.6.5. 消息传递调优</a></h4>
 <div class="paragraph">
 <p>使用 Erlang 19 中引入的新 <em>message_queue_data</em> 标志，您可以以一种新的方式用内存空间来 ”<strong>交换</strong>“ 执行时间。如果接收进程已经过载并一直持有 <code>main lock</code>，那么使用 <em>off_heap</em> 分配可能是一个好策略，这种策略能让发送进程快速地将消息转储到 <code>m-buf</code> 中。</p>
 </div>
@@ -3109,7 +3124,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_进程字典pd"><a class="link" href="#_进程字典pd">4.7. 进程字典（PD）</a></h3>
+<h3 id="_进程字典pd"><a class="link" href="#_进程字典pd">5.7. 进程字典（PD）</a></h3>
 <div class="paragraph">
 <p>实际上，进程中还有一个可以存储 Erlang 项式的内存区域，即 <em>Process Dictionary</em>。</p>
 </div>
@@ -3129,11 +3144,11 @@ ok</code></pre>
 <p>对于 PD 这么小的数组，在长度增长之前，你肯定会遇到一些碰撞。每个哈希值指向一个具有键值对的 bucket。bucket 实际上是堆上的 Erlang list。list 中的每个条目都是同样存储在堆中的二元元组(<em>{key, Value}</em>)。</p>
 </div>
 <div class="paragraph">
-<p>在PD中放置一个元素并不是完全自由的，它会导致一个额外的元组和一个缺点，并可能导致垃圾收集被触发。更新位于 bucket 中的 dictionary 中的 key，会导致整个bucket (整个列表) 被重新分配，以确保我们不会获得从旧堆指向新堆的指针。(在 <a href="#CH-Memory">Chapter 13</a> 中，我们将看到垃圾收集如何工作的细节。)</p>
+<p>在PD中放置一个元素并不是完全自由的，它会导致一个额外的元组和一个缺点，并可能导致垃圾收集被触发。更新位于 bucket 中的 dictionary 中的 key，会导致整个bucket (整个列表) 被重新分配，以确保我们不会获得从旧堆指向新堆的指针。(在 <a href="#CH-Memory">Chapter 14</a> 中，我们将看到垃圾收集如何工作的细节。)</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_深入"><a class="link" href="#_深入">4.8. 深入</a></h3>
+<h3 id="_深入"><a class="link" href="#_深入">5.8. 深入</a></h3>
 <div class="paragraph">
 <p>在本章中，我们已经了解了流程是如何实现的。特别地，我们查看了进程的内存是如何组织的，消息是如何传递的，以及PCB中的信息。我们还介绍了一些用于检查进程自检的工具，如 <em>erlang:process_info</em> 和 <em>hipe:show</em>*_bifs。</p>
 </div>
@@ -3204,16 +3219,16 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-TypeSystem"><a class="link" href="#CH-TypeSystem">5. Erlang 类型系统和标签</a></h2>
+<h2 id="CH-TypeSystem"><a class="link" href="#CH-TypeSystem">6. Erlang 类型系统和标签</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>要理解 ERTS 最重要的方面之一，是 ERTS 如何存储数据，即 Erlang 项式如何存储在内存中。这为你理解垃圾收集如何工作、消息传递如何工作提供了基础，并使你了解需要多少内存。</p>
 </div>
 <div class="paragraph">
-<p>在本章中，您将学习Erlang 的基本数据类型以及如何在ERTS中实现它们。这些知识对于理解内存分配和垃圾收集这一章非常重要，请参阅<a href="#CH-Memory">Chapter 13</a>。</p>
+<p>在本章中，您将学习Erlang 的基本数据类型以及如何在ERTS中实现它们。这些知识对于理解内存分配和垃圾收集这一章非常重要，请参阅<a href="#CH-Memory">Chapter 14</a>。</p>
 </div>
 <div class="sect2">
-<h3 id="_erlang_类型系统"><a class="link" href="#_erlang_类型系统">5.1. Erlang 类型系统</a></h3>
+<h3 id="_erlang_类型系统"><a class="link" href="#_erlang_类型系统">6.1. Erlang 类型系统</a></h3>
 <div class="paragraph">
 <p>Erlang 是强类型( <em>strong typed</em> )语言。也就是说，无法将一种类型强制转换 ( coerce ) 为另一种类型，只能从一种类型转换 ( convert ) 为另一种类型。与 C语言 比较，在  C 语言中，你可以强制一个 <em>char</em> 转换为一个 <em>int</em>，或任何类型的指针指向 ( <em>void *</em> )。</p>
 </div>
@@ -3255,7 +3270,7 @@ ok</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_标签方案"><a class="link" href="#_标签方案">5.2. 标签方案</a></h3>
+<h3 id="_标签方案"><a class="link" href="#_标签方案">6.2. 标签方案</a></h3>
 <div class="paragraph">
 <p>在 Erlang 项式的内存表示中，为类型标记保留一些位。出于性能原因，项式被分为即时 ( <em>immediates</em> ) 和装箱 ( <em>boxed</em> )  项式。即时项式可以放入一个机器字中，也就是说，它可以放在寄存器（译注：指通用寄存器）或堆栈槽中。装箱项式由两部分组成：标记的指针和存储在进程堆上的若干字长。除列表外，存储在堆中的装箱 ( <em>box</em> ) 项式都有一个头 header 和一个体  body。</p>
 </div>
@@ -3266,7 +3281,7 @@ ok</code></pre>
 <p>基本思想是使用标签的最低有效位。由于大多数现代CPU体系结构对32位或64位的字长进行对齐，因此至少有两位是指针“未使用的”。这些位可以用作标签。不幸的是，对于 Erlang 中的所有类型，这两个位是不够的，因此需要使用更多的位。(译注：要了解这部分的内容，最好结合 OTP 源码：erl_term.h L: 70 开始阅读 )</p>
 </div>
 <div class="sect3">
-<h4 id="_即时类型的标签"><a class="link" href="#_即时类型的标签">5.2.1. 即时类型的标签</a></h4>
+<h4 id="_即时类型的标签"><a class="link" href="#_即时类型的标签">6.2.1. 即时类型的标签</a></h4>
 <div class="paragraph">
 <p>主标签（最低  2 位）被以如下方式使用：</p>
 </div>
@@ -3387,14 +3402,14 @@ ok</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Catch 即时类型只在堆栈上使用。它包含一个间接的指针，指向代码中的接续点(continuation point)，在异常发生后执行应该从接续点继续开始。在 <a href="#CH-Calls">Chapter 9</a> 中有更多的内容。</p>
+<p>Catch 即时类型只在堆栈上使用。它包含一个间接的指针，指向代码中的接续点(continuation point)，在异常发生后执行应该从接续点继续开始。在 <a href="#CH-Calls">Chapter 10</a> 中有更多的内容。</p>
 </div>
 <div class="paragraph">
 <p>Nil 标记用于空列表( Nil 或 <code>[]</code> )。机器字的其余部分都被 1 填充。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_装箱项式的标签"><a class="link" href="#_装箱项式的标签">5.2.2. 装箱项式的标签</a></h4>
+<h4 id="_装箱项式的标签"><a class="link" href="#_装箱项式的标签">6.2.2. 装箱项式的标签</a></h4>
 <div class="paragraph">
 <p>存储在堆上的 Erlang 项式使用几个机器字。列表或 cons 列表项单元只是堆上两个连续的字：头和尾(或者在 lisp 和 ERTS 代码的某些地方称为 car 和 cdr)。</p>
 </div>
@@ -3531,7 +3546,7 @@ ok</code></pre>
 <p>使用 64 字节或更少空间的 <em>binary</em> 可以作为 <em>heap binaries</em> 直接存储在进程堆上。对较大的 <em>binary</em> 来说，它们被引用计数，且有效载荷存储在进程堆之外。对有效载荷的引用存储在进程堆上一个名为 <em>ProcBin</em> 的对象中。</p>
 </div>
 <div class="paragraph">
-<p>我们将在  <a href="#CH-Memory">Chapter 13</a> 更多地讨论二进制。</p>
+<p>我们将在  <a href="#CH-Memory">Chapter 14</a> 更多地讨论二进制。</p>
 </div>
 <div class="paragraph">
 <p>如果一个整数不能装入小整数 (字长减 4 位) 空间，它将以 “bignums” (或者叫任意精度整数) 的形式存储在堆中。bignum 在内存中有一个 header，后面跟着许多编码的字。header 中 bignum 标记的符号部分 (<code>s</code>) 对数字的符号进行编码(对于正数，s=0，对于负数，s=1)。</p>
@@ -3583,7 +3598,7 @@ lists on 64-bit machines. Binaries, sub binaries, and copying. Records.</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-BEAM"><a class="link" href="#CH-BEAM">6. Erlang 虚拟机: BEAM</a></h2>
+<h2 id="CH-BEAM"><a class="link" href="#CH-BEAM">7. Erlang 虚拟机: BEAM</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>BEAM  (Bogumil / Björn 抽象机)是在 Erlang 运行时系统中执行代码的机器。它是一台垃圾收集，规约值计数，虚拟，非抢占式，直接线程，寄存器式机器。如果这还不能说明什么，不用担心，在接下来的部分中，我们将介绍这些单词在此上下文中的含义。</p>
@@ -3592,10 +3607,10 @@ lists on 64-bit machines. Binaries, sub binaries, and copying. Records.</pre>
 <p>虚拟机 BEAM 位于 Erlang 节点的核心。执行 Erlang 代码的是 BEAM。也就是说，是 BEAM 执行您的应用程序代码。理解 BEAM 是如何执行代码的，对于配置和调优您的代码至关重要。</p>
 </div>
 <div class="paragraph">
-<p>BEAM 的设计对 BEAM 的其他部分有很大的影响。用于调度的原语会影响调度器 ( <a href="#CH-Scheduling">Chapter 12</a> )，Erlang 短语的表示以及与内存的交互会影响垃圾收集器 ( <a href="#CH-Memory">Chapter 13</a> )。通过理解 BEAM 的基本设计，您将更容易理解这些其他组件的实现。</p>
+<p>BEAM 的设计对 BEAM 的其他部分有很大的影响。用于调度的原语会影响调度器 ( <a href="#CH-Scheduling">Chapter 13</a> )，Erlang 短语的表示以及与内存的交互会影响垃圾收集器 ( <a href="#CH-Memory">Chapter 14</a> )。通过理解 BEAM 的基本设计，您将更容易理解这些其他组件的实现。</p>
 </div>
 <div class="sect2">
-<h3 id="_工作内存_堆栈机并不是"><a class="link" href="#_工作内存_堆栈机并不是">6.1. 工作内存: 堆栈机？并不是！</a></h3>
+<h3 id="_工作内存_堆栈机并不是"><a class="link" href="#_工作内存_堆栈机并不是">7.1. 工作内存: 堆栈机？并不是！</a></h3>
 <div class="paragraph">
 <p>与它的前身 JAM (Joe 's Abstract Machine) 是一个堆栈机不同，BEAM 是一个基于WAM <a href="#warren">[warren]</a> 的寄存器机器。在堆栈机器中，指令的每个操作数首先被推入工作堆栈，然后指令弹出它的参数，然后将结果推入堆栈。</p>
 </div>
@@ -3760,7 +3775,7 @@ add</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="SEC-Dispatch_directly_threaded_code"><a class="link" href="#SEC-Dispatch_directly_threaded_code">6.2. 分派(Dispatch)：直接线程代码</a></h3>
+<h3 id="SEC-Dispatch_directly_threaded_code"><a class="link" href="#SEC-Dispatch_directly_threaded_code">7.2. 分派(Dispatch)：直接线程代码</a></h3>
 <div class="paragraph">
 <p>BEAM 中的指令译码器是用一种被称为直接线程（ <em>directly threaded</em> ）代码的技术实现的。在这个上下文中，线程 <em>thread</em> 这个词与操作系统线程、并发性或并行性没有任何关系。它是通过虚拟机本身线程化的执行路径。</p>
 </div>
@@ -4067,11 +4082,11 @@ void stop() { running = 0; }</code></pre>
 <p>地址 0x1000 处的一个"字"指向 move_xx 指令的实现。如果寄存器 <code>I</code> 包含指向 0x1000 的指令指针，那么分派器将会去获取  <code>+*I+</code>( 即 0x3000 ) 并跳转到那个地址。 (<code>+goto* *I+</code>)</p>
 </div>
 <div class="paragraph">
-<p>在 <a href="#CH-Instructions">Chapter 8</a> 中，我们将更深入地研究一些真实的 BEAM 指令以及它们是如何实现的。</p>
+<p>在 <a href="#CH-Instructions">Chapter 9</a> 中，我们将更深入地研究一些真实的 BEAM 指令以及它们是如何实现的。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_调度非抢占规约值计数"><a class="link" href="#_调度非抢占规约值计数">6.3. 调度：非抢占，规约值计数</a></h3>
+<h3 id="_调度非抢占规约值计数"><a class="link" href="#_调度非抢占规约值计数">7.3. 调度：非抢占，规约值计数</a></h3>
 <div class="paragraph">
 <p>大多数现代多线程操作系统使用抢占式调度。这意味着操作系统决定何时从一个进程切换到另一个进程，而不管进程在做什么。这可以保护其他进程不受某个进程行为不当(例如：没有及时做出让步)的影响。</p>
 </div>
@@ -4111,20 +4126,20 @@ void stop() { running = 0; }</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p>我们将在 <a href="#CH-Scheduling">Chapter 12</a> 中详细介绍调度器的工作方式。</p>
+<p>我们将在 <a href="#CH-Scheduling">Chapter 13</a> 中详细介绍调度器的工作方式。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_内存管理垃圾收集"><a class="link" href="#_内存管理垃圾收集">6.4. 内存管理：垃圾收集</a></h3>
+<h3 id="_内存管理垃圾收集"><a class="link" href="#_内存管理垃圾收集">7.4. 内存管理：垃圾收集</a></h3>
 <div class="paragraph">
 <p>Erlang 支持垃圾回收；作为 Erlang 程序员，您不需要执行显式内存管理。在 BEAM 层面，代码负责检查栈和堆溢出，并在栈和堆上分配足够的空间。</p>
 </div>
 <div class="paragraph">
-<p>BEAM 指令 <a href="https://github.com/erlang/otp/blob/OTP-23.0/lib/compiler/src/genop.tab#L118"><code>test_heap</code></a> 将确保堆上有足够的空间满足需求。如果需要，该指令将调用垃圾收集器来回收堆上的空间。垃圾收集器将依次调用内存子系统的更底层实现来根据需要分配或释放内存。我们将在 <a href="#CH-Memory">Chapter 13</a> 中详细介绍内存管理和垃圾收集。</p>
+<p>BEAM 指令 <a href="https://github.com/erlang/otp/blob/OTP-23.0/lib/compiler/src/genop.tab#L118"><code>test_heap</code></a> 将确保堆上有足够的空间满足需求。如果需要，该指令将调用垃圾收集器来回收堆上的空间。垃圾收集器将依次调用内存子系统的更底层实现来根据需要分配或释放内存。我们将在 <a href="#CH-Memory">Chapter 14</a> 中详细介绍内存管理和垃圾收集。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_beam_一个虚拟机"><a class="link" href="#_beam_一个虚拟机">6.5. BEAM: 一个虚拟机</a></h3>
+<h3 id="_beam_一个虚拟机"><a class="link" href="#_beam_一个虚拟机">7.5. BEAM: 一个虚拟机</a></h3>
 <div class="paragraph">
 <p>BEAM 是一个虚拟机，也就是说它是用软件而不是硬件实现的。已经有项目通过 FPGA 实现 BEAM，同样也没有什么可以阻止任何人在硬件上实现 BEAM。一个更好的描述可能是称 BEAM 为一个抽象的机器，并把它看作可以执行 BEAM 代码的机器的蓝图。事实上，BEAM 中的 "AM" 两个字母就代表 “抽象机器”。</p>
 </div>
@@ -4145,10 +4160,10 @@ void stop() { running = 0; }</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-beam_modules"><a class="link" href="#CH-beam_modules">7. 模块和 BEAM 文件格式</a></h2>
+<h2 id="CH-beam_modules"><a class="link" href="#CH-beam_modules">8. 模块和 BEAM 文件格式</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="modules"><a class="link" href="#modules">7.1. 模块</a></h3>
+<h3 id="modules"><a class="link" href="#modules">8.1. 模块</a></h3>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -4176,7 +4191,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect2">
-<h3 id="BEAM_files"><a class="link" href="#BEAM_files">7.2. BEAM 文件格式</a></h3>
+<h3 id="BEAM_files"><a class="link" href="#BEAM_files">8.2. BEAM 文件格式</a></h3>
 <div class="paragraph">
 <p>关于 beam 文件格式的确切信息来源显然是 beam_lib.erl  (参见 <a href="https://github.com/erlang/otp/blob/maint/lib/stdlib/src/beam_lib.erl" class="bare">https://github.com/erlang/otp/blob/maint/lib/stdlib/src/beam_lib.erl</a>)。实际上，还有一份由Beam的主要开发人员和维护人员编写的关于该格式的描述(参见 <a href="http://www.erlang.se/~bjorn/beam_file_format.html" class="bare">http://www.erlang.se/~bjorn/beam_file_format.html</a>)，可读性更好，但有些过时。</p>
 </div>
@@ -4269,7 +4284,7 @@ p-mod调用的技巧
 <p>其中，我们可以看到 beam 使用的块名称。</p>
 </div>
 <div class="sect3">
-<h4 id="atom_table_chunk"><a class="link" href="#atom_table_chunk">7.2.1. 原子表块</a></h4>
+<h4 id="atom_table_chunk"><a class="link" href="#atom_table_chunk">8.2.1. 原子表块</a></h4>
 <div class="paragraph">
 <p>名为 <code>Atom</code> 或 <code>AtU8</code> 的数据块都是强制必须包含的。它包含了模块提到的所有原子。对于 <code>latin1</code> 编码的源文件，使用名为 <code>Atom</code> 的块。对于 <code>utf8</code> 编码的模块，块被命名为 <code>AtU8</code> 。atom 块的格式为：</p>
 </div>
@@ -4339,7 +4354,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="export_table_chunk"><a class="link" href="#export_table_chunk">7.2.2. 导出表块</a></h4>
+<h4 id="export_table_chunk"><a class="link" href="#export_table_chunk">8.2.2. 导出表块</a></h4>
 <div class="paragraph">
 <p>名为 <code>ExpT</code> (EXPort Table) 的块是强制必须包含的，它包含关于该模块要导出哪些函数的信息。</p>
 </div>
@@ -4385,7 +4400,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="import_table_chunk"><a class="link" href="#import_table_chunk">7.2.3. 导入表块</a></h4>
+<h4 id="import_table_chunk"><a class="link" href="#import_table_chunk">8.2.3. 导入表块</a></h4>
 <div class="paragraph">
 <p>名为 <code>ImpT</code> (IMPort Table) 的块是强制必须包含的，它包含关于模块要导入哪些函数的信息。</p>
 </div>
@@ -4423,7 +4438,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="code_chunk"><a class="link" href="#code_chunk">7.2.4. 代码块</a></h4>
+<h4 id="code_chunk"><a class="link" href="#code_chunk">8.2.4. 代码块</a></h4>
 <div class="paragraph">
 <p>名为 <code>Code</code> 的块是强制必须包含的，它包含了 beam 代码。块的格式如下：</p>
 </div>
@@ -4466,7 +4481,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="paragraph">
-<p>这里， <code>Arity</code> 硬编码在表格中，当模拟器从源码构造 beam 码时，表格是由 genop 脚本的 ops.tab 生成的。(译注：此处如果不能够理解，可以参考 <a href="#CH-Beam_loader">Chapter 10</a>)</p>
+<p>这里， <code>Arity</code> 硬编码在表格中，当模拟器从源码构造 beam 码时，表格是由 genop 脚本的 ops.tab 生成的。(译注：此处如果不能够理解，可以参考 <a href="#CH-Beam_loader">Chapter 11</a>)</p>
 </div>
 <div class="paragraph">
 <p>由 <code>beam_asm:encode</code> 产生的编码在下面的 <a href="#SEC-BeamModulesCTE，紧凑的项式编码">[SEC-BeamModulesCTE，紧凑的项式编码]</a> 节中进行了解释。</p>
@@ -4507,7 +4522,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_字符串表块"><a class="link" href="#_字符串表块">7.2.5. 字符串表块</a></h4>
+<h4 id="_字符串表块"><a class="link" href="#_字符串表块">8.2.5. 字符串表块</a></h4>
 <div class="paragraph">
 <p>名为 <code>StrT</code> 的块是强制的，它包含模块中的所有常量字符串，并作为一个长字符串。如果模块中没有字符串字面量，块应该仍然存在，但为空且大小为0。</p>
 </div>
@@ -4535,7 +4550,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_属性块"><a class="link" href="#_属性块">7.2.6. 属性块</a></h4>
+<h4 id="_属性块"><a class="link" href="#_属性块">8.2.6. 属性块</a></h4>
 <div class="paragraph">
 <p>名为 <code>Attr</code> 的数据块是可选的，但一些 OTP 工具希望属性块存在。发布处理程序期望 "vsn" 属性存在。您可以通过: beam_lib:version(Filename) 从文件中获得 version 属性，该函数假设存在一个属性块，其中包含一个 "vsn" 属性。</p>
 </div>
@@ -4565,7 +4580,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_编译信息块"><a class="link" href="#_编译信息块">7.2.7. 编译信息块</a></h4>
+<h4 id="_编译信息块"><a class="link" href="#_编译信息块">8.2.7. 编译信息块</a></h4>
 <div class="paragraph">
 <p>名为 <code>CInf</code> 的数据块是可选的，但一些 OTP 工具希望编译信息块存在。</p>
 </div>
@@ -4595,7 +4610,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_局部函数表块"><a class="link" href="#_局部函数表块">7.2.8. 局部函数表块</a></h4>
+<h4 id="_局部函数表块"><a class="link" href="#_局部函数表块">8.2.8. 局部函数表块</a></h4>
 <div class="paragraph">
 <p>名为 <code>LocT</code> 的块是可选的，用于交叉引用工具。</p>
 </div>
@@ -4630,7 +4645,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_字面值表块"><a class="link" href="#_字面值表块">7.2.9. 字面值表块</a></h4>
+<h4 id="_字面值表块"><a class="link" href="#_字面值表块">8.2.9. 字面值表块</a></h4>
 <div class="paragraph">
 <p>名为 <code>LitT</code> 的块是可选的，它以压缩形式包含来自模块源文件的所有字面值，这些字面值不是即时(immediate) 值。块的格式为：</p>
 </div>
@@ -4685,7 +4700,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_抽象代码块"><a class="link" href="#_抽象代码块">7.2.10. 抽象代码块</a></h4>
+<h4 id="_抽象代码块"><a class="link" href="#_抽象代码块">8.2.10. 抽象代码块</a></h4>
 <div class="paragraph">
 <p>名为 <code>Abst</code> 的块是可选的，可以以抽象形式包含代码。如果将 <code>debug_info</code> 标记给编译器，它将在此块中存储模块的抽象语法树。像 debugger 和 Xref 这样的 OTP 工具需要抽象代码块。数据块的格式为：</p>
 </div>
@@ -4712,25 +4727,25 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_压缩和加密原书未完成"><a class="link" href="#_压缩和加密原书未完成">7.2.11. 压缩和加密（原书未完成）</a></h4>
+<h4 id="_压缩和加密原书未完成"><a class="link" href="#_压缩和加密原书未完成">8.2.11. 压缩和加密（原书未完成）</a></h4>
 <div class="paragraph">
 <p>未完成</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_函数跟踪块_已过时"><a class="link" href="#_函数跟踪块_已过时">7.2.12. 函数跟踪块 (已过时)</a></h4>
+<h4 id="_函数跟踪块_已过时"><a class="link" href="#_函数跟踪块_已过时">8.2.12. 函数跟踪块 (已过时)</a></h4>
 <div class="paragraph">
 <p>函数跟踪块(Function Trace chuck) 类型目前已经过时了。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_整合回顾原书未完成"><a class="link" href="#_整合回顾原书未完成">7.2.13. 整合回顾（原书未完成）</a></h4>
+<h4 id="_整合回顾原书未完成"><a class="link" href="#_整合回顾原书未完成">8.2.13. 整合回顾（原书未完成）</a></h4>
 <div class="paragraph">
 <p>未完成</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="SEC-BeamModulesCTE"><a class="link" href="#SEC-BeamModulesCTE">7.2.14. 紧凑的项式编码</a></h4>
+<h4 id="SEC-BeamModulesCTE"><a class="link" href="#SEC-BeamModulesCTE">8.2.14. 紧凑的项式编码</a></h4>
 <div class="paragraph">
 <p>让我们看看 <code>beam_asm:encode</code> 时使用的算法。BEAM 文件以一种节省空间的方式使用一种特殊编码在 BEAM 文件中存储简单的项式。它不同于 VM 所使用的内存项式布局。</p>
 </div>
@@ -4834,7 +4849,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Instructions"><a class="link" href="#CH-Instructions">8. 通用 BEAM 指令集</a></h2>
+<h2 id="CH-Instructions"><a class="link" href="#CH-Instructions">9. 通用 BEAM 指令集</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Beam 有两种不同的指令集，一种是内部指令集，称为 <em>specific</em> 特殊指令集，另一种是外部指令集，称为 <em>generic</em> 通用指令集。</p>
@@ -4849,13 +4864,13 @@ p-mod调用的技巧
 <p>这是我们将在本章中介绍的指令集。</p>
 </div>
 <div class="paragraph">
-<p>另一个指令集 (specific) 是 Beam 用来实现外部指令集的优化指令集。为了让你理解 Beam 是如何工作的，我们将在 <a href="#CH-Internal_instructions">Chapter 11</a> 中介绍这个指令集。内部指令集可以在次要版本之间甚至在补丁版本之间更改而不发出警告。任何基于内部指令集的工具都是有风险的。</p>
+<p>另一个指令集 (specific) 是 Beam 用来实现外部指令集的优化指令集。为了让你理解 Beam 是如何工作的，我们将在 <a href="#CH-Internal_instructions">Chapter 12</a> 中介绍这个指令集。内部指令集可以在次要版本之间甚至在补丁版本之间更改而不发出警告。任何基于内部指令集的工具都是有风险的。</p>
 </div>
 <div class="paragraph">
 <p>在这一章中，我将详细介绍这些指令的一般语法和一些指令组，<a href="#AP-Instructions">Appendix B</a> 中有一个完整的带有简短描述的指令列表。</p>
 </div>
 <div class="sect2">
-<h3 id="_指令定义"><a class="link" href="#_指令定义">8.1. 指令定义</a></h3>
+<h3 id="_指令定义"><a class="link" href="#_指令定义">9.1. 指令定义</a></h3>
 <div class="paragraph">
 <p>通用指令的名称和操作码在 <code>lib/compiler/src/genop.tab</code> 中被定义。</p>
 </div>
@@ -4911,9 +4926,9 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect2">
-<h3 id="_beam_代码清单"><a class="link" href="#_beam_代码清单">8.2. BEAM 代码清单</a></h3>
+<h3 id="_beam_代码清单"><a class="link" href="#_beam_代码清单">9.2. BEAM 代码清单</a></h3>
 <div class="paragraph">
-<p>正如我们在 <a href="#CH-Compiler">Chapter 3</a> 中看到的那样，我们可以向 Erlang 编译器提供选项 <em>S</em>，以人为和机器可读的格式(实际上是以 Erlang 项式的形式) 获取带有模块 BEAM 代码的 <code>.S</code> 文件。</p>
+<p>正如我们在 <a href="#CH-Compiler">Chapter 4</a> 中看到的那样，我们可以向 Erlang 编译器提供选项 <em>S</em>，以人为和机器可读的格式(实际上是以 Erlang 项式的形式) 获取带有模块 BEAM 代码的 <code>.S</code> 文件。</p>
 </div>
 <div class="paragraph">
 <p>给定文件 beamexample1.erl：</p>
@@ -5003,9 +5018,9 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect2">
-<h3 id="_调用_call"><a class="link" href="#_调用_call">8.3. 调用 (call)</a></h3>
+<h3 id="_调用_call"><a class="link" href="#_调用_call">9.3. 调用 (call)</a></h3>
 <div class="paragraph">
-<p>正如我们在 <a href="#CH-Calls">Chapter 9</a> 中看到的，Erlang 中有几种不同类型的调用。为了区分指令集中的本地调用和远程调用，远程调用的指令名中有 <code>_ext</code>。本地调用只有模块代码中的一个标签，而远程调用的目标形式为 <code>{extfunc, Module, Function, Arity}</code>。</p>
+<p>正如我们在 <a href="#CH-Calls">Chapter 10</a> 中看到的，Erlang 中有几种不同类型的调用。为了区分指令集中的本地调用和远程调用，远程调用的指令名中有 <code>_ext</code>。本地调用只有模块代码中的一个标签，而远程调用的目标形式为 <code>{extfunc, Module, Function, Arity}</code>。</p>
 </div>
 <div class="paragraph">
 <p>为了区分普通(堆栈构建)调用和尾部递归调用，后者的名称中有 <code>_only</code> 或者 <code>_last</code> 。带 <code>_last</code> 的变体还将尽可能多的释放由最后一个参数给出的堆栈槽。</p>
@@ -5018,9 +5033,9 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect2">
-<h3 id="_栈_堆_管理"><a class="link" href="#_栈_堆_管理">8.4. 栈 (堆) 管理</a></h3>
+<h3 id="_栈_堆_管理"><a class="link" href="#_栈_堆_管理">9.4. 栈 (堆) 管理</a></h3>
 <div class="paragraph">
-<p>在 Beam 上的 Erlang 进程的栈和堆共享相同的内存区域，请参阅 <a href="#CH-Processes">Chapter 4</a> 和 <a href="#CH-Memory">Chapter 13</a> 以获得完整的讨论。堆栈向低地址增长，堆向高地址增长。如果新的空间需求超出堆栈当前可提供的空间，Beam 将执行垃圾收集。</p>
+<p>在 Beam 上的 Erlang 进程的栈和堆共享相同的内存区域，请参阅 <a href="#CH-Processes">Chapter 5</a> 和 <a href="#CH-Memory">Chapter 14</a> 以获得完整的讨论。堆栈向低地址增长，堆向高地址增长。如果新的空间需求超出堆栈当前可提供的空间，Beam 将执行垃圾收集。</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -5090,7 +5105,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect2">
-<h3 id="_消息传递"><a class="link" href="#_消息传递">8.5. 消息传递</a></h3>
+<h3 id="_消息传递"><a class="link" href="#_消息传递">9.5. 消息传递</a></h3>
 <div class="paragraph">
 <p>用 beam 码发送信息非常直接。你只需要使用 <code>send</code> 指令。注意尽管发送指令不带任何参数,它更像是一个函数调用。它假设参数 (目的地和消息) 在参数寄存器 X0 和 X1 中。消息也被从 X1 复制到 X0。</p>
 </div>
@@ -5098,7 +5113,7 @@ p-mod调用的技巧
 <p>接收消息要稍微复杂一些，因为它既涉及带有模式匹配的选择性接收，又在函数体中引入一个 yield / resume 点。(还有一个特性可以使用 refs 最小化消息队列扫描，稍后将对此进行详细介绍。)</p>
 </div>
 <div class="sect3">
-<h4 id="_最小接收循环"><a class="link" href="#_最小接收循环">8.5.1. 最小接收循环</a></h4>
+<h4 id="_最小接收循环"><a class="link" href="#_最小接收循环">9.5.1. 最小接收循环</a></h4>
 <div class="paragraph">
 <p>一个最小的接收循环，它接受任何消息并且没有超时 (例如：<code>receive _ &#8594; ok end</code> )，在 BEAM 代码中是这样的：</p>
 </div>
@@ -5120,14 +5135,14 @@ p-mod调用的技巧
 <p><code>loop_rec L2 x0</code> 指令首先检查消息队列中是否有消息。如果没有消息执行跳转到L2，在那里进程将被挂起等待消息到达。</p>
 </div>
 <div class="paragraph">
-<p>如果消息队列中有消息，则 <code>loop_rec</code> 指令还将该消息从 <em>m-buf</em>  移动到进程堆中。有关 m-buf 处理的详细信息，请参阅 <a href="#CH-Memory">Chapter 13</a> 和 <a href="#CH-Processes">Chapter 4</a>。</p>
+<p>如果消息队列中有消息，则 <code>loop_rec</code> 指令还将该消息从 <em>m-buf</em>  移动到进程堆中。有关 m-buf 处理的详细信息，请参阅 <a href="#CH-Memory">Chapter 14</a> 和 <a href="#CH-Processes">Chapter 5</a>。</p>
 </div>
 <div class="paragraph">
 <p>对于像 <code>receive _ &#8594; ok end</code> 这样的代码，我们接受任何消息，且不需要模式匹配，我们只需要执行一个  <code>remove_message</code> 来从消息队列中将本消息与下一条消息分离。(它还消除了任何超时，稍后将详细介绍。)</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_选择性接收循环"><a class="link" href="#_选择性接收循环">8.5.2. 选择性接收循环</a></h4>
+<h4 id="_选择性接收循环"><a class="link" href="#_选择性接收循环">9.5.2. 选择性接收循环</a></h4>
 <div class="paragraph">
 <p>对于一个选择性接收，例如 <code>receive [] &#8594; ok end</code> ，我们将在消息队列循环检查队列中是否有匹配的消息。</p>
 </div>
@@ -5155,7 +5170,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_带超时的接收循环"><a class="link" href="#_带超时的接收循环">8.5.3. 带超时的接收循环</a></h4>
+<h4 id="_带超时的接收循环"><a class="link" href="#_带超时的接收循环">9.5.3. 带超时的接收循环</a></h4>
 <div class="paragraph">
 <p>如果我们向选择性接收添加一个超时，那么 wait 指令将被一个 wait_timeout 指令取代，后面跟着一个超时指令和超时之后要执行的代码。</p>
 </div>
@@ -5189,7 +5204,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect3">
-<h4 id="_同步调用的技巧_ref_trick"><a class="link" href="#_同步调用的技巧_ref_trick">8.5.4. 同步调用的技巧 ( Ref Trick )</a></h4>
+<h4 id="_同步调用的技巧_ref_trick"><a class="link" href="#_同步调用的技巧_ref_trick">9.5.4. 同步调用的技巧 ( Ref Trick )</a></h4>
 <div class="paragraph">
 <p>现在我们已经到了接收循环的最后一个版本，我们使用前面提到的 ref 技巧来避免长信箱扫描。</p>
 </div>
@@ -5254,7 +5269,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Calls"><a class="link" href="#CH-Calls">9. 各种类型的调用，链接以及热代码加载（原书未完成）</a></h2>
+<h2 id="CH-Calls"><a class="link" href="#CH-Calls">10. 各种类型的调用，链接以及热代码加载（原书未完成）</a></h2>
 <div class="sectionbody">
 <div class="sidebarblock">
 <div class="content">
@@ -5286,7 +5301,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect2">
-<h3 id="_热代码加载"><a class="link" href="#_热代码加载">9.1. 热代码加载</a></h3>
+<h3 id="_热代码加载"><a class="link" href="#_热代码加载">10.1. 热代码加载</a></h3>
 <div class="paragraph">
 <p>在 Erlang 中，本地函数调用和远程函数调用之间存在语义上的差异。远程调用 (即对已命名模块中的函数的调用) 保证会转到该模块的最新加载版本。本地调用 (对同一模块内的函数的非限定调用) 保证会与调用转到相同的代码版本。</p>
 </div>
@@ -5323,7 +5338,7 @@ p-mod调用的技巧
 </div>
 </div>
 <div class="sect2">
-<h3 id="_代码加载"><a class="link" href="#_代码加载">9.2. 代码加载</a></h3>
+<h3 id="_代码加载"><a class="link" href="#_代码加载">10.2. 代码加载</a></h3>
 <!--
 Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not related in that way? - bmacdonald
 -->
@@ -5340,10 +5355,10 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Beam_loader"><a class="link" href="#CH-Beam_loader">10. BEAM 加载器</a></h2>
+<h2 id="CH-Beam_loader"><a class="link" href="#CH-Beam_loader">11. BEAM 加载器</a></h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_从通用指令变换为特定指令"><a class="link" href="#_从通用指令变换为特定指令">10.1. 从通用指令变换为特定指令</a></h3>
+<h3 id="_从通用指令变换为特定指令"><a class="link" href="#_从通用指令变换为特定指令">11.1. 从通用指令变换为特定指令</a></h3>
 <div class="paragraph">
 <p>BEAM 加载器不只是获取外部 BEAM 格式并将其写入内存。它还对代码进行许多变换，并将外部 (通用) 格式转换为内部 (特定) 格式。</p>
 </div>
@@ -5351,10 +5366,10 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <p>加载器的代码可以在 beam_load.c (在 <code>erts/emulator/beam</code> ) 中找到，但是大多数翻译逻辑都在文件 ops.tab (在 <code>erts/emulator/beam/emu</code> ) 中。</p>
 </div>
 <div class="paragraph">
-<p>加载器的第一步是解析 beam 文件，基本上和我们在 <a href="#CH-beam_modules">Chapter 7</a> 中使用 Erlang 所做的工作相同，但是该程序是用 C 编写的。</p>
+<p>加载器的第一步是解析 beam 文件，基本上和我们在 <a href="#CH-beam_modules">Chapter 8</a> 中使用 Erlang 所做的工作相同，但是该程序是用 C 编写的。</p>
 </div>
 <div class="paragraph">
-<p>然后是 ops.tab 中的规则被应用于代码块 (译注：code chuck, 见 <a href="#code_chunk">Section 7.2.4</a> ) 中的指令，以将通用指令转换为一个或多个特定指令。</p>
+<p>然后是 ops.tab 中的规则被应用于代码块 (译注：code chuck, 见 <a href="#code_chunk">Section 8.2.4</a> ) 中的指令，以将通用指令转换为一个或多个特定指令。</p>
 </div>
 <div class="paragraph">
 <p>翻译表通过模式匹配工作。文件中的每一行都定义了一个或多个带参数的通用指令的模式，可选的一个箭头(译注："&#8658;" 符号)，后面跟着一个或多个要转换的指令。</p>
@@ -5370,7 +5385,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 </div>
 </div>
 <div class="sect2">
-<h3 id="_理解_ops_tab"><a class="link" href="#_理解_ops_tab">10.2. 理解 ops.tab</a></h3>
+<h3 id="_理解_ops_tab"><a class="link" href="#_理解_ops_tab">11.2. 理解 ops.tab</a></h3>
 <div class="paragraph">
 <p><a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/ops.tab"><code>ops.tab</code></a> 中的变换按照它们写入文件的顺序执行。因此，就像在 Erlang 模式匹配中一样，不同规则的触发顺序是自上而下的。</p>
 </div>
@@ -5378,7 +5393,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 <p>在 <code>ops.tab</code> 中的指令参数的类型可以在 <a href="#AP-Instructions">Appendix B</a> 中可以找到。</p>
 </div>
 <div class="sect3">
-<h4 id="_变换"><a class="link" href="#_变换">10.2.1. 变换</a></h4>
+<h4 id="_变换"><a class="link" href="#_变换">11.2.1. 变换</a></h4>
 <div class="paragraph">
 <p><code>ops.tab</code> 中的大多数规则是不同指令之间的变换。一个简单的变换是这样的:</p>
 </div>
@@ -5463,7 +5478,7 @@ Shouldn't Code Loading come before Hot Code Loading? Or are the two topics not r
 </div>
 </div>
 <div class="sect3">
-<h4 id="_特定指令"><a class="link" href="#_特定指令">10.2.2. 特定指令</a></h4>
+<h4 id="_特定指令"><a class="link" href="#_特定指令">11.2.2. 特定指令</a></h4>
 <div class="paragraph">
 <p>完成所有转换后，我们必须决定特定指令应该是什么样子。让我们继续看看 <code>move_return</code>：</p>
 </div>
@@ -5698,18 +5713,18 @@ goto do_call;</code></pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_优化"><a class="link" href="#_优化">10.3. 优化</a></h3>
+<h3 id="_优化"><a class="link" href="#_优化">11.3. 优化</a></h3>
 <div class="paragraph">
 <p>加载器在加载代码时执行许多窥孔优化。其中最重要的是指令组合和指令专门化。</p>
 </div>
 <div class="paragraph">
-<p>指令组合是将两条或多条较小的指令合并成一条较大的指令。如果已知这些指令大部分时间都是相互跟随的，那么这可能会导致代码的速度大大加快。之所以能够加快速度，是因为不再需要在指令之间执行分派 ( dispatch，译注：参见 <a href="#SEC-Dispatch_directly_threaded_code">Section 6.2</a> )，而且 C 编译器在优化指令时可以获得更多信息。何时执行指令组合是一种权衡，必须考虑主仿真器循环增大的大小与执行指令时的增益之间的影响。</p>
+<p>指令组合是将两条或多条较小的指令合并成一条较大的指令。如果已知这些指令大部分时间都是相互跟随的，那么这可能会导致代码的速度大大加快。之所以能够加快速度，是因为不再需要在指令之间执行分派 ( dispatch，译注：参见 <a href="#SEC-Dispatch_directly_threaded_code">Section 7.2</a> )，而且 C 编译器在优化指令时可以获得更多信息。何时执行指令组合是一种权衡，必须考虑主仿真器循环增大的大小与执行指令时的增益之间的影响。</p>
 </div>
 <div class="paragraph">
 <p>指令专门化消除了对指令中的参数进行解码的需要。因此，用已经解码的参数生成的将不是一条 <code>move_sd</code> ，而是 <code>move_xx</code>， <code>move_xy</code> 等指令。这减少了指令的解码成本，但这也是对仿真器代码大小的权衡考量。</p>
 </div>
 <div class="sect3">
-<h4 id="_select_val_优化"><a class="link" href="#_select_val_优化">10.3.1. select_val 优化</a></h4>
+<h4 id="_select_val_优化"><a class="link" href="#_select_val_优化">11.3.1. select_val 优化</a></h4>
 <div class="paragraph">
 <p>编译器生成 <code>select_val</code> 指令来对许多函数或 case 子句进行控制流处理。例如：</p>
 </div>
@@ -5765,7 +5780,7 @@ goto do_call;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_字面值预哈希"><a class="link" href="#_字面值预哈希">10.3.2. 字面值预哈希</a></h4>
+<h4 id="_字面值预哈希"><a class="link" href="#_字面值预哈希">11.3.2. 字面值预哈希</a></h4>
 <div class="paragraph">
 <p>当加载一个字面值并将其用作任何需要字面值 hash 值的 bifs 或指令的参数时，该 hash 值由加载器创建并由指令使用，而不是每次都对字面值进行 hash。</p>
 </div>
@@ -5777,7 +5792,7 @@ goto do_call;</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Internal_instructions"><a class="link" href="#CH-Internal_instructions">11. BEAM 内部指令（原书未完成）</a></h2>
+<h2 id="CH-Internal_instructions"><a class="link" href="#CH-Internal_instructions">12. BEAM 内部指令（原书未完成）</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>空白，原书未完成</p>
@@ -5785,7 +5800,7 @@ goto do_call;</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Scheduling"><a class="link" href="#CH-Scheduling">12. 调度</a></h2>
+<h2 id="CH-Scheduling"><a class="link" href="#CH-Scheduling">13. 调度</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>要完全理解在 ERTS 系统中时间花在何处，您需要理解系统如何决定运行哪个 Erlang 代码以及何时运行它。这些决定是由调度器做出的。</p>
@@ -5797,7 +5812,7 @@ goto do_call;</code></pre>
 <p>在像 Erlang 这样的通用系统中，我们希望能够处理各种程序和负载，所以调度器将不得不做出一些妥协。总会有一些极端情况，在这些情况下，通用的调度器的行为会变得很糟糕。阅读完本章后，您将对 Erlang 调度器的工作方式有更深的理解，特别是当它可能不在最佳状态工作时。你应该能够设计你的系统以避免极端情况，还应该能够分析行为不正常的系统。</p>
 </div>
 <div class="sect2">
-<h3 id="_并发并行抢占式多任务"><a class="link" href="#_并发并行抢占式多任务">12.1. 并发、并行，抢占式多任务</a></h3>
+<h3 id="_并发并行抢占式多任务"><a class="link" href="#_并发并行抢占式多任务">13.1. 并发、并行，抢占式多任务</a></h3>
 <div class="paragraph">
 <p>Erlang 是一种并发语言。当我们说进程并发运行时，我们的意思是：对于一个外部观察者来说，它看起来像是两个（译注：或多个）进程同时在执行。在单核系统中，这是通过抢占式多任务实现的。这意味着一个进程将运行一段时间，然后虚拟机的调度器将挂起它，让另一个进程运行。</p>
 </div>
@@ -5891,15 +5906,15 @@ ok
 </div>
 </div>
 <div class="sect2">
-<h3 id="_在_c_层面上的协作的_erts_抢占式多任务"><a class="link" href="#_在_c_层面上的协作的_erts_抢占式多任务">12.2. 在 C 层面上的协作的 ERTS 抢占式多任务</a></h3>
+<h3 id="_在_c_层面上的协作的_erts_抢占式多任务"><a class="link" href="#_在_c_层面上的协作的_erts_抢占式多任务">13.2. 在 C 层面上的协作的 ERTS 抢占式多任务</a></h3>
 <div class="paragraph">
 <p>Erlang 级别的抢占式多任务，是通过 C 语言级别的协作多任务来实现的。Erlang 语言、编译器和虚拟机一起工作，以确保 Erlang 进程的执行将在有限的时间内完成，并让下一个进程运行。用于测量和限制允许执行时间的技术称为规约值计数，我们接下来将看到有关规约值计数的所有细节。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_规约值"><a class="link" href="#_规约值">12.3. 规约值</a></h3>
+<h3 id="_规约值"><a class="link" href="#_规约值">13.3. 规约值</a></h3>
 <div class="paragraph">
-<p>人们可以将 BEAM 中的调度描述为：在协同调度之上的抢占式调度。进程只能在执行的某些时刻被挂起，例如在 receive 或函数调用时。这样，调度是协作的---进程必须执行允许挂起的代码。Erlang 代码的特性使得进程在不执行函数调用时，几乎不可能长时间运行。有一些内建函数 ( BIFs ) 仍然可能花费很长时间而不会让步。另外，如果调用实现糟糕的本地实现函数 (NIF, Native Implemented Function) 中的 C 代码，也可能会长时间阻塞一个调度器。我们将在 <a href="#CH-C">Chapter 17</a> 中看到如何编写表现良好的NIFs。</p>
+<p>人们可以将 BEAM 中的调度描述为：在协同调度之上的抢占式调度。进程只能在执行的某些时刻被挂起，例如在 receive 或函数调用时。这样，调度是协作的---进程必须执行允许挂起的代码。Erlang 代码的特性使得进程在不执行函数调用时，几乎不可能长时间运行。有一些内建函数 ( BIFs ) 仍然可能花费很长时间而不会让步。另外，如果调用实现糟糕的本地实现函数 (NIF, Native Implemented Function) 中的 C 代码，也可能会长时间阻塞一个调度器。我们将在 <a href="#CH-C">Chapter 18</a> 中看到如何编写表现良好的NIFs。</p>
 </div>
 <div class="paragraph">
 <p>由于除了递归和列表解析式 ( list comprehension ) 之外没有其他的循环结构，因此不进行函数调用就不可能永远循环。每个函数调用都被算作一次 <code>规约</code>；当进程的规约值减少达到下限时，它将被挂起。</p>
@@ -5935,7 +5950,7 @@ ok
 </table>
 </div>
 <div class="sect3">
-<h4 id="_你能得到多少规约值"><a class="link" href="#_你能得到多少规约值">12.3.1. 你能得到多少规约值？</a></h4>
+<h4 id="_你能得到多少规约值"><a class="link" href="#_你能得到多少规约值">13.3.1. 你能得到多少规约值？</a></h4>
 <div class="paragraph">
 <p>当进程被调度时，它将获得 <code>CONTEXT_REDS</code> (在 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/erl_vm.h#L39">erl_vm.h</a> 中定义，当前值为4000) 定义的一个规约值。在用尽规约值，执行 receive 并且在收件箱中没有匹配的消息时，该进程将被挂起，另一个进程将被调度。</p>
 </div>
@@ -5944,7 +5959,7 @@ ok
 </div>
 </div>
 <div class="sect3">
-<h4 id="_规约值究竟是啥"><a class="link" href="#_规约值究竟是啥">12.3.2. 规约值究竟是啥？</a></h4>
+<h4 id="_规约值究竟是啥"><a class="link" href="#_规约值究竟是啥">13.3.2. 规约值究竟是啥？</a></h4>
 <div class="paragraph">
 <p>规约是什么还没有完全定义，但至少每个函数调用都应该算作规约。当谈到 BIFs 和 NIFs 时，事情变得有点复杂。如果不使用规约值和让步 ( yield )，进程不应该能够运行“很长时间”。用 C 编写的函数不能在中间产生让步，它必须确保它处于干净的状态并返回。为了可重入，它必须在返回之前保存它的内部状态，然后在再次进入时再次设置状态。这样做的代价会非常大，特别是对于一个有时只做少量工作，有时做大量工作的函数来说。用 C 而不是 Erlang 编写函数的原因通常是为了获得性能收益，并且不需要做不必要的簿记工作。由于除了 Erlang 级别上的函数调用之外，对于什么是一次 规约 没有明确的定义，因此存在这样的风险：用 C 实现的函数在每次规约时比普通的 Erlang 函数花费更多的时钟周期。这可能会导致调度器不平衡，甚至导致资源饥饿。</p>
 </div>
@@ -6005,7 +6020,7 @@ ok
 </div>
 </div>
 <div class="sect2">
-<h3 id="_进程状态"><a class="link" href="#_进程状态">12.4. 进程状态</a></h3>
+<h3 id="_进程状态"><a class="link" href="#_进程状态">13.4. 进程状态</a></h3>
 <div class="paragraph">
 <p>PCB 中的 <code>status</code> 字段包含进程状态。它可以是  <em>free</em>, <em>runnable</em>, <em>waiting</em>, <em>running</em>, <em>exiting</em>, <em>garbing</em>,
 和 <em>suspended</em> 中的一种。当进程退出时,它被标记为 <em>free</em> ---你不应该能够看到一个在这种状态下的进程，对于系统的其他部分而言，这是一种短暂的状态，进程不再存在，但仍有一些清理工作要做 (释放内存和其他资源)。</p>
@@ -6036,7 +6051,7 @@ ok
 </div>
 </div>
 <div class="sect2">
-<h3 id="_进程队列"><a class="link" href="#_进程队列">12.5. 进程队列</a></h3>
+<h3 id="_进程队列"><a class="link" href="#_进程队列">13.5. 进程队列</a></h3>
 <div class="paragraph">
 <p>调度器的主要工作是跟踪工作队列，工作队列即进程和端口 ( ports ) 的队列。</p>
 </div>
@@ -6044,7 +6059,7 @@ ok
 <p>调度程序必须处理两种进程状态：<em>runnable</em> 和 <em>waiting</em>。等待接收消息的进程处于 waiting 状态。当等待进程收到消息时，发送 ( send ) 操作将触发接收进程进入 runnable 状态。如果 receive 语句有超时，调度程序必须在超时被触发时，触发将进程状态变为 runnable 的转换。我们将在本章后面介绍这种机制。</p>
 </div>
 <div class="sect3">
-<h4 id="_ready_队列"><a class="link" href="#_ready_队列">12.5.1. Ready 队列</a></h4>
+<h4 id="_ready_队列"><a class="link" href="#_ready_队列">13.5.1. Ready 队列</a></h4>
 <div class="paragraph">
 <p>处于 runnable 状态的进程被放在由调度器处理的 FIFO (先入先出) 队列中，称为就绪队列 ( <em>ready queue</em> )。队列由第一个和最后一个指针以及每个参与进程 PCB 中的下一个指针实现。当一个新进程被添加到队列中时，该进程将跟随最后一个指针，并被添加到队列的末尾，时间复杂度为 O(1)。当调度一个新的进程时，该进程从队列的头部 (第一个指针) 弹出。</p>
 </div>
@@ -6092,7 +6107,7 @@ ok
 </div>
 </div>
 <div class="sect3">
-<h4 id="_waiting_timeouts_and_the_timing_wheel"><a class="link" href="#_waiting_timeouts_and_the_timing_wheel">12.5.2. Waiting, Timeouts and the Timing Wheel</a></h4>
+<h4 id="_waiting_timeouts_and_the_timing_wheel"><a class="link" href="#_waiting_timeouts_and_the_timing_wheel">13.5.2. Waiting, Timeouts and the Timing Wheel</a></h4>
 <div class="paragraph">
 <p>尝试在空邮箱或没有匹配消息的邮箱上进行接收的进程，将会让步 ( yield ) 并进入 waiting 状态。</p>
 </div>
@@ -6186,7 +6201,7 @@ ok
 </div>
 </div>
 <div class="sect2">
-<h3 id="_端口_ports"><a class="link" href="#_端口_ports">12.6. 端口 ( Ports )</a></h3>
+<h3 id="_端口_ports"><a class="link" href="#_端口_ports">13.6. 端口 ( Ports )</a></h3>
 <div class="paragraph">
 <p>端口是 Erlang 中，对于与 Erlang 虚拟机外部的通信点的抽象。在 Erlang 中，与套接字、管道和文件 IO 的通信都是通过端口完成的。</p>
 </div>
@@ -6197,11 +6212,11 @@ ok
 <p>端口任务是端口上的一个操作，如打开、关闭、发送或接收数据。为了执行端口任务，正在执行的线程对端口进行锁定。</p>
 </div>
 <div class="paragraph">
-<p>端口任务在调度器循环 (见下面 <a href="#SEC-Scheduler_loop">Section 12.8</a> ) 的每次迭代中，在选择要执行的新进程之前，被调度和执行。</p>
+<p>端口任务在调度器循环 (见下面 <a href="#SEC-Scheduler_loop">Section 13.8</a> ) 的每次迭代中，在选择要执行的新进程之前，被调度和执行。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_规约可以跳过"><a class="link" href="#_规约可以跳过">12.7. 规约（可以跳过）</a></h3>
+<h3 id="_规约可以跳过"><a class="link" href="#_规约可以跳过">13.7. 规约（可以跳过）</a></h3>
 <div class="paragraph">
 <p>当进程被调度时，它将获得 <code>CONTEXT_REDS</code> (在 <a href="https://github.com/erlang/otp/blob/OTP-20.0/erts/emulator/beam/erl_vm.h">erl_vm.h</a> 中定义，目前是 4000) 定义的规约值。在使用尽它的规约值后，或者在执行增加它的规约值时，或者在收件箱中执行没有匹配消息的接收时，该进程将被挂起 ( suspended )，一个新的进程会被调度。</p>
 </div>
@@ -6219,7 +6234,7 @@ ok
 </div>
 </div>
 <div class="sect2">
-<h3 id="SEC-Scheduler_loop"><a class="link" href="#SEC-Scheduler_loop">12.8. 调度器循环（原书未完成）</a></h3>
+<h3 id="SEC-Scheduler_loop"><a class="link" href="#SEC-Scheduler_loop">13.8. 调度器循环（原书未完成）</a></h3>
 <div class="paragraph">
 <p>从概念上讲，在 Erlang VM 中，可以看作是调度器来驱动程序执行的 。但实际上，在 C 代码中的结构是：模拟器 (beam_emu.c 中的 <a href="https://github.com/erlang/otp/blob/OTP-23.1/erts/emulator/beam/beam_emu.c#L482"><code>process_main</code></a>) 驱动程序执行，它以子程序调用的方式调用调度器，来查找下一个要执行的进程。</p>
 </div>
@@ -6271,7 +6286,7 @@ TODO: 扩展以上内容
 </div>
 </div>
 <div class="sect2">
-<h3 id="_负载均衡"><a class="link" href="#_负载均衡">12.9. 负载均衡</a></h3>
+<h3 id="_负载均衡"><a class="link" href="#_负载均衡">13.9. 负载均衡</a></h3>
 <div class="paragraph">
 <p>负载均衡器的当前策略是：在不超载任何 CPU 的情况下，使用尽可能少的调度器。其思想是，当进程共享相同的 CPU 时，您将通过更好的内存局部性获得更好的性能。</p>
 </div>
@@ -6285,7 +6300,7 @@ TODO: 扩展以上内容
 <p>负载均衡器使用两种技术来平衡负载：任务窃取 ( <em>task stealing</em> ) 和迁移 ( <em>migration</em> )。任务窃取是在调度器每次把进程队列中的进程都执行完时 ( 译注：换言之，此时调度器已经无活可干了 ) 使用的，这种技术将导致工作负载在调度器之间更加分散。迁移更为复杂，它试图将负载压缩到适当数量的调度器。</p>
 </div>
 <div class="sect3">
-<h4 id="_任务窃取_task_stealing"><a class="link" href="#_任务窃取_task_stealing">12.9.1. 任务窃取 ( <em>task stealing</em> )</a></h4>
+<h4 id="_任务窃取_task_stealing"><a class="link" href="#_任务窃取_task_stealing">13.9.1. 任务窃取 ( <em>task stealing</em> )</a></h4>
 <div class="paragraph">
 <p>当调度器在试图获取运行队列中的进程来调度时，如果队列为空，此时这个调度器将尝试从其他调度器那里窃取工作任务。</p>
 </div>
@@ -6303,7 +6318,7 @@ TODO: 扩展以上内容
 </div>
 </div>
 <div class="sect3">
-<h4 id="_迁移"><a class="link" href="#_迁移">12.9.2. 迁移</a></h4>
+<h4 id="_迁移"><a class="link" href="#_迁移">13.9.2. 迁移</a></h4>
 <div class="paragraph">
 <p>要真正最优地利用调度器，需要使用更精细的迁移策略。当前的策略是将负载压缩到尽可能少的调度器中，同时将其分散开来，以便没有调度器超载。</p>
 </div>
@@ -6417,7 +6432,7 @@ scheduler S3 S4 S1 S2
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Memory"><a class="link" href="#CH-Memory">13. 内存子系统: 栈、堆以及垃圾收集</a></h2>
+<h2 id="CH-Memory"><a class="link" href="#CH-Memory">14. 内存子系统: 栈、堆以及垃圾收集</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>在深入研究 ERTS 的内存子系统之前，我们需要有一些基本的词汇表，并了解现代操作系统中程序内存布局的一般情形。在这个回顾部分中，我将假设程序被编译成一个 ELF 可执行文件，并运行在类似 IA-32 / AMD64 架构的 Linux 上。布局和术语对于编译ERTS的所有操作系统基本上是相同的。</p>
@@ -6454,7 +6469,7 @@ scheduler S3 S4 S1 S2
 </div>
 </div>
 <div class="sect2">
-<h3 id="_内存子系统"><a class="link" href="#_内存子系统">13.1. 内存子系统</a></h3>
+<h3 id="_内存子系统"><a class="link" href="#_内存子系统">14.1. 内存子系统</a></h3>
 <div class="paragraph">
 <p>当我们深入到内存子系统中时，我们就可以再次清楚地看到，ERTS 更像是一个操作系统，而不仅仅是一个编程语言环境。ERTS 不仅为 Erlang 进程级别上的 Erlang 项式提供了一个垃圾收集器，而且还提供了大量的低级别内存分配器和内存分配策略。</p>
 </div>
@@ -6505,7 +6520,7 @@ works.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="SS-Memory_Allocators"><a class="link" href="#SS-Memory_Allocators">13.2. 不同类型的内存分配器</a></h3>
+<h3 id="SS-Memory_Allocators"><a class="link" href="#SS-Memory_Allocators">14.2. 不同类型的内存分配器</a></h3>
 <div class="paragraph">
 <p>Erlang 运行时系统正在尽最大努力处理所有情况和所有类型的负载下的内存，但是总会有一些极端情况。在本章中，我们将详细了解内存是如何分配的，以及不同的分配器是如何工作的。有了这个知识和我们稍后将介绍的一些工具，如果您的系统最终出现这些情况，您应该能够检测并修复这些问题。</p>
 </div>
@@ -6629,7 +6644,7 @@ works.</p>
 </tbody>
 </table>
 <div class="sect3">
-<h4 id="_基础分配器sys_alloc"><a class="link" href="#_基础分配器sys_alloc">13.2.1. 基础分配器：sys_alloc</a></h4>
+<h4 id="_基础分配器sys_alloc"><a class="link" href="#_基础分配器sys_alloc">14.2.1. 基础分配器：sys_alloc</a></h4>
 <div class="paragraph">
 <p>分配器 sys_alloc 不能被禁用，它基本上是直接映射到底层 OS 的 libc 中的 malloc 实现。</p>
 </div>
@@ -6650,7 +6665,7 @@ works.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_内存段分配器mseg_alloc"><a class="link" href="#_内存段分配器mseg_alloc">13.2.2. 内存段分配器：mseg_alloc</a></h4>
+<h4 id="_内存段分配器mseg_alloc"><a class="link" href="#_内存段分配器mseg_alloc">14.2.2. 内存段分配器：mseg_alloc</a></h4>
 <div class="paragraph">
 <p>如果底层操作系统支持 mmap，那么某些特定的内存分配器可以使用 mseg_alloc 而不是 sys_alloc 来从操作系统分配内存。</p>
 </div>
@@ -6668,7 +6683,7 @@ works.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_内存分配器框架alloc_util"><a class="link" href="#_内存分配器框架alloc_util">13.2.3. 内存分配器框架：alloc_util</a></h4>
+<h4 id="_内存分配器框架alloc_util"><a class="link" href="#_内存分配器框架alloc_util">14.2.3. 内存分配器框架：alloc_util</a></h4>
 <div class="paragraph">
 <p>在这两个通用分配器 ( sys_alloc 和 mseg_alloc ) 之上构建的是一个名为 <em>alloc_util</em> 的框架，它用于为不同类型的用法和数据来实现特定的内存分配器。</p>
 </div>
@@ -6737,7 +6752,7 @@ Are you intending for readers to take advantage of these allocation strategies i
 </div>
 </div>
 <div class="sect3">
-<h4 id="_临时分配器temp_alloc"><a class="link" href="#_临时分配器temp_alloc">13.2.4. 临时分配器：temp_alloc</a></h4>
+<h4 id="_临时分配器temp_alloc"><a class="link" href="#_临时分配器temp_alloc">14.2.4. 临时分配器：temp_alloc</a></h4>
 <div class="paragraph">
 <p>分配器 <em>temp_alloc</em> 用于临时内存分配。这是非常短暂的分配。temp_alloc 分配的内存，生存期不能超过 Erlang 进程上下文切换。</p>
 </div>
@@ -6773,7 +6788,7 @@ allocator, see erl_alloc.types
 </div>
 </div>
 <div class="sect3">
-<h4 id="_堆分配器eheap_alloc"><a class="link" href="#_堆分配器eheap_alloc">13.2.5. 堆分配器：eheap_alloc</a></h4>
+<h4 id="_堆分配器eheap_alloc"><a class="link" href="#_堆分配器eheap_alloc">14.2.5. 堆分配器：eheap_alloc</a></h4>
 <div class="paragraph">
 <p>堆分配器用于分配存储 tagged Erlang 项式的内存块，如 Erlang 进程堆(所有代)、堆碎片和 beam_registers。</p>
 </div>
@@ -6782,43 +6797,43 @@ allocator, see erl_alloc.types
 </div>
 </div>
 <div class="sect3">
-<h4 id="_二进制数据分配器binary_alloc"><a class="link" href="#_二进制数据分配器binary_alloc">13.2.6. 二进制数据分配器：binary_alloc</a></h4>
+<h4 id="_二进制数据分配器binary_alloc"><a class="link" href="#_二进制数据分配器binary_alloc">14.2.6. 二进制数据分配器：binary_alloc</a></h4>
 <div class="paragraph">
 <p>你猜对了，二进制数据 (Binary) 分配器用于分配二进制类型的项式。二进制数据可以有相当不同的大小和不同的生命周期。默认情况下，这个分配器使用  <em>best fit</em>  分配策略。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_ets_分配器ets_alloc"><a class="link" href="#_ets_分配器ets_alloc">13.2.7. ETS 分配器：ets_alloc</a></h4>
+<h4 id="_ets_分配器ets_alloc"><a class="link" href="#_ets_分配器ets_alloc">14.2.7. ETS 分配器：ets_alloc</a></h4>
 <div class="paragraph">
 <p>ETS 分配器用于大多数 ETS 相关的数据，除了一些短生存期 ( short lived ) 项式或 ETS 表使用的临时数据</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_驱动_driver_分配器driver_alloc"><a class="link" href="#_驱动_driver_分配器driver_alloc">13.2.8. 驱动 (Driver) 分配器：driver_alloc</a></h4>
+<h4 id="_驱动_driver_分配器driver_alloc"><a class="link" href="#_驱动_driver_分配器driver_alloc">14.2.8. 驱动 (Driver) 分配器：driver_alloc</a></h4>
 <div class="paragraph">
 <p>驱动分配器用于端口，内联驱动 ( linked in driver ) 和NIF。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_短生存期分配器sl_alloc"><a class="link" href="#_短生存期分配器sl_alloc">13.2.9. 短生存期分配器：sl_alloc</a></h4>
+<h4 id="_短生存期分配器sl_alloc"><a class="link" href="#_短生存期分配器sl_alloc">14.2.9. 短生存期分配器：sl_alloc</a></h4>
 <div class="paragraph">
 <p>短生存期分配器用于预期短生存期的列表和缓冲区。短生存期数据的寿命可能比临时数据长。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_长生存期分配器ll_alloc"><a class="link" href="#_长生存期分配器ll_alloc">13.2.10. 长生存期分配器：ll_alloc</a></h4>
+<h4 id="_长生存期分配器ll_alloc"><a class="link" href="#_长生存期分配器ll_alloc">14.2.10. 长生存期分配器：ll_alloc</a></h4>
 <div class="paragraph">
 <p>长生存期分配程序用于长生存期数据，如原子、模块、fun 和长生存期表</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_定长分配器fix_alloc"><a class="link" href="#_定长分配器fix_alloc">13.2.11. 定长分配器：fix_alloc</a></h4>
+<h4 id="_定长分配器fix_alloc"><a class="link" href="#_定长分配器fix_alloc">14.2.11. 定长分配器：fix_alloc</a></h4>
 <div class="paragraph">
 <p>定长分配器用于固定大小的对象，如 PCB、消息引用和其他一些对象。固定大小分配器默认使用 <em>address order best fit</em> 分配策略。</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_标准分配器std_alloc"><a class="link" href="#_标准分配器std_alloc">13.2.12. 标准分配器：std_alloc</a></h4>
+<h4 id="_标准分配器std_alloc"><a class="link" href="#_标准分配器std_alloc">14.2.12. 标准分配器：std_alloc</a></h4>
 <div class="paragraph">
 <p>其他类型的数据使用标准分配器。( active_procs alloc_info_request arg_reg bif_timer_ll bits_buf bpd calls_buf db_heir_data db_heir_data db_named_table_entry dcache ddll_handle ddll_processes ddll_processes dist_entry dist_tab driver_lock ethread_standard fd_entry_buf fun_tab gc_info_request io_queue line_buf link_lh module_refs monitor_lh monitor_lh monitor_sh
 nlink_lh nlink_lh nlink_sh node_entry node_tab nodes_monitor port_data_heap port_lock port_report_exit port_specific_data proc_dict process_specific_data ptimer_ll re_heap reg_proc reg_tab sched_wall_time_request stack suspend_monitor thr_q_element thr_queue zlib )</p>
@@ -6826,24 +6841,24 @@ nlink_lh nlink_lh nlink_sh node_entry node_tab nodes_monitor port_data_heap port
 </div>
 </div>
 <div class="sect2">
-<h3 id="_system_flags_for_memory原书未完成"><a class="link" href="#_system_flags_for_memory原书未完成">13.3. system flags for memory（原书未完成）</a></h3>
+<h3 id="_system_flags_for_memory原书未完成"><a class="link" href="#_system_flags_for_memory原书未完成">14.3. system flags for memory（原书未完成）</a></h3>
 <div class="paragraph">
 <p>原书未完成</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_进程内存"><a class="link" href="#_进程内存">13.4. 进程内存</a></h3>
+<h3 id="_进程内存"><a class="link" href="#_进程内存">14.4. 进程内存</a></h3>
 <div class="paragraph">
-<p>正如我们在 <a href="#CH-Processes">Chapter 4</a> 中看到的那样，进程实际上只是一些内存区域，在本章中，我们将更深入地研究如何管理栈、堆和邮箱。</p>
+<p>正如我们在 <a href="#CH-Processes">Chapter 5</a> 中看到的那样，进程实际上只是一些内存区域，在本章中，我们将更深入地研究如何管理栈、堆和邮箱。</p>
 </div>
 <div class="paragraph">
 <p>栈和堆的默认大小是 233 个字。在启动 Erlang 时，可以通过 <code>+h</code> 标志对默认大小进行全局更改。在使用 <code>spawn_opt</code> 启动进程时，还可以通过设置 <code>min_heap_size</code> 来设置最小堆大小。</p>
 </div>
 <div class="paragraph">
-<p>正如我们在 <a href="#CH-TypeSystem">Chapter 5</a> 中看到的那样，Erlang 项式都是被标记的，当它们存储在堆上时，它们要么是 cons 单元 ( 列表单元 ) ，要么是装箱对象。</p>
+<p>正如我们在 <a href="#CH-TypeSystem">Chapter 6</a> 中看到的那样，Erlang 项式都是被标记的，当它们存储在堆上时，它们要么是 cons 单元 ( 列表单元 ) ，要么是装箱对象。</p>
 </div>
 <div class="sect3">
-<h4 id="_项式共享"><a class="link" href="#_项式共享">13.4.1. 项式共享</a></h4>
+<h4 id="_项式共享"><a class="link" href="#_项式共享">14.4.1. 项式共享</a></h4>
 <div class="paragraph">
 <p>堆上的对象在一个进程的上下文中通过引用传递。如果使用元组作为参数调用一个函数，那么只有对该元组的标记引用传递给被调用的函数。在构建新项式时，将只使用对子项式的引用。</p>
 </div>
@@ -6930,7 +6945,7 @@ T = {L, L}.</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_消息传递_2"><a class="link" href="#_消息传递_2">13.4.2. 消息传递</a></h4>
+<h4 id="_消息传递_2"><a class="link" href="#_消息传递_2">14.4.2. 消息传递</a></h4>
 <div class="paragraph">
 <p>当进程 P1 向另一个 (本地) 进程 P2 发送消息 M 时，进程 P1 首先计算 M 的扩展大小，然后通过在本地调度器上下文中对 heap_frag 执行 heap_alloc 来分配该大小的新消息缓冲区。</p>
 </div>
@@ -7015,9 +7030,9 @@ T = {L, L}.</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="SS-Binaries"><a class="link" href="#SS-Binaries">13.4.3. 二进制数据</a></h4>
+<h4 id="SS-Binaries"><a class="link" href="#SS-Binaries">14.4.3. 二进制数据</a></h4>
 <div class="paragraph">
-<p>正如我们在 <a href="#CH-TypeSystem">Chapter 5</a> 中看到的，在内部有四种类型的二进制文件。其中三种类型，<em>heap binaries</em>, <em>sub binaries</em> 和 <em>match contexts</em> 存储在本地堆上，由垃圾收集器处理，并像任何其他对象一样作为消息传递，并根据需要复制。</p>
+<p>正如我们在 <a href="#CH-TypeSystem">Chapter 6</a> 中看到的，在内部有四种类型的二进制文件。其中三种类型，<em>heap binaries</em>, <em>sub binaries</em> 和 <em>match contexts</em> 存储在本地堆上，由垃圾收集器处理，并像任何其他对象一样作为消息传递，并根据需要复制。</p>
 </div>
 <div class="sect4">
 <h5 id="_引用计数"><a class="link" href="#_引用计数">引用计数</a></h5>
@@ -7083,7 +7098,7 @@ T = {L, L}.</pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_垃圾收集"><a class="link" href="#_垃圾收集">13.4.4. 垃圾收集</a></h4>
+<h4 id="_垃圾收集"><a class="link" href="#_垃圾收集">14.4.4. 垃圾收集</a></h4>
 <!--
 This part of the content seems to be good, and probably worthy of being a top-level heading. It might be a bit long, though. - bmacdonald
 -->
@@ -7527,24 +7542,24 @@ bin_vheap_mature, bin_old_vheap_sz, bin_old_vheap+.</pre>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_其他有趣的内存区域原书未完成"><a class="link" href="#_其他有趣的内存区域原书未完成">13.5. 其他有趣的内存区域（原书未完成）</a></h3>
+<h3 id="_其他有趣的内存区域原书未完成"><a class="link" href="#_其他有趣的内存区域原书未完成">14.5. 其他有趣的内存区域（原书未完成）</a></h3>
 <div class="paragraph">
 <p>原书未完成</p>
 </div>
 <div class="sect3">
-<h4 id="_原子表原书未完成"><a class="link" href="#_原子表原书未完成">13.5.1. 原子表（原书未完成）</a></h4>
-<div class="paragraph">
-<p>原书未完成</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_代码_原书未完成"><a class="link" href="#_代码_原书未完成">13.5.2. 代码 （原书未完成）</a></h4>
+<h4 id="_原子表原书未完成"><a class="link" href="#_原子表原书未完成">14.5.1. 原子表（原书未完成）</a></h4>
 <div class="paragraph">
 <p>原书未完成</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_常量原书未完成"><a class="link" href="#_常量原书未完成">13.5.3. 常量（原书未完成）</a></h4>
+<h4 id="_代码_原书未完成"><a class="link" href="#_代码_原书未完成">14.5.2. 代码 （原书未完成）</a></h4>
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_常量原书未完成"><a class="link" href="#_常量原书未完成">14.5.3. 常量（原书未完成）</a></h4>
 <div class="paragraph">
 <p>原书未完成</p>
 </div>
@@ -7553,7 +7568,7 @@ bin_vheap_mature, bin_old_vheap_sz, bin_old_vheap+.</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-DataStructures"><a class="link" href="#CH-DataStructures">14. 高级数据结构 (ETS, DETS, Mnesia)（原书未完成）</a></h2>
+<h2 id="CH-DataStructures"><a class="link" href="#CH-DataStructures">15. 高级数据结构 (ETS, DETS, Mnesia)（原书未完成）</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>原书未完成</p>
@@ -7561,62 +7576,46 @@ bin_vheap_mature, bin_old_vheap_sz, bin_old_vheap+.</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-IO"><a class="link" href="#CH-IO">15. IO、端口和网络</a></h2>
+<h2 id="CH-IO"><a class="link" href="#CH-IO">16. IO、端口和网络</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Within Erlang, all communication is done by asynchronous signaling.
-The communication between an Erlang node and the outside world is done
-through a <em>port</em>. A port is an interface between Erlang processes and
-an external resource. In early versions of Erlang a port behaved very
-much in the same way as a process and you communicated by sending and
-receiving signals. You can still communicate with ports this way but
-there are also a number of BIFs to communicate directly with a port.</p>
+<p>在Erlang中，所有通信都是通过异步信令 (signaling) 完成的。Erlang节点和外部世界之间的通信是通过端口 (<em>port</em>) 完成的。端口是Erlang进程和外部资源之间的接口。在Erlang的早期版本中，端口的行为与进程非常相似，您通过发送和接收信号进行通信。您仍然可以以这种方式与端口通信，但是也有许多 bif 可以直接与端口通信。</p>
 </div>
 <div class="paragraph">
-<p>In this chapter we will look at how ports are used as a common
-interface for all IO, how ports communicate with the outside world and
-how Erlang processes communicate with ports. But first we will look
-at how standard IO works on a higher level.</p>
+<p>在本章中，我们将了解端口是如何作为所有IO的公共接口使用的，端口是如何与外部世界进行通信的，以及Erlang进程是如何与端口进行通信的。但首先我们将看看标准IO如何在更高的层次上工作。</p>
 </div>
 <div class="sect2">
-<h3 id="_standard_io"><a class="link" href="#_standard_io">15.1. Standard IO</a></h3>
+<h3 id="_标准_io"><a class="link" href="#_标准_io">16.1. 标准 IO</a></h3>
 <div class="ulist">
 <ul>
 <li>
-<p>IO protocol</p>
+<p>IO协议</p>
 </li>
 <li>
 <p>group leader</p>
 </li>
 <li>
-<p>erlang:display&#8201;&#8212;&#8201;a BIF that sends directly to node&#8217;s std out</p>
+<p>erlang:display&#8201;&#8212;&#8201;直接发送到节点 std out 的 BIF</p>
 </li>
 <li>
-<p>io:format&#8201;&#8212;&#8201;sends through io protocol and the group leader</p>
+<p>io:format&#8201;&#8212;&#8201;通过IO协议和组长发送</p>
 </li>
 <li>
-<p>Redirecting standard IO at startup (detached mode)</p>
+<p>启动时重定向标准IO(分离模式)</p>
 </li>
 <li>
-<p>Standard in and out</p>
+<p>标准输入输出</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_ports"><a class="link" href="#_ports">15.2. Ports</a></h3>
+<h3 id="_端口"><a class="link" href="#_端口">16.2. 端口</a></h3>
 <div class="paragraph">
-<p>A port is the process like interface between Erlang processes and
-everything that is not Erlang processes. The programmer can to
-a large extent pretend that everything in the world behaves like
-an Erlang process and communicate through message passing.</p>
+<p>端口是 Erlang 进程和非 Erlang 进程之间的类进程的接口。程序员可以在很大程度上假装世界上的一切都像 Erlang 进程一样运行，并通过消息传递进行通信。</p>
 </div>
 <div class="paragraph">
-<p>Each port has an owner, more on this later, but all processes
-who know about the port can send messages to the port.
-In figure REF we see how a process can communicate with the
-port and how the port is communicating to the world outside the
-Erlang node.</p>
+<p>每个端口都有一个所有者(稍后详细介绍)，但是所有了解该端口的进程都可以向该端口发送消息。在 xref:port_communication 中，我们看到了进程如何与端口通信，以及端口如何与 Erlang 节点之外的世界通信。</p>
 </div>
 <div id="port_communication" class="imageblock">
 <div class="content">
@@ -7625,69 +7624,31 @@ Erlang node.</p>
 <div class="title">Figure 25. Port Communication</div>
 </div>
 <div class="paragraph">
-<p>Process P1 has opened a port (Port1) to a file, and is the owner of
-the port and can receive messages from the port. Process P2 also has a
-handle to the port and can send messages to the port. The processes
-and the port reside in an Erlang node. The file lives in the file and
-operating system on the outside of the Erlang node.</p>
+<p>进程 P1 打开了一个文件的端口 (Port1)，它是该端口的所有者，可以从该端口接收消息。进程 P2 也有一个端口的句柄，可以向该端口发送消息。进程和端口驻留在 Erlang 节点中。文件位于 Erlang 节点外部的文件和操作系统中。</p>
 </div>
 <div class="paragraph">
-<p>If the port owner dies or is terminated the port is also killed.
-When a port terminates all external resources should also be cleaned
-up. This is true for all ports that come with Erlang and if you
-implement your own port you should make sure it does this cleanup.</p>
+<p>如果端口所有者死亡或被终止，该端口也会被终止。当端口终止时，也应该清除所有外部资源。对于 Erlang 附带的所有端口来说都是如此，如果您实现自己的端口，那么应该确保它执行此清理工作。</p>
 </div>
 <div class="sect3">
-<h4 id="_different_types_of_ports"><a class="link" href="#_different_types_of_ports">15.2.1. Different types of Ports</a></h4>
+<h4 id="_不同类型的_ports"><a class="link" href="#_不同类型的_ports">16.2.1. 不同类型的 Ports</a></h4>
 <div class="paragraph">
-<p>There are three different classes of ports: file descriptors, external
-programs and drivers. A file descriptor port makes it possible for a
-process to access an already opened file descriptor. A port to an
-external program invokes the external program as a separate OS
-process. A driver port requires a driver to be loaded in the Erlang
-node.</p>
+<p>有三种不同的端口:文件描述符、外部程序和驱动程序。文件描述符端口使进程能够访问已经打开的文件描述符。到外部程序的端口将外部程序作为单独的 OS 进程调用。驱动程序端口需要在 Erlang 节点中加载驱动程序。</p>
 </div>
 <div class="paragraph">
-<p>All ports are created by a call to <code>erlang:open_port(PortName,
-PortSettings)</code>.</p>
+<p>所有端口都是通过调用 <code>erlang:open_port(PortName, PortSettings)</code> 创建的。</p>
 </div>
 <div class="paragraph">
-<p>A file descriptor port is opened with <code>{fd, In, Out}</code> as the
-<code>PortName</code>. This class of ports is used by some internal ERTS servers
-like the old shell. They are considered to not be very efficient and
-hence seldom used.</p>
+<p>打开文件描述符端口时，以 <code>{fd, In, Out}</code> 作为 PortName 参数。此类端口由一些内部 ERTS 服务器 (如旧shell) 使用。它们被认为效率不高，因此很少使用。</p>
 </div>
 <div class="paragraph">
-<p>An external program port can be used to execute any program in the
-native OS of the Erlang node. To open an external program port you
-give either the argument <code>{spawn, Command}</code> or <code>{spawn_executable,
-FileName}</code> with the name of the external program. This is the easiest
-and one of the safest way to interact with code written in other
-programming languages. Since the external program is executed in its
-own OS process it will not bring down the Erlang node if it
-crashes. (It can of course use up all CPU or memory or do a number of
-other things to bring down the whole OS, but it is much safer than a
-linked in driver or a NIF).</p>
+<p>外部程序端口可以用于执行 Erlang 节点所在的本机操作系统中的任何程序。要打开一个外部程序端口，您可以使用参数 <code>{spawn, Command}</code> 或 <code>{spawn_executable, FileName}</code> 作为外部程序的名称。这是与用其他编程语言编写的代码进行交互的最简单也是最安全的方法之一。由于外部程序是在它自己的 OS 进程中执行的，所以当 Erlang 节点崩溃时，它不会停止运行。(它当然有可能会耗尽所有的CPU或内存，或者做许多其他事情导致整个操作系统崩溃，但它比一个链接的驱动程序或一个 NIF 要安全得多)。</p>
 </div>
 <div class="paragraph">
-<p>A driver port requires that a driver program has been loaded with
-ERTS. Such a port is started with either <code>{spawn, Command}</code> or
-<code>{spawn_driver, Command}</code>. Writing your own linked in driver can be an
-efficient way to interface for example some C library code that you
-would like to use. Note that a linked in driver executes in the same
-OS process as the Erlang node and a crash in the driver will bring
-down the whole node. Details about how to write an Erlang driver in
-general can be found in <a href="#CH-C">Chapter 17</a>.</p>
+<p>驱动程序端口要求驱动程序已经加载到 ERTS。这样的端口由 <code>{spawn, Command}</code> 或 <code>{spawn_driver, Command}</code> 启动。编写自己的链入驱动程序可以是一种有效的方式来使用一些你想用的 C 库代码做接口。请注意，一个链入驱动程序与 Erlang 节点在同一个操作系统进程中执行，驱动程序的崩溃将导致整个节点崩溃。关于如何编写 Erlang 驱动程序的详细信息可以在 <a href="#CH-C">Chapter 18</a> 中找到。</p>
 </div>
 <div class="paragraph">
-<p>Erlang/OTP comes with a number port drivers implementing the
-predefined port types. There are the common drivers available on all
-platforms: <code>tcp_inet</code>, <code>udp_inet</code>, <code>sctp_inet</code>, <code>efile</code>, <code>zlib_drv</code>,
-<code>ram_file_drv</code>, <code>binary_filer</code>, <code>tty_sl</code>. These drivers are used to
-implement e.g. file handling and sockets in Erlang. On Windows there
-is also a driver to access the registry: <code>registry_drv</code>. And on most
-platforms there are example drivers to use when implementing your own
-driver like: <code>multi_drv</code> and <code>sig_drv</code>.</p>
+<p>Erlang/OTP 附带了一些实现预定义端口类型的端口驱动程序。在所有平台上都有通用的驱动程序： <code>tcp_inet</code>, <code>udp_inet</code>, <code>sctp_inet</code>, <code>efile</code>, <code>zlib_drv</code>,
+<code>ram_file_drv</code>, <code>binary_filer</code>, <code>tty_sl</code>。这些驱动程序用于实现 Erlang 中的文件处理和套接字。在 Windows 上，还有一个访问注册表的驱动程序： <code>registry_drv</code>。在大多数平台上，在实现自己的驱动程序时都有示例驱动程序可以使用，比如： <code>multi_drv</code> 和 <code>sig_drv</code>。</p>
 </div>
 <div id="entities_on_node" class="imageblock">
 <div class="content">
@@ -7737,24 +7698,27 @@ driver like: <code>multi_drv</code> and <code>sig_drv</code>.</p>
 <p>Implementation</p>
 </div>
 <div class="paragraph">
-<p>See chapter <a href="#CH-C">Chapter 17</a> for details of how to implement your own
-linked in driver.</p>
+<p>关于如何实现你自己的链接驱动程序，请参阅 <a href="#CH-C">Chapter 18</a>。</p>
 </div>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_distributed_erlang"><a class="link" href="#_distributed_erlang">15.3. Distributed Erlang</a></h3>
-
+<h3 id="_分布式_erlang"><a class="link" href="#_分布式_erlang">16.3. 分布式 Erlang</a></h3>
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_sockets_udp_and_tcp"><a class="link" href="#_sockets_udp_and_tcp">15.4. Sockets, UDP and TCP</a></h3>
-
+<h3 id="_sockets_udp_and_tcp"><a class="link" href="#_sockets_udp_and_tcp">16.4. Sockets, UDP and TCP</a></h3>
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Distribution"><a class="link" href="#CH-Distribution">16. Distribution（原书未完成）</a></h2>
+<h2 id="CH-Distribution"><a class="link" href="#CH-Distribution">17. 分布式（原书未完成）</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>原书未完成</p>
@@ -7762,7 +7726,7 @@ linked in driver.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-C"><a class="link" href="#CH-C">17. Interfacing C, BIFs NIFs and Linked in Drivers (原书未完成)</a></h2>
+<h2 id="CH-C"><a class="link" href="#CH-C">18. Interfacing C, BIFs NIFs and Linked in Drivers (原书未完成)</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>原书未完成，以下是内容提要：</p>
@@ -7798,22 +7762,24 @@ linked in driver.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Native"><a class="link" href="#CH-Native">18. Native Code（原书未完成）</a></h2>
+<h2 id="CH-Native"><a class="link" href="#CH-Native">19. Native Code（原书未完成）</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>原书未完成</p>
 </div>
 </div>
 </div>
-<h1 id="P-Running" class="sect0"><a class="link" href="#P-Running">II: 运行 ERTS</a></h1>
+<h1 id="P-Running" class="sect0"><a class="link" href="#P-Running">II: 卷二：运行 ERTS</a></h1>
 <div class="sect1">
-<h2 id="CH-Tracing"><a class="link" href="#CH-Tracing">19. 跟踪</a></h2>
+<h2 id="CH-Tracing"><a class="link" href="#CH-Tracing">20. 跟踪（原书未完成）</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Debugging"><a class="link" href="#CH-Debugging">20. 调试</a></h2>
+<h2 id="CH-Debugging"><a class="link" href="#CH-Debugging">21. 调试</a></h2>
 <div class="sectionbody">
 <div class="admonitionblock warning">
 <table>
@@ -7833,7 +7799,7 @@ included in this chapter, too.
 </table>
 </div>
 <div class="sect2">
-<h3 id="_preliminary_outline"><a class="link" href="#_preliminary_outline">20.1. Preliminary Outline</a></h3>
+<h3 id="_preliminary_outline"><a class="link" href="#_preliminary_outline">21.1. Preliminary Outline</a></h3>
 <div class="ulist">
 <ul>
 <li>
@@ -7858,7 +7824,7 @@ included in this chapter, too.
 </div>
 </div>
 <div class="sect2">
-<h3 id="_introduction"><a class="link" href="#_introduction">20.2. Introduction</a></h3>
+<h3 id="_introduction"><a class="link" href="#_introduction">21.2. Introduction</a></h3>
 <div class="paragraph">
 <p>Debugging is the <em>art</em> of identifying and removing errors
 (i.e. <em>bugs</em>) from software. This section covers the most common
@@ -7867,7 +7833,7 @@ tools such as the
 <a href="http://erlang.org/doc/apps/debugger/debugger_chapter.html"><em>Debugger</em></a>
 exist in Erlang, the most effective debugging techniques in Erlang are
 the ones based on the so-called Erlang <em>tracing facilities</em>, which
-will be discussed in detail in chapter <a href="#CH-Tracing">Chapter 19</a>. This chapter
+will be discussed in detail in chapter <a href="#CH-Tracing">Chapter 20</a>. This chapter
 also covers the concept of <em>Crash Dump</em>, a readable text file
 generated by the Erlang Runtime System when an unrecoverable error is
 detected, for example when the system runs out of memory or when an
@@ -7877,19 +7843,19 @@ read and interpret them.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_debugger"><a class="link" href="#_debugger">20.3. debugger</a></h3>
+<h3 id="_debugger"><a class="link" href="#_debugger">21.3. debugger</a></h3>
 <div class="paragraph">
 <p>TODO</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_dbg"><a class="link" href="#_dbg">20.4. dbg</a></h3>
+<h3 id="_dbg"><a class="link" href="#_dbg">21.4. dbg</a></h3>
 <div class="paragraph">
 <p>TODO</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_redbug"><a class="link" href="#_redbug">20.5. Redbug</a></h3>
+<h3 id="_redbug"><a class="link" href="#_redbug">21.5. Redbug</a></h3>
 <div class="paragraph">
 <p><em>Redbug</em> is a debugging utility which allows you to easily interact
 with the Erlang <em>tracing facilities</em>. It is an external library and
@@ -7897,7 +7863,7 @@ therefore it has to be installed separately. One of the best Redbug
 features is its ability to shut itself down in case of overload.</p>
 </div>
 <div class="sect3">
-<h4 id="_installing_redbug"><a class="link" href="#_installing_redbug">20.5.1. Installing Redbug</a></h4>
+<h4 id="_installing_redbug"><a class="link" href="#_installing_redbug">21.5.1. Installing Redbug</a></h4>
 <div class="paragraph">
 <p>You can clone redbug via:</p>
 </div>
@@ -7937,7 +7903,7 @@ automatically at every startup:</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_using_redbug"><a class="link" href="#_using_redbug">20.5.2. Using Redbug</a></h4>
+<h4 id="_using_redbug"><a class="link" href="#_using_redbug">21.5.2. Using Redbug</a></h4>
 <div class="paragraph">
 <p>Redbug is safe to be used in production, thanks to a self-protecting
 mechanism against overload, which kills the tool in case too many
@@ -8208,7 +8174,7 @@ available options for redbug, you can ask the tool itself:</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_crash_dumps"><a class="link" href="#_crash_dumps">20.6. Crash Dumps</a></h3>
+<h3 id="_crash_dumps"><a class="link" href="#_crash_dumps">21.6. Crash Dumps</a></h3>
 <div class="paragraph">
 <p>TODO</p>
 </div>
@@ -8216,7 +8182,7 @@ available options for redbug, you can ask the tool itself:</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Ops"><a class="link" href="#CH-Ops">21. 运维</a></h2>
+<h2 id="CH-Ops"><a class="link" href="#CH-Ops">22. 运维</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>One guiding principle behind the design of
@@ -8238,7 +8204,7 @@ separate nodes. Change is facilitated by making it easy to upgrade code
 and interacting and examining a running system.</p>
 </div>
 <div class="sect2">
-<h3 id="_connecting_to_the_system"><a class="link" href="#_connecting_to_the_system">21.1. Connecting to the System</a></h3>
+<h3 id="_connecting_to_the_system"><a class="link" href="#_connecting_to_the_system">22.1. Connecting to the System</a></h3>
 <div class="paragraph">
 <p>We will look at many different ways to monitor and
 maintain a running system. There are many tools and
@@ -8362,7 +8328,7 @@ to each other, we can look at how to connect a shell to a node.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_shell"><a class="link" href="#_the_shell">21.2. The Shell</a></h3>
+<h3 id="_the_shell"><a class="link" href="#_the_shell">22.2. The Shell</a></h3>
 <div class="paragraph">
 <p>The Elixir and the Erlang shells works much the same way as a shell or
 a terminal window on your computer, except that they give you a
@@ -8376,7 +8342,7 @@ a node through the shell and some of the shell&#8217;s perhaps
 less known but more powerful features.</p>
 </div>
 <div class="sect3">
-<h4 id="_configuring_your_shell"><a class="link" href="#_configuring_your_shell">21.2.1. Configuring Your Shell</a></h4>
+<h4 id="_configuring_your_shell"><a class="link" href="#_configuring_your_shell">22.2.1. Configuring Your Shell</a></h4>
 <div class="paragraph">
 <p>Both the Elixir shell and the Erlang shell can be configured
 to provide you with shortcuts for functions that you often use.</p>
@@ -8422,7 +8388,7 @@ This is how command such as <code>ls()</code> and <code>help()</code> are implem
 </div>
 </div>
 <div class="sect3">
-<h4 id="_connecting_a_shell_to_a_node"><a class="link" href="#_connecting_a_shell_to_a_node">21.2.2. Connecting a Shell to a Node</a></h4>
+<h4 id="_connecting_a_shell_to_a_node"><a class="link" href="#_connecting_a_shell_to_a_node">22.2.2. Connecting a Shell to a Node</a></h4>
 <div class="paragraph">
 <p>When running a production system you will want to start the nodes in
 daemon mode through <code>run_erl</code>. We will go through how to start a node
@@ -8808,7 +8774,7 @@ profiling and debugging. We will take a look at it next.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_breaking_out_or_in"><a class="link" href="#_breaking_out_or_in">21.2.3. Breaking (out or in).</a></h4>
+<h4 id="_breaking_out_or_in"><a class="link" href="#_breaking_out_or_in">22.2.3. Breaking (out or in).</a></h4>
 <div class="paragraph">
 <p>When you press <code>ctrl+c</code> you enter BREAK mode. This is most
 often used just to break out of the shell by either tying
@@ -8866,9 +8832,11 @@ in this book.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CH-Tweak"><a class="link" href="#CH-Tweak">22. 调整运行时系统</a></h2>
+<h2 id="CH-Tweak"><a class="link" href="#CH-Tweak">23. 调整运行时系统（原书未完成）</a></h2>
 <div class="sectionbody">
-
+<div class="paragraph">
+<p>原书未完成</p>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -9117,7 +9085,7 @@ Function info instruction points to an <code>Export</code> record (defined in <c
 <p>Remember that all Erlang terms are ordered so these instructions can compare any two terms. You can for example test if the atom <code>self</code> is less than the pid  returned by <code>self()</code>. (It is.)</p>
 </div>
 <div class="paragraph">
-<p>Note that for numbers the comparison is done on the Erlang type <em>number</em>, see <a href="#CH-TypeSystem">Chapter 5</a>. That is, for a mixed float and integer comparison the number of lower precision is converted to the other type before comparison. For example on my system 1 and 1.0 compares as equal, as well as 9999999999999999 and 1.0e16. Comparing floating point numbers is always risk and best avoided, the result may wary depending on the underlying hardware.</p>
+<p>Note that for numbers the comparison is done on the Erlang type <em>number</em>, see <a href="#CH-TypeSystem">Chapter 6</a>. That is, for a mixed float and integer comparison the number of lower precision is converted to the other type before comparison. For example on my system 1 and 1.0 compares as equal, as well as 9999999999999999 and 1.0e16. Comparing floating point numbers is always risk and best avoided, the result may wary depending on the underlying hardware.</p>
 </div>
 <div class="paragraph">
 <p>If you want to make sure that the integer 1 and the floating point number 1.0 are compared different you can use is_eq_exact and is_ne_exact. This corresponds to the Erlang operators <code>=:=</code> and <code>=/=</code>.</p>
@@ -9127,7 +9095,7 @@ Function info instruction points to an <code>Export</code> record (defined in <c
 <div class="sect2">
 <h3 id="_function_calls"><a class="link" href="#_function_calls">B.3. Function Calls</a></h3>
 <div class="paragraph">
-<p>In this chapter we will summarize what the different call instructions does. For a thorough description of how function calls work see <a href="#CH-Calls">Chapter 9</a>.</p>
+<p>In this chapter we will summarize what the different call instructions does. For a thorough description of how function calls work see <a href="#CH-Calls">Chapter 10</a>.</p>
 </div>
 <div class="sect3">
 <h4 id="_call_arity_label"><a class="link" href="#_call_arity_label">B.3.1. call Arity Label</a></h4>
@@ -9241,7 +9209,7 @@ Raises <code>badarity</code> if the arity doesn&#8217;t match the function objec
 <div class="sect2">
 <h3 id="_stack_and_heap_management"><a class="link" href="#_stack_and_heap_management">B.4. Stack (and Heap) Management</a></h3>
 <div class="paragraph">
-<p>The stack and the heap of an Erlang process on Beam share the same memory area see <a href="#CH-Processes">Chapter 4</a> and <a href="#CH-Memory">Chapter 13</a> for a full discussion. The stack grows toward lower addresses and the heap toward higher addresses. Beam will do a garbage collection if more space than what is available is needed on either the stack or the heap.</p>
+<p>The stack and the heap of an Erlang process on Beam share the same memory area see <a href="#CH-Processes">Chapter 5</a> and <a href="#CH-Memory">Chapter 14</a> for a full discussion. The stack grows toward lower addresses and the heap toward higher addresses. Beam will do a garbage collection if more space than what is available is needed on either the stack or the heap.</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -13225,7 +13193,7 @@ out the allocated stack slots with <code>NIL</code>.</p>
 </div>
 </div>
 <div class="sect1">
-<h2 id="BIB-References"><a class="link" href="#BIB-References">23. References</a></h2>
+<h2 id="BIB-References"><a class="link" href="#BIB-References">24. References</a></h2>
 <div class="sectionbody">
 <div class="ulist">
 <ul>
@@ -13252,7 +13220,7 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-19 00:43:09 +0800
+Last updated 2020-10-19 11:02:01 +0800
 </div>
 </div>
 <style>
