@@ -8,7 +8,7 @@ Erlang 运行时系统（ERTS） ((("Erlang RunTime System", see="ERTS")))(((ERT
 
 === ERTS 和 Erlang 运行时系统
 
-任何 Erlang 运行时系统 ((("Erlang Runtime System"))) 和 Erlang 运行时的特定实现系统有一点区别。由爱立信开发维护的 Erlang/OTP 是 Erlang 和 Erlang 运行时系统事实上的标准实现。在本书中，我将参考这个实现为 _ERTS_，将 _Erlang RunTime System_ 中 T 字母大写 (See xref:ERTS[] for a definition of OTP)。
+任何 Erlang 运行时系统 ((("Erlang Runtime System"))) 和 Erlang 运行时的特定实现系统有一点区别。由爱立信开发维护的 Erlang/OTP 是 Erlang 和 Erlang 运行时系统事实上的标准实现。在本书中，我将参考这个实现为 _ERTS_，将 _Erlang RunTime System_ 中 T 字母大写 (参见 xref:ERTS[] 中 OTP 的定义)。
 
 Erlang 运行时系统或者 Erlang 虚拟机并没有一个官方定义。你可以想象这样一个理想的柏拉图式系统看起来就像是ERTS，并且移除了所有特定实现细节。不幸的是，这是一个循环定义，因为你需要了解通用定义以便能够鉴别一个特定实现细节。在Erlang 的世界里，我们通常比较务实而不去担心这些。
 

@@ -284,8 +284,7 @@ t(A,B) -> A ++ B.
 
 调整Erlang语言最简单的方法是通过解析转换(Parse Transformations 或 parse transforms)。解析转换带有各种各样的警告，比如OTP文档中的注释:
 
-WARNING: Programmers are strongly advised not to engage in parse
-transformations and no support is offered for problems encountered.
+WARNING: 强烈建议程序员不要进行解析转换，我们对遇到的问题不提供支持。
 
 当你使用了解析转换，你基本上在写一个额外的编译器“pass”，如果不小心的话，可能会导致意外的结果。你需要在使用解析转换的模块声明对它的使用，这对模块来说是本地的，这样对编译器的调整也比较安全。在我看来，应用解析转换最大的问题在于你自己发明的句法，这可能对别人阅读代码造成许多困难。至少在你的解析转换与广受欢迎的 QLC 等齐名前都如此。
 

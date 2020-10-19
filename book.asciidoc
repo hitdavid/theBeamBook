@@ -1,4 +1,4 @@
-= Erlang 运行时系统（The Erlang Runtime System）
+= Erlang 运行时系统
 :author: Erik Stenman 等著，杜宇 翻译
 :encoding: utf-8
 :lang: zh_CN
@@ -16,6 +16,8 @@
 :ditaa-transparent: true
 :attribute-missing: warn
 :xrefstyle: short
+
+= 前言
 
 include::chapters/preface.asciidoc[前言]
 
