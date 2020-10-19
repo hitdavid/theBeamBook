@@ -12,6 +12,8 @@
 
 当前翻译版本预览：[中文网页版](https://hitdavid.github.io/theBeamBook/). （最新进展：翻译完成第一卷）
 
+PDF版本下载：https://github.com/hitdavid/theBeamBook/releases/tag/0.8
+
 因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠：
 
 1元：觉得这本书挺好玩
@@ -24,13 +26,17 @@
 
 100元：太棒了，就想要这个，今后继续加油
 
-以下附比特币收款地址和支付宝二维码，谢谢。
+以下附译者的比特币地址，微信二维码，支付宝二维码，谢谢大家。
 
+比特币地址：
 
+![images/btc.jpg](images/btc.jpg)
 
-BitCoin Address: 12JdwAdCZugkrtiPwCGaT4qetbixvZM4Dg
+微信二维码：
 
-支付宝二维码:
+![images/wechat.jpg](images/wechat.jpg)
+
+支付宝二维码：
 
 ![images/alipay.jpg](images/alipay.jpg)
 
