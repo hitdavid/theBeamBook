@@ -6,7 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.10">
 <meta name="author" content="Erik Stenman 等著，杜宇 翻译">
-<title>Erlang 运行时系统（The Erlang Runtime System）</title>
+<title>Erlang 运行时系统</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -443,12 +443,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>Erlang 运行时系统（The Erlang Runtime System）</h1>
+<h1>Erlang 运行时系统</h1>
 <div class="details">
 <span id="author" class="author">Erik Stenman 等著，杜宇 翻译</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
+<ul class="sectlevel0">
+<li><a href="#_前言">I: 前言</a>
 <ul class="sectlevel1">
 <li><a href="#_原书前言">1. 原书前言</a>
 <ul class="sectlevel2">
@@ -457,8 +459,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_致谢">1.3. 致谢</a></li>
 </ul>
 </li>
-<li><a href="#CHChinese_Version">2. 中文版前言</a></li>
-<li><a href="#P-ERTS">I: 卷一：理解 ERTS</a>
+<li><a href="#CHChinese_Version">2. 中文翻译版信息</a>
+<ul class="sectlevel2">
+<li><a href="#_译者的话">2.1. 译者的话</a></li>
+<li><a href="#_支持翻译人">2.2. 支持翻译人</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#P-ERTS">II: 卷一：理解 ERTS</a>
 <ul class="sectlevel1">
 <li><a href="#introduction">3. Erlang 运行时系统介绍</a>
 <ul class="sectlevel2">
@@ -709,7 +718,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#CH-Native">19. Native Code（原书未完成）</a></li>
 </ul>
 </li>
-<li><a href="#P-Running">II: 卷二：运行 ERTS</a>
+<li><a href="#P-Running">III: 卷二：运行 ERTS</a>
 <ul class="sectlevel1">
 <li><a href="#CH-Tracing">20. 跟踪（原书未完成）</a></li>
 <li><a href="#CH-Debugging">21. 调试</a>
@@ -896,6 +905,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div id="content">
+<h1 id="_前言" class="sect0"><a class="link" href="#_前言">I: 前言</a></h1>
 <div class="sect1">
 <h2 id="_原书前言"><a class="link" href="#_原书前言">1. 原书前言</a></h2>
 <div class="sectionbody">
@@ -986,8 +996,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre>Yoshihiro Tanaka
 Roberto Aloi
-Dmytro Lytovchenko
 hitdavid
+Dmytro Lytovchenko
 Anthony Molinaro
 Alexandre Rodrigues
 Yoshihiro TANAKA
@@ -1031,7 +1041,7 @@ Chris Yunker</pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="CHChinese_Version"><a class="link" href="#CHChinese_Version">2. 中文版前言</a></h2>
+<h2 id="CHChinese_Version"><a class="link" href="#CHChinese_Version">2. 中文翻译版信息</a></h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>本书来自 Github，项目版权协议为：CC-BY-4.0 License。</p>
@@ -1040,49 +1050,92 @@ Chris Yunker</pre>
 <p>书籍的 Github Repository 为：https://github.com/happi/theBeamBook</p>
 </div>
 <div class="paragraph">
-<p>翻译人：杜宇（hitdavid），前火币网技术总监，曾任多家公司中层管理岗位，对技术和技术管理有一定经验积累。</p>
+<p>最新翻译版本在线预览：https://hitdavid.github.io/theBeamBook/</p>
 </div>
 <div class="paragraph">
-<p>中文翻译工程，诚邀共同翻译者，可以邮件到 <a href="mailto:hitdavid@gmail.com">hitdavid@gmail.com</a> 或者其他方式联系我。</p>
+<p>本书英文版原书 &lt;The Erlang Runtime System&gt; 的所有版权信息，遵守原书的约定和协议。中文翻译版的权利归译者以及共同创作者所有。当您使用、阅读和传播本书时，视为您已经同意以上声明，否则请立即删除本书及其附带源码、制品，谢谢。</p>
+</div>
+<div class="sect2">
+<h3 id="_译者的话"><a class="link" href="#_译者的话">2.1. 译者的话</a></h3>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>译者 杜宇（hitdavid），前火币网基础服务部技术总监，曾任多家公司中层管理岗位，对技术和技术管理有一定经验积累。在 2020 年中离职火币网后，积累了一些对之前遇到的技术问题的思考和想法，译者找了几位朋友交流探讨，逐渐对函数式语言有了些兴趣。</p>
 </div>
 <div class="paragraph">
-<p>最新翻译版本预览：https://hitdavid.github.io/theBeamBook/[中文网页版]</p>
+<p>为了在最短时间比较深入了了解 Erlang 和 Elixir 等语言，译者找到了图书市场上能买到的基本 Erlang 书，发现书中内容都没有那么底层。为了打好根基，译者在 Github 上找到了一本尚未完成的讲 Erlang 运行时系统的书，The Beam Book，这本书的写作出版过程一直比较艰辛，有兴趣的朋友可以读一下原书 Repo 中 README 的最后部分。原书虽未写完，凡是为译者提供了一个思路，为什么不把它翻译出来，供有兴趣的朋友一起阅读、分析和理解呢？</p>
 </div>
 <div class="paragraph">
-<p>因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠：</p>
+<p>恰逢译者在离职后，有一段时间的调整期，自 2020 年 9 月下旬开始，翻译工作启动，自 10 月 19 日第一卷翻译结束，这期间得到了许多朋友的无私帮助，此处不一一开列，感谢大家的鼓励和支持。让译者为了一本注定无法出版的书而努力。</p>
 </div>
 <div class="paragraph">
+<p>因为时间安排的关系，第二卷和附录的翻译工作、原书部分章节的补全，以及词汇表校对等工作会需要比较长的时间，但从内容来看，第一卷作为独立的一部分先发布出来也是一个好的选择。所以，目前状态的翻译本将作为本书 0.8 版本 Release，以待后续。</p>
+</div>
+<div class="paragraph">
+<p>衷心感谢各位支持！</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; 译者<br>
+<cite>2020年10月19日于北京</cite>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_支持翻译人"><a class="link" href="#_支持翻译人">2.2. 支持翻译人</a></h3>
+<div class="paragraph">
+<p>因为本书没有出版，也没有版税收入，故请各位多支持，在力所能及范围内捐赠：</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
 <p>1元：觉得这本书挺好玩</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>5元：翻译不易，支持一下</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>10元：了解了 ERTS，有点收获</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>50元：对我很有帮助</p>
-</div>
-<div class="paragraph">
+</li>
+<li>
 <p>100元：太棒了，就想要这个，今后继续加油</p>
+</li>
+</ul>
 </div>
 <div class="paragraph">
-<p>以下附比特币收款地址和支付宝二维码，谢谢。</p>
+<p>以下附译者的比特币地址，微信二维码，支付宝二维码，谢谢大家。</p>
 </div>
 <div class="paragraph">
-<p>BitCoin Address: 12JdwAdCZugkrtiPwCGaT4qetbixvZM4Dg</p>
-</div>
-<div class="paragraph">
-<p>支付宝二维码:</p>
+<p>比特币地址：</p>
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="images/alipay.jpg" alt="alipay">
+<img src="images/btc.jpg" alt="BitCoin 地址" width="100" height="100">
+</div>
+</div>
+<div class="paragraph">
+<p>微信二维码：</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/wechat.jpg" alt="wechat.jpg" width="100" height="100">
+</div>
+</div>
+<div class="paragraph">
+<p>支付宝二维码：</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/alipay.jpg" alt="支付宝" width="100" height="100">
 </div>
 </div>
 </div>
 </div>
-<h1 id="P-ERTS" class="sect0"><a class="link" href="#P-ERTS">I: 卷一：理解 ERTS</a></h1>
+</div>
+<h1 id="P-ERTS" class="sect0"><a class="link" href="#P-ERTS">II: 卷一：理解 ERTS</a></h1>
 <div class="sect1">
 <h2 id="introduction"><a class="link" href="#introduction">3. Erlang 运行时系统介绍</a></h2>
 <div class="sectionbody">
@@ -1092,7 +1145,7 @@ Chris Yunker</pre>
 <div class="sect2">
 <h3 id="_erts_和_erlang_运行时系统"><a class="link" href="#_erts_和_erlang_运行时系统">3.1. ERTS 和 Erlang 运行时系统</a></h3>
 <div class="paragraph">
-<p>任何 Erlang 运行时系统  和 Erlang 运行时的特定实现系统有一点区别。由爱立信开发维护的 Erlang/OTP 是 Erlang 和 Erlang 运行时系统事实上的标准实现。在本书中，我将参考这个实现为 <em>ERTS</em>，将 <em>Erlang RunTime System</em> 中 T 字母大写 (See <a href="#ERTS">Section 3.3</a> for a definition of OTP)。</p>
+<p>任何 Erlang 运行时系统  和 Erlang 运行时的特定实现系统有一点区别。由爱立信开发维护的 Erlang/OTP 是 Erlang 和 Erlang 运行时系统事实上的标准实现。在本书中，我将参考这个实现为 <em>ERTS</em>，将 <em>Erlang RunTime System</em> 中 T 字母大写 (参见 <a href="#ERTS">Section 3.3</a> 中 OTP 的定义)。</p>
 </div>
 <div class="paragraph">
 <p>Erlang 运行时系统或者 Erlang 虚拟机并没有一个官方定义。你可以想象这样一个理想的柏拉图式系统看起来就像是ERTS，并且移除了所有特定实现细节。不幸的是，这是一个循环定义，因为你需要了解通用定义以便能够鉴别一个特定实现细节。在Erlang 的世界里，我们通常比较务实而不去担心这些。</p>
@@ -1107,10 +1160,10 @@ Chris Yunker</pre>
 <div class="sect2">
 <h3 id="_如何阅读本书"><a class="link" href="#_如何阅读本书">3.2. 如何阅读本书</a></h3>
 <div class="paragraph">
-<p>在本书的 <a href="#P-Running">Part II</a> 部分，我们将关注如何为你的应用调整运行时系统，以及分析和调试你的应用和运行时系统。为了真正了解如何如何调整系统，你也需要了解系统。在本书的 <a href="#P-ERTS">Part I</a> 部分，你讲深入理解运行时系统的工作原理。</p>
+<p>在本书的 <a href="#P-Running">Part III</a> 部分，我们将关注如何为你的应用调整运行时系统，以及分析和调试你的应用和运行时系统。为了真正了解如何如何调整系统，你也需要了解系统。在本书的 <a href="#P-ERTS">Part II</a> 部分，你讲深入理解运行时系统的工作原理。</p>
 </div>
 <div class="paragraph">
-<p>在接下来 <a href="#P-ERTS">Part I</a> 的章节中，我们将深入系统的各个组件。即使你并没有对全部组件有全面的理解，只要基本清楚每个组件是什么，也能够顺利阅读这些章节。剩余的介绍章节将向你介绍足够的基础信息和词汇术语，是你能够随意在这些章节之间切换阅读。</p>
+<p>在接下来 <a href="#P-ERTS">Part II</a> 的章节中，我们将深入系统的各个组件。即使你并没有对全部组件有全面的理解，只要基本清楚每个组件是什么，也能够顺利阅读这些章节。剩余的介绍章节将向你介绍足够的基础信息和词汇术语，是你能够随意在这些章节之间切换阅读。</p>
 </div>
 <div class="paragraph">
 <p>如果你有充裕时间，建议首次阅读按照顺序进行。有关 Erlang 和 ERTS 的词汇术语都在它们首次出现时解释。这样就可以在对某个特定组件有疑问时，使用 Part I 作为参考性的后续反复阅读。</p>
@@ -1358,7 +1411,7 @@ interface</em> (CLI) 或简称 <em>Erlang shell</em>.</p>
 <div class="title">Figure 5. Erlang on the JVM</div>
 </div>
 <div class="paragraph">
-<p>现在，你应该对 ERTS 的各主要部分有了基本的了解，也了解了继续深入各组件所必须的词汇术语。如果你渴望了解某一个具体的组件，现在就可以跳到对应章节阅读了。或者你需要找一个特定问题的解决方案，你可以跳到  <a href="#P-Running">Part II</a> 章节，尝试使用各种方法来调优、调试你的系统。</p>
+<p>现在，你应该对 ERTS 的各主要部分有了基本的了解，也了解了继续深入各组件所必须的词汇术语。如果你渴望了解某一个具体的组件，现在就可以跳到对应章节阅读了。或者你需要找一个特定问题的解决方案，你可以跳到  <a href="#P-Running">Part III</a> 章节，尝试使用各种方法来调优、调试你的系统。</p>
 </div>
 </div>
 </div>
@@ -1671,8 +1724,7 @@ transforms），Core Erlang，BEAM 码等不同方法你可以做什么，以及
 <i class="fa icon-warning" title="Warning"></i>
 </td>
 <td class="content">
-Programmers are strongly advised not to engage in parse
-transformations and no support is offered for problems encountered.
+强烈建议程序员不要进行解析转换，我们对遇到的问题不提供支持。
 </td>
 </tr>
 </table>
@@ -7769,7 +7821,7 @@ bin_vheap_mature, bin_old_vheap_sz, bin_old_vheap+.</pre>
 </div>
 </div>
 </div>
-<h1 id="P-Running" class="sect0"><a class="link" href="#P-Running">II: 卷二：运行 ERTS</a></h1>
+<h1 id="P-Running" class="sect0"><a class="link" href="#P-Running">III: 卷二：运行 ERTS</a></h1>
 <div class="sect1">
 <h2 id="CH-Tracing"><a class="link" href="#CH-Tracing">20. 跟踪（原书未完成）</a></h2>
 <div class="sectionbody">
@@ -13220,7 +13272,7 @@ Technical Note 309, Artificial Intelligence Center, SRI International, 333 Raven
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-19 11:02:01 +0800
+Last updated 2020-10-19 13:24:56 +0800
 </div>
 </div>
 <style>
