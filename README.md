@@ -12,7 +12,7 @@
 
 当前翻译版本预览：[中文网页版](https://hitdavid.github.io/theBeamBook/). （最新进展：翻译完成第一卷）
 
-PDF版本下载：https://github.com/hitdavid/theBeamBook/releases/tag/0.8
+PDF版本下载：https://github.com/hitdavid/theBeamBook/releases/download/0.8/beam-book.pdf
 
 因为本书没有出版，也没有版税收入，故请各位多多支持，在力所能及范围内捐赠：
 
